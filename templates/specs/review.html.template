@@ -117,7 +117,7 @@
 
       <section id="high-risk-deep-review">
         <h2>High-risk and deep review</h2>
-        <p>TODO: High-risk categories touched (security-sensitive, auth/authz, payments, migrations, infra, public APIs, large refactors, data-loss) — or <code>None</code>. For each: which escalation rungs ran (standard / security pass / adversarial pass / paid deep review with approval), and the outputs — security findings, performance findings, edge cases, reproduction attempts (reproduced vs theoretical), remediation plan. A high-risk change reviewed only at the standard level needs the reason recorded here (<code>reference/deep-review-policy.md</code>).</p>
+        <p>TODO: High-risk categories touched (security-sensitive, auth/authz, payments, migrations, infra, public APIs, large refactors, data-loss) — or <code>None</code>. For each: which escalation rungs ran (standard / security pass / adversarial pass / paid deep review with approval), and the outputs — security findings, performance findings, edge cases, reproduction attempts (reproduced vs theoretical), remediation plan. A high-risk change reviewed only at the standard level needs the reason recorded here (<code>.claude/reference/deep-review-policy.md</code>).</p>
       </section>
 
       <section id="documentation-decision">

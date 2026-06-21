@@ -133,7 +133,7 @@
 
       <section id="security-and-permissions">
         <h2>Security and permissions</h2>
-        <p>TODO: If this change touches trust boundaries, authentication/authorization, secrets handling, input validation on external data, or operations that need explicit permission (destructive commands, remote mutations, protected files) — describe each and how it is gated. High-risk categories trigger the deep-review escalation ladder (<code>reference/deep-review-policy.md</code>). If none apply, state <code>None</code>.</p>
+        <p>TODO: If this change touches trust boundaries, authentication/authorization, secrets handling, input validation on external data, or operations that need explicit permission (destructive commands, remote mutations, protected files) — describe each and how it is gated. High-risk categories trigger the deep-review escalation ladder (<code>.claude/reference/deep-review-policy.md</code>). If none apply, state <code>None</code>.</p>
       </section>
 
       <section id="documentation-targets">

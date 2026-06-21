@@ -58,7 +58,7 @@ Claude Code will inspect the repository, ask you the configuration questions fro
 - `.claude/agents/`: leader, spec-author, implementer, reviewer, documenter.
 - `.claude/skills/sdd-workflow/`: the core SDD skill with workflow, state machine, review checklist, and spec templates.
 - `specs/` (with the spec CSS/JS), `tasks.json`, `history.html`, `decisions/answers.md`, and the project map.
-- Validation scripts adapted to the project.
+- Validation scripts adapted to the project, including a `jq`-free PowerShell port of the structure validator for Windows-primary teams.
 
 **Optional — only with your explicit selection:**
 
@@ -82,7 +82,7 @@ Nothing in the kit phones home, stores credentials, or enables external access b
 | `mcps/` | Criteria for deciding which MCPs to configure |
 | `templates/` | File templates Claude adapts to the target project |
 | `specs/example-feature/` | Fully rendered example spec (open the HTML files in a browser) |
-| `scripts/` | Base scripts for validating structure, environment and tests |
+| `scripts/` | Base scripts for validating structure, environment and tests (bash, plus a `jq`-free PowerShell validator port for Windows) |
 | `reference/` | SDD theory, harness engineering, Claude Code primitives |
 | `output-project-structure.md` | Expected structure of the target project after onboarding |
 | `usage-prompts.md` | Ready-to-use prompts for daily SDD use |

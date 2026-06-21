@@ -396,7 +396,8 @@
       <h3>Prerequisites</h3>
       <ul>
         <li>Claude Code (CLI, desktop app, or IDE extension).</li>
-        <li>A git repository where you want SDD installed.</li>
+        <li>A git repository where you want SDD installed. A greenfield repo with only a plan and no code yet is fine — see <em>"Greenfield and plan-only repositories"</em> below.</li>
+        <li>Optional: bash and <code>jq</code> (Git Bash or WSL on Windows) for the hook scripts and the bash validator. Windows-primary teams can instead use the bundled PowerShell validator (<code>scripts/validate-sdd-structure.ps1</code>), which needs neither.</li>
       </ul>
 
       <h3>Step 1 — Add the kit to your project</h3>
@@ -429,6 +430,7 @@
 │   │   ├── SKILL.md
 │   │   ├── … (8 supporting files)
 │   │   └── templates/ (spec HTML templates + spec.css + spec.js)
+│   ├── reference/ (policy files vendored from the kit, so links survive kit removal)
 │   ├── hooks/README.md
 │   └── settings.json
 ├── specs/
@@ -439,7 +441,18 @@
     ├── init.sh
     ├── run-tests.sh
     ├── run-lint.sh
-    └── validate-sdd-structure.sh</code></pre>
+    ├── validate-sdd-structure.sh
+    └── validate-sdd-structure.ps1 (PowerShell port — for Windows-primary teams)</code></pre>
+
+      <h3>Greenfield and plan-only repositories</h3>
+      <p>The kit assumes a codebase to inspect, but it installs cleanly on a repo that has only a plan, brief, or build spec and no code yet. In that case Claude:</p>
+      <ul>
+        <li>records the <em>planned</em> layout in the project map (clearly labeled as planned, never fabricated);</li>
+        <li>defers test/lint/build commands as <code>TODO: ask the developer</code> rather than guessing — the generated <code>run-tests.sh</code>/<code>run-lint.sh</code> no-op cleanly until they are filled;</li>
+        <li>seeds <code>tasks.json</code> from an existing phased plan (one <code>pending</code> task per unit of work, each linked back to its plan section) instead of shipping only the example task — confirm the granularity first;</li>
+        <li>does not run <code>git init</code> silently: if the repo is not yet under git, Claude asks or defers it to you and records the decision.</li>
+      </ul>
+      <p>Until the toolchain and sources exist, leave tool-running hooks (e.g. run-tests-after-edit) disabled — on an empty repo they fire on every edit with nothing to run.</p>
     </section>
 
     <hr>
@@ -584,7 +597,7 @@
 
       <h3>Installation</h3>
       <ol>
-        <li>Get explicit developer approval for the specific hook and mode (<code>questions.md</code> §9). Confirm the environment has bash and <code>jq</code> (Git Bash or WSL on Windows).</li>
+        <li>Get explicit developer approval for the specific hook and mode (<code>questions.md</code> §9). Confirm the environment has bash and <code>jq</code> (Git Bash or WSL on Windows). Do not enable tool-running hooks (run-tests/run-lint after edit) before the toolchain and sources exist — on a greenfield repo they only produce noise. The generated <code>run-tests.sh</code>/<code>run-lint.sh</code> carry no-op guards (they exit 0 cleanly when the command is unset, still a <code>TODO</code>, or its binary is not on <code>PATH</code>), so they are safe to wire up early, but a disabled hook is the better default until there is code to run.</li>
         <li>Copy the script from <code>hooks/examples/</code> into the target project (e.g. <code>.claude/hooks/</code>) and make it executable.</li>
         <li>Adapt the project-specific parts: the targeted-validation <code>RULES</code> table, the failure-learning <code>watch_pattern</code>, allowed paths. Never wire a command that was not confirmed.</li>
         <li>Register it in <code>.claude/settings.json</code> using the matching snippet from <code>hooks/settings-snippets.md</code>.</li>
@@ -595,7 +608,7 @@
       <ul>
         <li><strong>Hook does not fire:</strong> check the event name and matcher in <code>.claude/settings.json</code>, the script path, and that the file is executable. Hook settings are read at session start — restart the session after changes.</li>
         <li><strong>Hook blocks everything:</strong> the kit's blocking examples have deliberate limitations (e.g. the approval guard is project-wide, not per-task). Read the script's header comment; adapt the filter or fall back to warn mode.</li>
-        <li><strong>Windows:</strong> scripts need Git Bash or WSL plus <code>jq</code> on <code>PATH</code>. All kit hooks fail open (warn and allow) when <code>jq</code> is missing — they never block for a missing dependency.</li>
+        <li><strong>Windows:</strong> hook scripts need Git Bash or WSL plus <code>jq</code> on <code>PATH</code>. All kit hooks fail open (warn and allow) when <code>jq</code> is missing — they never block for a missing dependency. For structure validation specifically, use the PowerShell port <code>scripts/validate-sdd-structure.ps1</code> instead: it needs neither bash nor <code>jq</code> and runs the full check, including the <code>tasks.json</code> state-machine validation that the bash version skips when <code>jq</code> is absent.</li>
         <li><strong>Testing a hook:</strong> run it manually with a sample JSON payload on stdin (e.g. <code>echo '{"tool_name":"Edit","tool_input":{"file_path":"src/x.ts"}}' | ./spec-drift.sh</code>) before registering it.</li>
         <li><strong>Version drift:</strong> event names, stdin fields, and output shapes evolve with Claude Code versions. The kit's scripts were verified against the hooks docs (2026-06); re-verify against the installed version before enabling (rule in <code>hooks/settings-snippets.md</code>).</li>
       </ul>
@@ -679,8 +692,9 @@
           <tr><td><code>decisions/</code></td>                <td>Templates for the onboarding answers file and the decision-log files</td></tr>
           <tr><td><code>templates/specs/</code></td>          <td>HTML spec templates (requirements, design, tasks, review, …)</td></tr>
           <tr><td><code>templates/functional/</code></td>     <td>Functional brief HTML template</td></tr>
-          <tr><td><code>scripts/validate-sdd-structure.sh</code></td><td>Validates that all required harness files are present</td></tr>
-          <tr><td><code>reference/</code></td>                <td>SDD theory, harness engineering, Claude Code primitives</td></tr>
+          <tr><td><code>scripts/validate-sdd-structure.sh</code></td><td>Validates that all required harness files are present (bash; <code>tasks.json</code> checks need <code>jq</code>)</td></tr>
+          <tr><td><code>scripts/validate-sdd-structure.ps1</code></td><td>PowerShell port of the validator — no bash or <code>jq</code> required; runs the full check on Windows</td></tr>
+          <tr><td><code>reference/</code></td>                <td>SDD theory, harness engineering, Claude Code primitives, and the policy files that installed agents/skills link to (vendored into <code>.claude/reference/</code> at install so the harness survives kit removal)</td></tr>
         </tbody>
       </table>
     </section>
@@ -712,7 +726,7 @@
       <div class="prompt-box">Here is the functional document for &lt;feature&gt;. Convert it into an SDD spec. Do not implement anything until I approve.</div>
 
       <h3>Check harness structure</h3>
-      <div class="prompt-box">Run `scripts/validate-sdd-structure.sh` and report any missing files or unresolved placeholders.</div>
+      <div class="prompt-box">Run `scripts/validate-sdd-structure.sh` (or `scripts/validate-sdd-structure.ps1` on Windows without bash/jq) and report any missing files or unresolved placeholders.</div>
     </section>
 
     <hr>
@@ -909,6 +923,23 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.html · decisions/
           <tr><td><code>documentation-update</code></td><td>Update affected docs after review, before <code>done</code> (see <a href="#documentation-phase">§22</a>).</td><td>Updated docs + target list in review notes.</td><td>Runs only after technical review; never documents unreviewed details.</td></tr>
           <tr><td><code>failure-learning</code></td><td>Propose a reusable lesson after a meaningful mistake (see <a href="#failure-learning">§21</a>).</td><td>Approved lesson in the layer the developer chose.</td><td>Proposal-only; no memory writes without explicit approval; global memory only via the explicit option.</td></tr>
           <tr><td><code>ui-qa</code></td><td>Verify UI changes against spec acceptance criteria (see <a href="#browser-testing">§24</a>).</td><td>Per-criterion QA checklist in review notes.</td><td>No stored credentials; test accounts preferred; no production actions.</td></tr>
+        </tbody>
+      </table>
+      <p>(A tenth pack, <code>spec-from-screenshot</code>, is documented in <a href="#visual-evidence">§28</a>.)</p>
+
+      <p><strong>What each pack adds over the always-on baseline.</strong> Three packs overlap features that are already on by default — install them only for the extra they provide: <code>project-map</code> adds an on-demand skill to <em>refresh</em> the map that Phase 3 already generates; <code>documentation-update</code> packages the documentation procedure the always-installed <code>documenter</code> agent already runs as a standalone, customizable skill; <code>failure-learning</code> adds a structured skill plus entry template over the profile's always-on lesson proposals. The other packs are net-new capabilities.</p>
+
+      <h3>Choosing packs: four themed bundles</h3>
+      <p>Ten packs do not fit a single structured chooser capped at four options, so onboarding presents them as four themed bundles. Selecting a bundle <em>proposes</em> its packs; each is still installed individually on confirmation, never silently as a set.</p>
+      <table>
+        <thead>
+          <tr><th>Bundle</th><th>Packs</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Verification</td><td><code>run-and-verify</code>, <code>ui-qa</code>, <code>dependency-freshness</code></td></tr>
+          <tr><td>Git &amp; decisions</td><td><code>git-discipline</code>, <code>decision-log</code></td></tr>
+          <tr><td>Docs &amp; knowledge</td><td><code>documentation-update</code>, <code>project-map</code>, <code>failure-learning</code></td></tr>
+          <tr><td>Context &amp; visual intake</td><td><code>context-audit</code>, <code>spec-from-screenshot</code></td></tr>
         </tbody>
       </table>
 
@@ -1660,7 +1691,7 @@ mcpServers:
       <h3>Maintainer checklist</h3>
       <ol>
         <li><strong>One canonical home per rule.</strong> Deep policy goes in <code>reference/</code> or the relevant skill; <code>README</code>/<code>CLAUDE.md.template</code> carry a summary plus a link. If you are pasting the same paragraph into a third file, restructure instead.</li>
-        <li><strong>Keep the mirrors in sync:</strong> <code>README.md</code> ↔ <code>README.html</code> section for section; templates ↔ reviewer checklist ↔ reviewer agent output list; <code>questions.md</code> defaults ↔ <code>instructions.md</code> Safe default profile YAML.</li>
+        <li><strong>Keep the mirrors in sync:</strong> <code>README.md</code> ↔ <code>README.html</code> section for section; templates ↔ reviewer checklist ↔ reviewer agent output list; <code>questions.md</code> defaults ↔ <code>instructions.md</code> Safe default profile YAML; and the two structure validators (<code>validate-sdd-structure.sh</code> ↔ <code>validate-sdd-structure.ps1</code>) — a change to the required-file list, placeholder exemptions, or the <code>tasks.json</code> state-machine checks must land in both.</li>
         <li><strong>Append, don't renumber.</strong> New <code>questions.md</code> sections and <code>DOCUMENTATION.html</code> sections go at the end — section numbers are cited across the kit and in recorded answers.</li>
         <li><strong>New optional feature?</strong> It needs all of: a <code>questions.md</code> entry with a safe default, an <code>instructions.md</code> install step, a row in the feature matrix (<a href="#feature-matrix">§33</a>), optionality stated in its own file, both READMEs, and a <code>DOCUMENTATION.html</code> section.</li>
         <li><strong>New hook?</strong> Classify it in <code>hooks/hooks-policy.md</code> (advisory/blocking/mutating/dangerous), ship it disabled, add a settings snippet, fail open on missing <code>jq</code>, pipe every <code>jq -r</code> capture through <code>tr -d '\r'</code> (Windows CRLF), and shellcheck it.</li>

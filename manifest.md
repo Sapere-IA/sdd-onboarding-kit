@@ -61,6 +61,7 @@
 - `scripts/run-lint.sh.template`
 - `scripts/run-tests.sh.template`
 - `scripts/update-manifest.sh`
+- `scripts/validate-sdd-structure.ps1`
 - `scripts/validate-sdd-structure.sh`
 - `skills/optional/README.md`
 - `skills/optional/context-audit/SKILL.md`

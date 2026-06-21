@@ -1,13 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Replace this file with the project-specific test command.
+# Project-specific test command, filled during onboarding.
 # Examples:
-#   npm test
-#   pnpm test
-#   pytest
-#   cargo test
-#   go test ./...
-#   mvn test
+#   npm test | pnpm test | pytest | cargo test | go test ./... | mvn test
+#
+# If the test command is not yet known (e.g. a greenfield repo with no
+# toolchain or no sources yet), leave this empty or as a "TODO: ..." string.
+# The guards below then make the script no-op cleanly (exit 0), so it is safe
+# to wire into hooks before the toolchain and code exist. Replace it with the
+# real command once they do.
+TEST_COMMAND="{{TEST_COMMAND}}"
 
-{{TEST_COMMAND}}
+# No-op guard: skip cleanly when the command is unset, still a TODO, or an
+# unreplaced placeholder. Avoids failing on every edit on a greenfield repo.
+if [[ -z "${TEST_COMMAND// }" || "$TEST_COMMAND" == TODO* || "$TEST_COMMAND" == *"{{"* ]]; then
+  echo "run-tests: no test command configured yet; skipping (exit 0)." >&2
+  exit 0
+fi
+
+# No-op guard: skip cleanly when the toolchain binary is not on PATH.
+TEST_BIN="${TEST_COMMAND%% *}"
+if ! command -v "$TEST_BIN" >/dev/null 2>&1; then
+  echo "run-tests: '$TEST_BIN' not found on PATH; skipping (exit 0)." >&2
+  exit 0
+fi
+
+eval "$TEST_COMMAND"

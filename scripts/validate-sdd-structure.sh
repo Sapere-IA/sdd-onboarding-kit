@@ -51,12 +51,15 @@ if [[ "$missing" -ne 0 ]]; then
 fi
 
 # Check for unresolved {{PLACEHOLDER}} tokens in CLAUDE.md and .claude/.
-# The spec templates under .claude/skills/sdd-workflow/templates/ are exempt:
-# their placeholders are instantiated per feature, not during onboarding.
+# Any per-instance template file (*.template under a templates/ directory) is
+# exempt: its placeholders are instantiated per feature/commit/PR, not during
+# onboarding. This covers the sdd-workflow spec templates AND pack templates
+# such as .claude/skills/git-discipline/templates/*.template.
 # The literal {{PLACEHOLDER}} token is also exempt: skill docs use it as the
 # generic name for the placeholder convention, not as a real placeholder.
 unresolved=$(grep -Rn "{{[A-Z0-9_]*}}" CLAUDE.md .claude 2>/dev/null \
   | grep -v "^.claude/skills/sdd-workflow/templates/" \
+  | grep -vE "/templates/[^/]+\.template:" \
   | grep -v "{{PLACEHOLDER}}" || true)
 if [[ -n "$unresolved" ]]; then
   echo "$unresolved" >&2

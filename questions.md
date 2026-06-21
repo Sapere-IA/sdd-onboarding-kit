@@ -139,6 +139,8 @@ Questions:
 - Should hooks fail closed or warn only?
 - Does every development environment have bash and `jq` available (on Windows: Git Bash or WSL)? If not, should hooks fail open (warn and allow) or fail closed (block) when `jq` is missing?
 
+Default for tool-running hooks (2 and 3): leave them disabled until the toolchain and sources exist. On a greenfield or plan-only repo they fire on every edit with nothing meaningful to run. The generated `run-tests.sh`/`run-lint.sh` no-op cleanly in that state, but the better default is to install these hooks disabled and enable them once there is code and a confirmed command.
+
 ## 10. MCPs
 
 Ask before configuring MCPs.
@@ -202,6 +204,15 @@ The core `sdd-workflow` skill is always installed. The packs under
 `context-audit`, `project-map`, `run-and-verify`, `dependency-freshness`,
 `git-discipline`, `decision-log`, `documentation-update`,
 `failure-learning`, `ui-qa`, `spec-from-screenshot`.
+
+These ten packs do not fit a single structured chooser capped at four
+options. Present them as the four themed bundles in `skills/optional/README.md`
+("Suggested themed bundles") — Verification, Git & decisions, Docs &
+knowledge, Context & visual intake — then install individual packs on
+confirmation. Three packs overlap the always-on baseline (`documenter`
+agent, generated project map, failure-learning proposals); name what each
+adds before installing it (see the README's "Adds over the always-on
+baseline" column).
 
 Questions:
 
