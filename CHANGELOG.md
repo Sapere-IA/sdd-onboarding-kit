@@ -2,6 +2,16 @@
 
 Kit versions are tracked in `VERSION` and tagged in git (`v<version>`). Each entry lists **Changes** (what is different in the kit) and **Migration** (what `/sdd-update` must do to bring an existing install up to date). The `sdd-update` skill reads the entries between the installed version and the latest, and executes the migration steps with developer approval.
 
+## 2.0.1 — 2026-07-22
+
+### Changes
+
+- **Renderer: dotted and hyphenated task/spec IDs render as chips.** `ID_TOKEN`, `REQ_ROW`, the timeline-chip matcher and the chip-variant map in both renderers now accept IDs with a hyphen after the letter prefix and dotted numeric segments (`T-4.35.12`, `SPEC-4.35`), which previously rendered as plain text. Both renderers remain output-equivalent.
+
+### Migration (for installs made before 2.0.1)
+
+1. **Re-copy the renderer**: overwrite `scripts/render-spec.mjs` (or `scripts/render_spec.py`) from the kit. No other file changed.
+
 ## 2.0.0 — 2026-07-22
 
 ### Changes

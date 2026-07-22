@@ -55,11 +55,11 @@ REQ_ID_CLASSES = [
     (re.compile(r"^AT-ERR"), "err"),
     (re.compile(r"^(AC|UI|IMG)"), "ac"),
     (re.compile(r"^NBK"), "edge"),
-    (re.compile(r"^T\d"), "t"),
+    (re.compile(r"^T-?\d"), "t"),
 ]
 
-ID_TOKEN = re.compile(r"^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+)$")
-REQ_ROW = re.compile(r"^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+):\s+(.+)$")
+ID_TOKEN = re.compile(r"^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+(?:\.\d+)*)$")
+REQ_ROW = re.compile(r"^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+(?:\.\d+)*):\s+(.+)$")
 INLINE_BADGE = re.compile(
     r"\[!(draft|pending|ok|approved|blocking|rejected|warning)\s+([^\]]+)\]")
 CELL_VERDICT = re.compile(r"^!(ok|warning|blocking|pending)(?:\s+(.*))?$")
@@ -502,7 +502,7 @@ def render_timeline(items):
         status = ITEM_STATUS_CLASS[status_ch]
         rest = ITEM_STATUS.sub("", it["text"])
         chip = ""
-        idm = re.match(r"^(T\d+):\s*", rest)
+        idm = re.match(r"^(T-?\d+(?:\.\d+)*):\s*", rest)
         if idm:
             chip = req_id_span(idm.group(1))
             rest = rest[idm.end():]

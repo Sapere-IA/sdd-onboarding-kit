@@ -57,13 +57,13 @@ const REQ_ID_CLASSES = [
   [/^AT-ERR/, 'err'],
   [/^(AC|UI|IMG)/, 'ac'],
   [/^NBK/, 'edge'],
-  [/^T\d/, 't'],
+  [/^T-?\d/, 't'],
 ];
 
 // A standalone requirement-style ID token (REQ-001, AT-EDGE-1, Q1, T3, R2 …)
-const ID_TOKEN = /^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+)$/;
+const ID_TOKEN = /^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+(?:\.\d+)*)$/;
 // A block-level requirement row: "REQ-001: text"
-const REQ_ROW = /^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+):\s+(.+)$/;
+const REQ_ROW = /^([A-Z]{1,4}(?:-[A-Z]{1,4})?-?\d+(?:\.\d+)*):\s+(.+)$/;
 // Inline badge: [!ok text]
 const INLINE_BADGE = /\[!(draft|pending|ok|approved|blocking|rejected|warning)\s+([^\]]+)\]/g;
 // Cell verdict marker: "!ok Yes"
@@ -475,7 +475,7 @@ function renderTimeline(items) {
     const status = ITEM_STATUS_CLASS[statusCh];
     let rest = it.text.replace(ITEM_STATUS, '');
     let chip = '';
-    const idm = rest.match(/^(T\d+):\s*/);
+    const idm = rest.match(/^(T-?\d+(?:\.\d+)*):\s*/);
     if (idm) { chip = reqIdSpan(idm[1]); rest = rest.slice(idm[0].length); }
     const parts = rest.split(' — ');
     const title = parts[0];
