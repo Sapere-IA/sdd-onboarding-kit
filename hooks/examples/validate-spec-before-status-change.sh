@@ -55,7 +55,7 @@ for slug in $SLUGS; do
     [[ "$STATUS" != "spec_ready" ]] && continue
   fi
   SPEC_DIR="$PROJECT_DIR/specs/$slug"
-  for file in requirements.html design.html tasks.html; do
+  for file in requirements.md design.md tasks.md; do
     if [[ ! -s "$SPEC_DIR/$file" ]]; then
       echo "Cannot move '$slug' to spec_ready: missing $SPEC_DIR/$file" >&2
       missing=1

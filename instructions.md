@@ -45,7 +45,8 @@ Identify:
 - existing `CLAUDE.md`, `.claude/`, `.mcp.json`, task files, issue references, CI config;
 - existing architecture/conventions documentation;
 - existing git branch and cleanliness status;
-- available external CLIs (`gh`, `vercel`, `supabase`, cloud CLIs): detect which exist so narrow CLI calls can be preferred over broad MCP loading (`reference/cli-vs-mcp-policy.md`) — do not require, install, or authenticate any of them, and record nothing about credentials beyond authenticated yes/no.
+- available external CLIs (`gh`, `vercel`, `supabase`, cloud CLIs): detect which exist so narrow CLI calls can be preferred over broad MCP loading (`reference/cli-vs-mcp-policy.md`) — do not require, install, or authenticate any of them, and record nothing about credentials beyond authenticated yes/no;
+- **spec renderer runtime**: whether `node` and/or `python3`/`python` is available, and which matches the project (a `package.json` project gets the Node renderer, a Python project gets the Python renderer). Exactly one of `scripts/render-spec.mjs` / `scripts/render_spec.py` is installed. If both runtimes are plausible or neither is detected, ask the developer instead of guessing.
 
 Do not overwrite existing files without first reading them.
 
@@ -89,7 +90,7 @@ human_approval_required: true
 requirements_format: EARS
 task_storage: local_tasks_json
 spec_storage: specs/<feature-slug>/
-history_storage: history.html
+history_storage: history.md
 local_first: true                  # no external MCPs or CLIs required
 mcp_profile: none_by_default       # external MCPs only on explicit opt-in
 hooks_profile: recommend_but_do_not_enable_without_approval
@@ -144,15 +145,18 @@ After the developer answers, create or update the following in the target reposi
 │   │   │   ├── open-questions-policy.md
 │   │   │   ├── examples.md
 │   │   │   └── templates/
-│   │   │       ├── requirements.html.template
-│   │   │       ├── design.html.template
-│   │   │       ├── tasks.html.template
-│   │   │       ├── review.html.template
-│   │   │       ├── acceptance-tests.html.template
-│   │   │       ├── assumptions.html.template
-│   │   │       ├── open-questions.html.template
+│   │   │       ├── requirements.md.template
+│   │   │       ├── design.md.template
+│   │   │       ├── tasks.md.template
+│   │   │       ├── review.md.template
+│   │   │       ├── acceptance-tests.md.template
+│   │   │       ├── assumptions.md.template
+│   │   │       ├── open-questions.md.template
+│   │   │       ├── spec-shell.html.template
 │   │   │       ├── spec.css
 │   │   │       └── spec.js
+│   │   ├── sdd-update/
+│   │   │   └── SKILL.md
 │   │   └── <optional skill packs selected during onboarding>/
 │   ├── context/
 │   │   └── project-map.md
@@ -160,17 +164,19 @@ After the developer answers, create or update the following in the target reposi
 │   │   └── <policy files vendored from the kit — see "Referenced policy files">
 │   ├── hooks/
 │   │   └── README.md
-│   └── settings.json
+│   ├── settings.json
+│   └── sdd-kit-manifest.json
 ├── specs/
 ├── decisions/
 │   ├── answers.md
 │   └── <decision-log files, if the decision-log pack is selected>
 ├── tasks.json
-├── history.html
+├── history.md
 └── scripts/
     ├── init.sh
     ├── run-tests.sh
     ├── run-lint.sh
+    ├── render-spec.mjs              # OR render_spec.py — exactly one, per the detected runtime
     ├── validate-sdd-structure.sh
     └── validate-sdd-structure.ps1   # PowerShell port — install for Windows-primary teams
 ```
@@ -193,7 +199,8 @@ It must be concise and project-specific. It should contain:
 - where specs, tasks and history live;
 - how to invoke the SDD skill;
 - when not to use SDD;
-- protected files or risky areas.
+- protected files or risky areas;
+- the spec render command (`{{RENDER_COMMAND}}` → the installed renderer, e.g. `node scripts/render-spec.mjs` or `python scripts/render_spec.py`) and a pointer to `/sdd-update`.
 
 Do not put the full theory of SDD into `CLAUDE.md`. Put long procedures in the project skill.
 
@@ -260,23 +267,41 @@ If the developer selected the `run-and-verify` pack (`questions.md` §14), gener
 - Record required environment variables by name only. Never write secret values, tokens, or credentials into the generated skill or any other file.
 - The generated skill is the project's run/verify recipe: implementer and reviewer run applicable checks through it (see `agents/implementer.md`, `agents/reviewer.md`, and the review checklist).
 
-### Spec templates
+### Spec templates and renderer
 
-Copy the HTML spec templates and shared assets into the target project so the spec-author has a source when creating new feature specs after the kit is removed:
+Copy the markdown spec templates and rendering assets into the target project so the spec-author has a source when creating new feature specs after the kit is removed:
 
 ```text
-templates/specs/requirements.html.template      → .claude/skills/sdd-workflow/templates/requirements.html.template
-templates/specs/design.html.template            → .claude/skills/sdd-workflow/templates/design.html.template
-templates/specs/tasks.html.template             → .claude/skills/sdd-workflow/templates/tasks.html.template
-templates/specs/review.html.template            → .claude/skills/sdd-workflow/templates/review.html.template
-templates/specs/acceptance-tests.html.template  → .claude/skills/sdd-workflow/templates/acceptance-tests.html.template
-templates/specs/assumptions.html.template       → .claude/skills/sdd-workflow/templates/assumptions.html.template
-templates/specs/open-questions.html.template    → .claude/skills/sdd-workflow/templates/open-questions.html.template
-templates/specs/spec.css                        → .claude/skills/sdd-workflow/templates/spec.css
-templates/specs/spec.js                         → .claude/skills/sdd-workflow/templates/spec.js
+templates/specs/requirements.md.template      → .claude/skills/sdd-workflow/templates/requirements.md.template
+templates/specs/design.md.template            → .claude/skills/sdd-workflow/templates/design.md.template
+templates/specs/tasks.md.template             → .claude/skills/sdd-workflow/templates/tasks.md.template
+templates/specs/review.md.template            → .claude/skills/sdd-workflow/templates/review.md.template
+templates/specs/acceptance-tests.md.template  → .claude/skills/sdd-workflow/templates/acceptance-tests.md.template
+templates/specs/assumptions.md.template       → .claude/skills/sdd-workflow/templates/assumptions.md.template
+templates/specs/open-questions.md.template    → .claude/skills/sdd-workflow/templates/open-questions.md.template
+templates/specs/spec-shell.html.template      → .claude/skills/sdd-workflow/templates/spec-shell.html.template
+templates/specs/spec.css                      → .claude/skills/sdd-workflow/templates/spec.css
+templates/specs/spec.js                       → .claude/skills/sdd-workflow/templates/spec.js
 ```
 
-Copy these verbatim, including the `{{PLACEHOLDER}}` tokens. They are instantiated per feature, not during onboarding.
+Copy these verbatim, including the `{{PLACEHOLDER}}` tokens. The `.md.template` files are instantiated per feature, not during onboarding; `spec-shell.html.template`, `spec.css`, and `spec.js` are consumed by the renderer.
+
+Install exactly one renderer, matching the runtime detected in Phase 1 (ask if ambiguous):
+
+```text
+scripts/render-spec.mjs   → scripts/render-spec.mjs    # Node projects
+scripts/render_spec.py    → scripts/render_spec.py     # Python projects
+```
+
+Markdown is the source of truth; rendered HTML is a build artifact. Add the rendered artifacts to the target project's `.gitignore`:
+
+```gitignore
+# SDD rendered artifacts (markdown is the source of truth)
+specs/**/*.html
+history.html
+```
+
+If architecture/conventions docs are generated at a different location (e.g. `docs/architecture.md`), gitignore their rendered `.html` siblings too. If the developer explicitly prefers committing rendered HTML, record that decision in `decisions/answers.md` and skip the gitignore entries.
 
 Do NOT copy the kit's `specs/example-feature/` directory into the target project. It is a rendered reference example for humans and agents, not part of the installed harness.
 
@@ -298,6 +323,13 @@ Make the harness self-contained: for each policy referenced by a component you a
 The `design`/`review` spec templates already carry the rewritten `.claude/reference/deep-review-policy.md` path, so copying them verbatim (per "Spec templates" above) is correct — you only need to ensure `deep-review-policy.md` is vendored. For agents and skills, rewrite the link as part of the "copy and adapt" step.
 
 The onboarding-time reading material (`reference/sdd-theory.md`, `harness-engineering.md`, `claude-code-primitives.md`, `cli-vs-mcp-policy.md`, `session-recovery.md`) is not linked by any installed component and does not need vendoring; it is read during onboarding only.
+
+### Update mechanism (always installed)
+
+The kit is versioned (`VERSION`, `CHANGELOG.md`, git tags). Every install gets the self-update skill and an install manifest so the harness can be updated when the kit publishes a new version:
+
+1. Copy `skills/sdd-update/SKILL.md` to `.claude/skills/sdd-update/SKILL.md`, filling its `{{KIT_REPO_URL}}` placeholder with the kit's git URL (ask the developer if unknown; recording a local path instead is acceptable).
+2. As the **last** generation step (after every other file is written), create `.claude/sdd-kit-manifest.json` following `templates/sdd-kit-manifest.schema.md`: kit version, install date, and one record per installed file with its kit source path, the SHA-256 of the kit source, the installed path, the SHA-256 of the installed copy, and `adapted: true|false` (`false` only for files copied byte-for-byte). This manifest is what lets `/sdd-update` distinguish verbatim assets from adapted files and detect local edits.
 
 ### Onboarding decisions record
 
@@ -338,11 +370,11 @@ Do not configure MCPs silently.
 
 If the developer chooses MCPs, use `mcps/mcp-policy.md` and the relevant integration notes.
 
-If no MCPs are selected, use local HTML/JSON storage:
+If no MCPs are selected, use local markdown/JSON storage:
 
 - `tasks.json`
 - `specs/<feature>/`
-- `history.html`
+- `history.md`
 
 ## Phase 5 — Validate installation
 
@@ -357,6 +389,8 @@ After writing files:
 7. Verify the project map exists at the configured location and is linked from `CLAUDE.md`, or that a TODO records that generation was deferred.
 8. If the `run-and-verify` pack was selected, verify `.claude/skills/run-and-verify/SKILL.md` has no unresolved placeholders (unknown commands appear as explicit `TODO: ask the developer` entries), no invented commands, and no secret values — environment variables by name only.
 9. Verify the installed harness is self-contained: no installed file links a kit-relative policy path. Grep `CLAUDE.md`, `.claude/`, and `specs/` for `reference/` or `mcps/playwright-policy.md` references that are not prefixed with `.claude/` — every such link must resolve to a file vendored under `.claude/reference/` (see "Referenced policy files"). The harness must not depend on `sdd-onboarding-kit/` remaining in the repository.
+10. Verify the renderer works: run the installed renderer against a template-instantiated sample (or the first real spec) and confirm it produces HTML without errors; confirm the rendered-artifact `.gitignore` entries exist (unless the developer chose to commit rendered HTML).
+11. Verify `.claude/sdd-kit-manifest.json` exists, parses as JSON, records the kit version, and covers the installed files; verify `.claude/skills/sdd-update/SKILL.md` exists with no unresolved placeholders.
 
 ## Phase 6 — Final onboarding summary
 
@@ -394,10 +428,10 @@ If the developer provides a functional document, product brief, ticket, PRD, use
 1. `skills/sdd-workflow/intake-from-functional-doc.md`
 2. `skills/sdd-workflow/assumptions-policy.md`
 3. `skills/sdd-workflow/open-questions-policy.md`
-4. `templates/functional/functional-brief.html.template`
-5. `templates/specs/assumptions.html.template`
-6. `templates/specs/open-questions.html.template`
-7. `templates/specs/acceptance-tests.html.template`
+4. `templates/functional/functional-brief.md.template`
+5. `templates/specs/assumptions.md.template`
+6. `templates/specs/open-questions.md.template`
+7. `templates/specs/acceptance-tests.md.template`
 
 Claude Code must treat the functional document as source material, not as an approved implementation spec.
 

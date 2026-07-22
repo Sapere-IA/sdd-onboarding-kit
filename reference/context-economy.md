@@ -44,7 +44,7 @@ Example:
 /compact Preserve: the approved spec decisions, current task status, the constraint that the API is read-only, and the open question about pagination.
 ```
 
-In an SDD project, compaction is safe because durable truth lives in files (`tasks.json`, `specs/`, decision logs, `history.html`), not in the chat. If something matters beyond the session, write it to an artifact before compacting.
+In an SDD project, compaction is safe because durable truth lives in files (`tasks.json`, `specs/`, decision logs, `history.md`), not in the chat. If something matters beyond the session, write it to an artifact before compacting.
 
 ### Use subagents for noisy research
 
@@ -79,7 +79,7 @@ Every configured MCP server adds tool definitions to the context of every sessio
 | Task state | `tasks.json` |
 | Feature requirements/design | `specs/<feature-slug>/` |
 | Decisions and rejected options | decision logs (`decisions/`) |
-| Completed work | `history.html` |
+| Completed work | `history.md` |
 | Procedures | `.claude/skills/` |
 
 Command names verified against the Claude Code commands reference (2026-06): `/context [all]`, `/compact [instructions]`.

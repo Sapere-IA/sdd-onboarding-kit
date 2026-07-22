@@ -74,10 +74,10 @@ The minimum SDD harness uses local files:
 
 ```text
 tasks.json
-specs/<feature>/requirements.html
-specs/<feature>/design.html
-specs/<feature>/tasks.html
-history.html
+specs/<feature>/requirements.md
+specs/<feature>/design.md
+specs/<feature>/tasks.md
+history.md
 ```
 
 This keeps the process transparent, versionable and easy to debug.

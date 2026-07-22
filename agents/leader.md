@@ -12,7 +12,7 @@ You are the SDD routing advisor for this project.
 
 **You must never write implementation code.** The `implementer` agent is the only part of the system allowed to write production code. If a recommendation would require editing a source file, recommend invoking `implementer` instead.
 
-You may update workflow state files (`tasks.json`, `history.html`) when the project policy allows it.
+You may update workflow state files (`tasks.json`, `history.md`) when the project policy allows it.
 
 ## Inputs
 
@@ -46,9 +46,9 @@ Each rule tells you what to **recommend** to the main conversation.
 
 Recommend invoking `spec-author` to create:
 
-1. `specs/<feature-slug>/requirements.html`
-2. `specs/<feature-slug>/design.html`
-3. `specs/<feature-slug>/tasks.html`
+1. `specs/<feature-slug>/requirements.md`
+2. `specs/<feature-slug>/design.md`
+3. `specs/<feature-slug>/tasks.md`
 
 Status moves to `spec_ready` only when the spec is complete. Do not recommend `implementer`.
 
@@ -66,7 +66,7 @@ Recommend invoking `implementer`, instructing it to read only the approved spec 
 
 ### If task status is `in_progress`
 
-Recommend continuing implementation with `implementer` according to `tasks.html`.
+Recommend continuing implementation with `implementer` according to `tasks.md`.
 
 ### If task status is `review`
 
@@ -99,7 +99,7 @@ Inspect reviewer findings. Recommend whether the task returns to:
 - Do not mark `done` while documentation is required and still pending.
 - Do not recommend `documenter` before the reviewer has approved the implementation.
 - Do not invent external integration configuration.
-- Record meaningful progress in `history.html` only after completion or major state transition.
+- Record meaningful progress in `history.md` only after completion or major state transition.
 - If task storage is external, update local files only as configured by the project.
 
 ## Output

@@ -38,8 +38,13 @@ $requiredFiles = @(
   '.claude/skills/sdd-workflow/review-checklist.md',
   '.claude/skills/sdd-workflow/templates/spec.css',
   '.claude/skills/sdd-workflow/templates/spec.js',
+  '.claude/skills/sdd-workflow/templates/spec-shell.html.template',
+  '.claude/skills/sdd-workflow/templates/requirements.md.template',
+  '.claude/skills/sdd-workflow/templates/design.md.template',
+  '.claude/skills/sdd-workflow/templates/tasks.md.template',
+  '.claude/skills/sdd-workflow/templates/review.md.template',
   'tasks.json',
-  'history.html',
+  'history.md',
   'scripts/run-tests.sh',
   'scripts/run-lint.sh'
 )
@@ -52,6 +57,13 @@ $requiredDirs = @(
 )
 foreach ($f in $requiredFiles) { Test-RequiredFile $f }
 foreach ($d in $requiredDirs) { Test-RequiredDir $d }
+
+# Exactly one spec renderer must be installed (Node or Python).
+if (-not (Test-Path -LiteralPath 'scripts/render-spec.mjs' -PathType Leaf) -and
+    -not (Test-Path -LiteralPath 'scripts/render_spec.py' -PathType Leaf)) {
+  [Console]::Error.WriteLine('Missing spec renderer: scripts/render-spec.mjs or scripts/render_spec.py')
+  $missing = $true
+}
 
 if ($missing) {
   [Console]::Error.WriteLine('SDD structure validation failed.'); exit 1
@@ -83,19 +95,30 @@ if ($unresolved.Count -gt 0) {
   exit 1
 }
 
-# Check for unresolved {{PLACEHOLDER}} tokens in generated HTML spec files.
+# Check for unresolved {{PLACEHOLDER}} tokens in instantiated spec sources
+# (markdown is the source of truth; rendered .html files are gitignored artifacts).
 if (Test-Path -LiteralPath 'specs' -PathType Container) {
-  $specHits = Get-ChildItem -LiteralPath 'specs' -Recurse -File -Filter '*.html' |
+  $specHits = Get-ChildItem -LiteralPath 'specs' -Recurse -File -Filter '*.md' |
     Where-Object { Select-String -LiteralPath $_.FullName -Pattern $placeholder -Quiet }
   if ($specHits) {
-    [Console]::Error.WriteLine('Unresolved template placeholders found in HTML spec files:')
+    [Console]::Error.WriteLine('Unresolved template placeholders found in spec markdown files:')
     $specHits | ForEach-Object { [Console]::Error.WriteLine(($_.FullName -replace '\\', '/')) }
+    exit 1
+  }
+
+  # Every spec markdown source must start with YAML frontmatter.
+  $missingFm = Get-ChildItem -LiteralPath 'specs' -Recurse -File -Filter '*.md' |
+    Where-Object { $_.Name -ne 'README.md' } |
+    Where-Object { (Get-Content -LiteralPath $_.FullName -TotalCount 1) -ne '---' }
+  if ($missingFm) {
+    [Console]::Error.WriteLine('Spec markdown files missing YAML frontmatter:')
+    $missingFm | ForEach-Object { [Console]::Error.WriteLine(($_.FullName -replace '\\', '/')) }
     exit 1
   }
 }
 
 # Validate tasks.json against its own state machine. State is read from JSON
-# only — spec HTML files are never parsed.
+# only — spec files are never parsed.
 try {
   $tasks = Get-Content -LiteralPath 'tasks.json' -Raw | ConvertFrom-Json
 } catch {

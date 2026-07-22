@@ -68,7 +68,7 @@ Two execution paths:
 A UI QA checklist in the task's review notes: criterion → result →
 evidence (screenshot reference or description). When the spec has visual
 evidence, record the comparisons in the `Visual verification` section of
-`review.html` (criterion/image → evidence → result).
+`review.md` (criterion/image → evidence → result).
 
 ## Safety constraints
 

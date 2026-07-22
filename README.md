@@ -2,7 +2,7 @@
 
 This kit installs a **Spec Driven Development (SDD)** harness in any repository you work on with Claude Code.
 
-It is not a global user configuration. It is a reusable template that produces a project-specific configuration: `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/settings.json`, `specs/`, `tasks.json`, `history.html`, and validation scripts.
+It is not a global user configuration. It is a reusable template that produces a project-specific configuration: `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/settings.json`, `specs/`, `tasks.json`, `history.md`, and validation scripts.
 
 ## Documentation
 
@@ -56,8 +56,10 @@ Claude Code will inspect the repository, ask you the configuration questions fro
 
 - A short, project-specific `CLAUDE.md` generated from the kit's template — links out, never duplicates skill bodies.
 - `.claude/agents/`: leader, spec-author, implementer, reviewer, documenter.
-- `.claude/skills/sdd-workflow/`: the core SDD skill with workflow, state machine, review checklist, and spec templates.
-- `specs/` (with the spec CSS/JS), `tasks.json`, `history.html`, `decisions/answers.md`, and the project map.
+- `.claude/skills/sdd-workflow/`: the core SDD skill with workflow, state machine, review checklist, and markdown spec templates.
+- `.claude/skills/sdd-update/` plus `.claude/sdd-kit-manifest.json`: the self-update mechanism — run `/sdd-update` in an installed project to pull in new kit versions (see `CHANGELOG.md`).
+- A spec renderer (`scripts/render-spec.mjs` for Node projects or `scripts/render_spec.py` for Python projects, zero dependencies): specs are written in markdown (the source of truth, cheap for the model to read and write) and rendered on demand to styled, self-contained HTML for human review; rendered HTML is gitignored.
+- `specs/`, `tasks.json`, `history.md`, `decisions/answers.md`, and the project map.
 - Validation scripts adapted to the project, including a `jq`-free PowerShell port of the structure validator for Windows-primary teams.
 
 **Optional — only with your explicit selection:**
@@ -81,8 +83,9 @@ Nothing in the kit phones home, stores credentials, or enables external access b
 | `hooks/` | Hook policies, settings snippets and example hook scripts |
 | `mcps/` | Criteria for deciding which MCPs to configure |
 | `templates/` | File templates Claude adapts to the target project |
-| `specs/example-feature/` | Fully rendered example spec (open the HTML files in a browser) |
-| `scripts/` | Base scripts for validating structure, environment and tests (bash, plus a `jq`-free PowerShell validator port for Windows) |
+| `specs/example-feature/` | Complete example spec: markdown sources plus rendered HTML (open the HTML in a browser) |
+| `scripts/` | Base scripts: spec renderers (Node and Python), structure/environment/test validation (bash, plus a `jq`-free PowerShell validator port for Windows) |
+| `CHANGELOG.md` / `VERSION` | Kit version history with per-release migration notes, consumed by `/sdd-update` |
 | `reference/` | SDD theory, harness engineering, Claude Code primitives |
 | `output-project-structure.md` | Expected structure of the target project after onboarding |
 | `usage-prompts.md` | Ready-to-use prompts for daily SDD use |
@@ -126,7 +129,7 @@ Some changes deserve more than the standard reviewer pass: security-sensitive co
 
 ## Git safety
 
-Every mutating git action is permission-gated. The optional `git-discipline` pack adds the working rules — inspect `git status` first, never overwrite user changes, no commit/push unless asked, no force-push without documented approval, no PR merges unless instructed — plus commit-message, PR-description, and release-note templates that tie git text to SDD tasks (PR descriptions are generated from the reviewer's `review.html`). The skill supports the SDD workflow; it never bypasses it. See the `Git discipline` section in `DOCUMENTATION.html`.
+Every mutating git action is permission-gated. The optional `git-discipline` pack adds the working rules — inspect `git status` first, never overwrite user changes, no commit/push unless asked, no force-push without documented approval, no PR merges unless instructed — plus commit-message, PR-description, and release-note templates that tie git text to SDD tasks (PR descriptions are generated from the reviewer's `review.md`). The skill supports the SDD workflow; it never bypasses it. See the `Git discipline` section in `DOCUMENTATION.html`.
 
 ## Autonomy is opt-in
 
@@ -134,7 +137,7 @@ Autonomous workflows (loops, goals, scheduled routines, background or headless r
 
 ## Resumable work
 
-Work survives interruptions because state lives in artifacts, not in chat: `tasks.json`, specs, reviews, decision logs, and `history.html` are the source of truth. Claude Code's recap, rewind, and resume features are conveniences for reorienting — after any resume, rewind, or compaction, the kit's rule is to inspect the durable artifacts before continuing, and when conversation memory disagrees with an artifact, the artifact wins. See [`reference/session-recovery.md`](reference/session-recovery.md) and the `Session recovery` section in `DOCUMENTATION.html`.
+Work survives interruptions because state lives in artifacts, not in chat: `tasks.json`, specs, reviews, decision logs, and `history.md` are the source of truth. Claude Code's recap, rewind, and resume features are conveniences for reorienting — after any resume, rewind, or compaction, the kit's rule is to inspect the durable artifacts before continuing, and when conversation memory disagrees with an artifact, the artifact wins. See [`reference/session-recovery.md`](reference/session-recovery.md) and the `Session recovery` section in `DOCUMENTATION.html`.
 
 ## Templates carry the policies
 

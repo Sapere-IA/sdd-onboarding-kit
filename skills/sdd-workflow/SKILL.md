@@ -49,12 +49,12 @@ When the developer provides a functional document or asks to generate specs from
 
 Then generate or update:
 
-- `requirements.html`
-- `design.html`
-- `tasks.html`
-- `assumptions.html`
-- `open-questions.html`
-- `acceptance-tests.html`
+- `requirements.md`
+- `design.md`
+- `tasks.md`
+- `assumptions.md`
+- `open-questions.md`
+- `acceptance-tests.md`
 
 Do not implement code directly from a functional document.
 Stop after creating the spec unless the developer explicitly approves implementation.

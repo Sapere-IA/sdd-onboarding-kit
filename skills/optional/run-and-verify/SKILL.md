@@ -56,7 +56,7 @@ behavior instead of assumptions.
 
 ## Output artifact
 
-Verification evidence in the task's review notes (`review.html`) or the
+Verification evidence in the task's review notes (`review.md`) or the
 implementation summary: commands run, results, and unverified items.
 
 ## Safety constraints

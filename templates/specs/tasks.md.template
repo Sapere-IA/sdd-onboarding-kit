@@ -1,0 +1,33 @@
+---
+doc: tasks
+title: Tasks — {{FEATURE_TITLE}}
+task_id: {{TASK_ID}}
+feature_slug: {{FEATURE_SLUG}}
+status: spec_draft
+---
+
+## Tasks
+
+<!-- Ordered, small, independently verifiable. Item format: "N. [marker] T<n>: Title — detail" (detail optional). Status markers — [ ] pending, [x] done, [>] in progress, [!] blocked — are the single mechanism for subtask progress: the implementer updates them, the reviewer verifies. The global task status lives in tasks.json, never here. Reference requirement IDs; do not restate requirement text. -->
+
+1. [ ] T1: Add failing tests for REQ-001 — Write or update automated tests before implementing.
+2. [ ] T2: Implement the smallest change for REQ-001 — Do not expand scope beyond the approved spec.
+3. [ ] T3: Handle edge cases — Cover the EDGE-NNN cases from requirements.md.
+4. [ ] T4: Run validation — Tests, lint and typecheck as configured in CLAUDE.md.
+
+<!-- Optional closing tasks — append only those that apply to this feature (the design's Documentation targets, Project map references, Security and UI sections say which):
+- Update affected documentation (targets from the design; reviewer confirms).
+- Update the project map (areas this change made stale).
+- Propose decision-log entries (from requirements' Decision candidates; propose only).
+- Run UI QA (ui-qa skill / browser-tester agent; results go to the review's Visual verification).
+- Run the dependency freshness check (evidence goes to the design's External dependencies table).
+-->
+
+## Validation checklist
+
+- [ ] Requirements are covered by tests.
+- [ ] Tests pass.
+- [ ] Lint / typecheck pass if configured.
+- [ ] No protected files were modified without approval.
+- [ ] Reviewer approved traceability.
+- [ ] Documentation decision recorded (required with targets, or not required).

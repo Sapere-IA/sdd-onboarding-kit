@@ -1,0 +1,81 @@
+---
+doc: review
+title: Review — {{FEATURE_TITLE}}
+task_id: {{TASK_ID}}
+feature_slug: {{FEATURE_SLUG}}
+reviewer: reviewer
+review_status: pending
+---
+
+## Traceability
+
+<!-- One row per requirement. Cell verdict markers: "!ok Yes", "!warning <concern>", "!blocking <issue>", "!pending TODO". -->
+
+| Requirement | Implemented? | Tested? | Evidence |
+| --- | --- | --- | --- |
+| REQ-001 | !pending TODO | !pending TODO | TODO |
+
+## Commands run
+
+```text
+TODO
+```
+
+## Findings
+
+<!-- One line per finding: "BLK-1: …" for blocking, "NBK-1: …" for non-blocking. "None." when empty. Duplicated content within or across this spec's files is a finding. -->
+
+### Blocking
+
+None.
+
+### Non-blocking
+
+None.
+
+## Visual verification
+
+<!-- Fill when the spec has UI acceptance criteria or visual evidence; otherwise keep "Not applicable." and delete the table. Compare the implemented UI against the referenced images (ui-qa skill / browser-tester agent when installed, manually otherwise). -->
+
+Not applicable.
+
+| Criterion / image | Evidence (what was compared, how) | Result |
+| --- | --- | --- |
+| UI-001 / IMG-001 | TODO | !pending TODO |
+
+## Spec drift check
+
+<!-- Files changed outside the design's "Files to change" (or the task's scope globs): list each with its justification. Unjustified out-of-scope changes are a blocking finding. -->
+
+None.
+
+## High-risk and deep review
+
+<!-- High-risk categories touched, escalation rungs run, and their outputs — or "None." A high-risk change reviewed only at the standard level needs the reason recorded here (.claude/reference/deep-review-policy.md). -->
+
+None.
+
+## Documentation decision
+
+<!-- A task is not done while required documentation is pending. -->
+
+Decision: [!pending TODO] — `required` (targets below; `documentation_status: pending` until the documenter reports) or `not_required` (`documentation_status: not_required`; delete the table).
+
+| Documentation target | Updated / justified unaffected |
+| --- | --- |
+| TODO | TODO |
+
+## Proposals
+
+<!-- Propose-only: nothing below is written anywhere without explicit developer approval of the exact text. -->
+
+- **Decision-log entries:** None.
+- **Failure-learning entry:** None.
+
+## Decision
+
+Decision: [!pending TODO] — one of `approved`, `needs_changes`, `spec_revision_required`, `blocked` (meanings and transitions: task-state-machine.md).
+
+## Notes
+
+None.

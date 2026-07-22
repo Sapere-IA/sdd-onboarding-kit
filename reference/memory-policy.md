@@ -12,14 +12,14 @@ Claude Code has several places where knowledge can persist across sessions. They
 | Auto memory | `~/.claude/projects/<project>/memory/` (`MEMORY.md` index + topic files) | One project, one user | No | Only this user |
 | Project memory — instructions | `./CLAUDE.md` (team) and `./CLAUDE.local.md` (personal, gitignored) | One project | `CLAUDE.md` yes; `CLAUDE.local.md` no | Team / only this user |
 | Project memory — decision logs | `decisions/` (e.g. `answers.md`, failure-learning entries) | One project | Yes | Team |
-| Task history | `history.html` | One project | Yes | Team |
-| Review notes | `specs/<feature-slug>/review.html` | One task | Yes | Team |
+| Task history | `history.md` | One project | Yes | Team |
+| Review notes | `specs/<feature-slug>/review.md` | One task | Yes | Team |
 
 Notes on the layers:
 
 - **Global memory** is the user-level `CLAUDE.md`, loaded into every session in every project. It is the most expensive and most dangerous layer: a project-specific rule written there contaminates unrelated projects. Project-specific rules go to global memory only when the developer explicitly approves exactly that.
 - **Auto memory** is maintained by Claude Code itself (toggle with `/memory` or the `autoMemoryEnabled` setting). It is project-scoped but lives outside the repo and is not reviewed by the team. Under this policy, lessons and decisions that matter to the project go to **versioned project artifacts**, not auto memory — artifacts survive machine changes, are reviewable, and are shared.
-- **Project memory** is the preferred destination for durable project knowledge. Load-bearing rules belong in `CLAUDE.md` (short, see `reference/context-economy.md`); decisions and lessons belong in `decisions/`; completed-work summaries in `history.html`.
+- **Project memory** is the preferred destination for durable project knowledge. Load-bearing rules belong in `CLAUDE.md` (short, see `reference/context-economy.md`); decisions and lessons belong in `decisions/`; completed-work summaries in `history.md`.
 - **Task history and review notes** are the cheapest layer: correct for one-off findings that do not generalize.
 
 ## What may be stored where
@@ -29,7 +29,7 @@ Notes on the layers:
 | Personal, project-independent preference ("I prefer concise answers") | Global memory — with approval |
 | Reusable project lesson (convention, pitfall, corrected assumption) | `decisions/` entry; promote to `CLAUDE.md` rule if load-bearing |
 | Architectural decision | Decision log / ADR |
-| One-off finding tied to a task | `review.html` / `history.html` |
+| One-off finding tied to a task | `review.md` / `history.md` |
 | Secrets, credentials, tokens | Nowhere. Never. |
 | Personal/private data unrelated to the project | Nowhere. Never. |
 | Speculative conclusions the developer has not confirmed | Nowhere until confirmed |
@@ -54,7 +54,7 @@ Mapping of the options:
 
 1. **Global memory** → append to `~/.claude/CLAUDE.md`. Allowed only after this explicit choice; double-check that the entry is genuinely project-independent and contains no project internals.
 2. **Project memory** (default recommendation) → append to the project's decision log (e.g. `decisions/failure-learnings.md`) using the entry format below; propose a `CLAUDE.md` rule additionally only if the lesson is load-bearing for every session.
-3. **Review/history only** → record in `review.html` / `history.html`; no memory write.
+3. **Review/history only** → record in `review.md` / `history.md`; no memory write.
 4. **Revise** → rewrite the entry and ask again.
 
 If the developer does not answer, nothing is written.
@@ -69,7 +69,7 @@ Memory entries use the format in `templates/memory/failure-learning-entry.md`: t
 - Never store personal or private data unrelated to the project.
 - Never put project-specific rules in global memory unless the developer explicitly approved exactly that.
 - Memory entries that cite code should cite paths and rules, not paste sensitive content.
-- Anything in `decisions/`, `history.html`, or `CLAUDE.md` is visible to everyone with repo access — write accordingly.
+- Anything in `decisions/`, `history.md`, or `CLAUDE.md` is visible to everyone with repo access — write accordingly.
 
 ## Relationship to the failure-learning skill
 

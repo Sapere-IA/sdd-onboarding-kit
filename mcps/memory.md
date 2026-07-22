@@ -31,9 +31,9 @@ Bad candidates:
 
 Use local files first:
 
-- `history.html`
-- `docs/architecture.html`
-- `docs/conventions.html`
+- `history.md`
+- `docs/architecture.md`
+- `docs/conventions.md`
 - `docs/adr/`
 
 Add memory MCP only when the team needs cross-repo or cross-session persistence beyond git.

@@ -17,7 +17,7 @@ Never make silent assumptions.
 If Claude Code needs to infer something that affects product behavior, architecture, data, security, compatibility, or developer workflow, it must either:
 
 1. ask the developer; or
-2. record the assumption explicitly in `assumptions.html`.
+2. record the assumption explicitly in `assumptions.md`.
 
 ---
 
@@ -26,7 +26,7 @@ If Claude Code needs to infer something that affects product behavior, architect
 Assumptions must be written in:
 
 ```text
-specs/<feature-slug>/assumptions.html
+specs/<feature-slug>/assumptions.md
 ```
 
 Do not hide important assumptions only in:
@@ -34,10 +34,10 @@ Do not hide important assumptions only in:
 - chat messages;
 - implementation comments;
 - commit messages;
-- `design.html`;
+- `design.md`;
 - task descriptions.
 
-The dedicated `assumptions.html` file is the source of truth for inferred decisions.
+The dedicated `assumptions.md` file is the source of truth for inferred decisions.
 
 ---
 
@@ -178,31 +178,21 @@ Do not implement based on high-risk assumptions without developer approval.
 
 ## Required assumption format
 
-Each assumption in `assumptions.html` is a card inside the `#assumptions` section, following the structure of the `assumptions.html` template. Set the `.card` risk class (`risk-low`, `risk-medium`, `risk-high`) to match the risk level:
+Each assumption in `assumptions.md` is a card under the `## Pending` section, following the `assumptions.md` template. Set the card's risk class (`risk-low`, `risk-medium`, `risk-high`) to match the risk level:
 
-```html
-<div class="card risk-medium" id="a1">
-  <div class="card-header">
-    <span class="req-id">A1</span>
-    <span class="card-title">Short title</span>
-    <span class="badge badge-pending">Pending</span>
-  </div>
-  <div class="card-body">
-    <dl class="card-fields">
-      <dt>Assumption</dt>            <dd>What Claude Code is assuming.</dd>
-      <dt>Reason</dt>                <dd>Why this assumption was made.</dd>
-      <dt>Risk level</dt>            <dd>Low | Medium | High</dd>
-      <dt>Impact if wrong</dt>       <dd>What breaks or changes if the assumption is incorrect.</dd>
-      <dt>Blocks implementation</dt> <dd>Yes | No</dd>
-      <dt>Related requirements</dt>  <dd>REQ-001</dd>
-      <dt>Review status</dt>         <dd><span class="badge badge-pending">Pending</span></dd>
-      <dt>Developer decision</dt>    <dd>Pending</dd>
-    </dl>
-  </div>
-</div>
+```md
+::: card risk-medium
+#### A1 — Short title [!pending Pending]
+
+- **Assumption:** What Claude Code is assuming.
+- **Reason:** Why this assumption was made.
+- **Risk / impact if wrong:** Low | Medium | High — what breaks if incorrect.
+- **Blocks implementation:** Yes | No
+- **Related requirements:** REQ-001
+:::
 ```
 
-When the developer accepts or rejects an assumption, move its card to the `#accepted-assumptions` or `#rejected-or-replaced-assumptions` section and update the badge (`badge-ok` / `badge-rejected`).
+When the developer accepts or rejects an assumption, move its card to the `## Accepted` or `## Rejected or replaced` section and update the badge (`[!ok Accepted]` / `[!rejected Rejected]`), recording the date and the decision.
 
 ---
 
@@ -234,16 +224,16 @@ Claude Code may make an assumption when:
 - the assumption is low or medium risk;
 - the assumption is consistent with existing project conventions;
 - the assumption is easy to review and reverse;
-- the assumption is written in `assumptions.html`;
+- the assumption is written in `assumptions.md`;
 - the spec remains understandable without hidden context.
 
 ---
 
 ## Relationship between assumptions and open questions
 
-Use `assumptions.html` when Claude Code can proceed with a reasonable draft.
+Use `assumptions.md` when Claude Code can proceed with a reasonable draft.
 
-Use `open-questions.html` when Claude Code cannot safely proceed.
+Use `open-questions.md` when Claude Code cannot safely proceed.
 
 Example:
 
@@ -281,9 +271,9 @@ After approval, assumptions that remain in the spec are treated as accepted for 
 
 ## Implementation behavior
 
-The `implementer` agent must read `assumptions.html` before implementation.
+The `implementer` agent must read `assumptions.md` before implementation.
 
-If `assumptions.html` contains any item with:
+If `assumptions.md` contains any item with:
 
 ```text
 Blocks implementation: Yes
@@ -291,7 +281,7 @@ Blocks implementation: Yes
 
 the implementer must stop and ask for clarification.
 
-If assumptions contradict `requirements.html`, `design.html`, or developer instructions, the implementer must stop.
+If assumptions contradict `requirements.md`, `design.md`, or developer instructions, the implementer must stop.
 
 ---
 
@@ -310,54 +300,36 @@ The `reviewer` agent must check:
 
 ### Good assumption
 
-```html
-<div class="card risk-medium" id="a1">
-  <div class="card-header">
-    <span class="req-id">A1</span>
-    <span class="card-title">Default recent notes limit</span>
-    <span class="badge badge-pending">Pending</span>
-  </div>
-  <div class="card-body">
-    <dl class="card-fields">
-      <dt>Assumption</dt>            <dd>The default number of recent notes shown by the CLI is 5.</dd>
-      <dt>Reason</dt>                <dd>The functional brief says the command should show recent notes but does not specify a default. Existing list commands use small default result sets.</dd>
-      <dt>Risk level</dt>            <dd>Medium</dd>
-      <dt>Impact if wrong</dt>       <dd>The CLI may show too many or too few notes by default.</dd>
-      <dt>Blocks implementation</dt> <dd>No</dd>
-      <dt>Related requirements</dt>  <dd>REQ-001</dd>
-      <dt>Review status</dt>         <dd><span class="badge badge-pending">Pending</span></dd>
-      <dt>Developer decision</dt>    <dd>Pending</dd>
-    </dl>
-  </div>
-</div>
+```md
+::: card risk-medium
+#### A1 — Default recent notes limit [!pending Pending]
+
+- **Assumption:** The default number of recent notes shown by the CLI is 5.
+- **Reason:** The brief does not specify a default; existing list commands use small default result sets.
+- **Risk / impact if wrong:** Medium — the CLI shows too many or too few notes by default.
+- **Blocks implementation:** No
+- **Related requirements:** REQ-001
+:::
 ```
 
 ### Bad assumption
 
-```html
-<p>Users can see all notes.</p>
+```md
+Users can see all notes.
 ```
 
 This is bad because it does not explain risk, impact, or whether it blocks implementation.
 
 ### Better as open question
 
-A permissions decision like this belongs in `open-questions.html` as a blocking question card:
+A permissions decision like this belongs in `open-questions.md` as a blocking question card:
 
-```html
-<div class="card blocking-yes" id="q1">
-  <div class="card-header">
-    <span class="req-id err">Q1</span>
-    <span class="card-title">Should users see only their own notes?</span>
-    <span class="badge badge-blocking">Blocking</span>
-  </div>
-  <div class="card-body">
-    <dl class="card-fields">
-      <dt>Question</dt>       <dd>Should <code>notes recent</code> return only notes owned by the current user?</dd>
-      <dt>Why it matters</dt> <dd>This affects authorization and data privacy.</dd>
-      <dt>Blocking</dt>       <dd>Yes</dd>
-      <dt>Decision</dt>       <dd><span class="badge badge-pending">Pending</span></dd>
-    </dl>
-  </div>
-</div>
+```md
+::: card blocking-yes
+#### Q1 — Should users see only their own notes? [!blocking Blocking]
+
+- **Question:** Should `notes recent` return only notes owned by the current user?
+- **Why it matters:** Affects authorization and data privacy.
+- **Default if unanswered:** None — blocking.
+:::
 ```

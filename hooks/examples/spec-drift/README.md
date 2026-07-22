@@ -21,7 +21,7 @@ optional `scope` array of glob patterns on the active task(s) in
 The spec-author records these globs from the design's files-to-change
 list when the spec is approved (see `agents/spec-author.md`). No scope
 recorded means nothing to enforce — the hook stays silent. Spec and
-harness files (`specs/`, `tasks.json`, `history.html`, `decisions/`,
+harness files (`specs/`, `tasks.json`, `history.md`, `decisions/`,
 `.claude/`) are always in scope.
 
 ## Strictness

@@ -23,10 +23,10 @@ In this kit, a feature spec is split by default into four documents:
 
 ```text
 specs/<feature-slug>/
-├── requirements.html
-├── design.html
-├── tasks.html
-└── review.html
+├── requirements.md
+├── design.md
+├── tasks.md
+└── review.md
 ```
 
 ## The spec as source of truth

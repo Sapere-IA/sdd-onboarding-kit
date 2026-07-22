@@ -1,0 +1,100 @@
+---
+doc: design
+title: Design — {{FEATURE_TITLE}}
+task_id: {{TASK_ID}}
+feature_slug: {{FEATURE_SLUG}}
+status: spec_draft
+---
+
+## Technical summary
+
+TODO: the chosen approach in a few sentences. Reference requirements by ID (REQ-001) — never restate them.
+
+## Data flow
+
+::: diagram
+<svg width="560" height="140" viewBox="0 0 560 140" aria-label="Data flow diagram — replace with actual diagram">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <rect x="20" y="50" width="120" height="40" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="80" y="75" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1e3a8a">Input</text>
+  <line x1="140" y1="70" x2="218" y2="70" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <rect x="220" y="40" width="120" height="60" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="280" y="75" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#4c1d95">Process</text>
+  <line x1="340" y1="70" x2="418" y2="70" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <rect x="420" y="50" width="120" height="40" rx="6" fill="#eafaf1" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="480" y="75" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#14532d">Output</text>
+  <text x="280" y="128" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#9ca3af">TODO: replace with actual data flow</text>
+</svg>
+:::
+
+## Project map references
+
+TODO: map areas this change touches (modules, entrypoints, protected areas) — or "None (no project map)." If the change makes the map stale, add the map update to the closing tasks.
+
+## Files to change
+
+| File | Change | Reason |
+| --- | --- | --- |
+| TODO | TODO | TODO |
+
+## Files not to change
+
+| File or directory | Reason |
+| --- | --- |
+| TODO | TODO |
+
+## Interfaces and contracts
+
+<!-- APIs, function signatures, schemas or CLI contracts. One ### subsection per contract, code fences only — no narrative. -->
+
+```text
+TODO: signature / schema / CLI usage
+```
+
+## Data model changes
+
+None.
+
+## External dependencies and freshness
+
+<!-- Verify current official docs and record the evidence when this change touches external dependencies, SDKs, APIs, framework configuration, or security-sensitive integrations; otherwise keep "None." and delete the table. Mandatory for high-risk categories: auth, payments, database migrations, cloud infrastructure, framework upgrades, security-sensitive code. -->
+
+None.
+
+| Dependency | Docs checked (source, date) | Version constraints | Deprecations avoided / notes |
+| --- | --- | --- | --- |
+| TODO | TODO | TODO | TODO |
+
+## Security and permissions
+
+<!-- Trust boundaries, auth/authz, secrets handling, validation of external input, gated operations — how each is gated, or "None." High-risk categories trigger the escalation ladder in .claude/reference/deep-review-policy.md. -->
+
+None.
+
+## Documentation targets
+
+<!-- Docs this design will affect when implemented — or "None expected." The reviewer confirms the final list in the review's Documentation decision. -->
+
+None expected.
+
+## Test design
+
+TODO: tests to add or update, mapped to requirement IDs.
+
+## UI verification plan
+
+<!-- Only when a browser UI is affected: routes, states, screenshots, viewports — via the browser-tester agent or the manual ui-qa procedure. Local/test instances only; never credentials. Otherwise keep "Not applicable." -->
+
+Not applicable.
+
+## Risks and trade-offs
+
+TODO: risks and rejected alternatives, one line each.
+
+## Rollback plan
+
+TODO: how to revert or disable the change.

@@ -47,8 +47,8 @@ Freshness evidence answers five questions:
 
 ## Where evidence lives
 
-- **Design spec**: the `External dependencies and freshness` section of `design.html` (the spec template carries it). For changes with no external surface, state `None` — that single word is the entire cost of this policy for internal work.
-- **Review**: if verification happened (or changed) during implementation, the reviewer records the updated evidence in `review.html`.
+- **Design spec**: the `External dependencies and freshness` section of `design.md` (the spec template carries it). For changes with no external surface, state `None` — that single word is the entire cost of this policy for internal work.
+- **Review**: if verification happened (or changed) during implementation, the reviewer records the updated evidence in `review.md`.
 
 ## Reviewer enforcement
 

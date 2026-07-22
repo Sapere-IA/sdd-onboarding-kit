@@ -38,9 +38,9 @@ Important context is stored outside the chat:
 
 - `tasks.json`: task state;
 - `specs/<feature>/`: versionable specs;
-- `history.html`: execution history;
-- `docs/architecture.html`: architecture;
-- `docs/conventions.html`: conventions.
+- `history.md`: execution history;
+- `docs/architecture.md`: architecture;
+- `docs/conventions.md`: conventions.
 
 ### 4. SDD skill
 

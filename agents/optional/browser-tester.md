@@ -25,7 +25,7 @@ specs, and never mark tasks done.
 - This agent was installed during onboarding (`questions.md` §18,
   option 2). If the project has no browser UI, this agent should not
   exist.
-- The spec has UI acceptance criteria (`requirements.html`,
+- The spec has UI acceptance criteria (`requirements.md`,
   `UI acceptance criteria` section) or the developer described what to
   verify.
 - The way to run the UI locally is known (run-and-verify skill, project
@@ -35,10 +35,10 @@ specs, and never mark tasks done.
 
 Read:
 
-- `specs/<feature-slug>/requirements.html` — UI acceptance criteria:
+- `specs/<feature-slug>/requirements.md` — UI acceptance criteria:
   target routes, expected visual states, interaction flows,
   accessibility checks, responsive states, login/auth constraints;
-- `specs/<feature-slug>/design.html` — UI verification plan;
+- `specs/<feature-slug>/design.md` — UI verification plan;
 - screenshots/mockups referenced by the spec, if any;
 - `.claude/skills/run-and-verify/SKILL.md` or the project map — how to
   start the app and at what URL it responds.
@@ -61,7 +61,7 @@ Read:
 
 ## Output
 
-Return a UI QA checklist the reviewer can paste into `review.html`:
+Return a UI QA checklist the reviewer can paste into `review.md`:
 
 - criterion → result → evidence (screenshot reference or observed
   description);

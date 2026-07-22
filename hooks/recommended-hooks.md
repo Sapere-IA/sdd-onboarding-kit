@@ -41,7 +41,7 @@ hooks/examples/run-tests-after-edit.sh
 
 ## 3. Validate specs before status changes
 
-Purpose: ensure `requirements.html`, `design.html` and `tasks.html` exist before a task can move to `spec_ready`.
+Purpose: ensure `requirements.md`, `design.md` and `tasks.md` exist before a task can move to `spec_ready`.
 
 The script reads the PreToolUse JSON from stdin, acts only when the tool call edits `tasks.json` and the proposed content contains `spec_ready`, then verifies the three core spec files exist for the affected feature slug(s). State is read from `tasks.json` and the tool input via `jq`, not from spec file content. It fails open (warning, exit 0) when `jq` is unavailable.
 
@@ -113,7 +113,7 @@ Only useful if the `failure-learning` skill pack is installed. Adapt the script'
 
 ## 7. Pre-compact capture (advisory)
 
-Purpose: before the context window is compacted, remind that unresolved decisions, current task state, failures, and architecture constraints must live in durable artifacts (`tasks.json`, `specs/`, `decisions/`, `history.html`), not in chat history. A companion script reorients Claude after compaction. Neither script writes memory or project files.
+Purpose: before the context window is compacted, remind that unresolved decisions, current task state, failures, and architecture constraints must live in durable artifacts (`tasks.json`, `specs/`, `decisions/`, `history.md`), not in chat history. A companion script reorients Claude after compaction. Neither script writes memory or project files.
 
 Recommended events:
 

@@ -16,7 +16,7 @@ Before touching any documentation, verify:
 
 1. The task status is `review` and the reviewer's decision is `approved` (or approved with resolved findings).
 2. The reviewer marked documentation as required (`documentation_required: true`) and listed targets (`documentation_targets`).
-3. `specs/<feature-slug>/review.html` exists and records the reviewer's documentation decision.
+3. `specs/<feature-slug>/review.md` exists and records the reviewer's documentation decision.
 
 If any precondition fails, stop and say which one. If documentation was marked `not_required`, there is nothing for you to do.
 
@@ -24,8 +24,8 @@ If any precondition fails, stop and say which one. If documentation was marked `
 
 Read:
 
-- `specs/<feature-slug>/review.html` — the documentation targets and review findings;
-- `specs/<feature-slug>/requirements.html` and `design.html` — what the change does;
+- `specs/<feature-slug>/review.md` — the documentation targets and review findings;
+- `specs/<feature-slug>/requirements.md` and `design.md` — what the change does;
 - the implementation diff or changed files listed in the review;
 - the listed documentation targets themselves;
 - project `CLAUDE.md`.
@@ -36,7 +36,7 @@ Read:
 2. Describe the implementation as reviewed. Never document unmerged, rejected, or speculative details.
 3. Keep each document's existing voice, language, and structure; do not rewrite unrelated sections.
 4. Cite or link the source spec/task where the doc format allows it (e.g. a changelog entry referencing the task ID).
-5. Append the completed-task summary to `history.html` if the project uses it (insert after the `<!-- INSERT-ENTRY-HERE -->` marker, using the file's commented entry format).
+5. Append the completed-task summary to `history.md` if the project uses it (insert after the `<!-- INSERT-ENTRY-HERE -->` marker, using the file's commented entry format).
 6. Never expose secrets, credentials, tokens, or internal-only URLs in documentation.
 7. Update the project map only if the task changed structure significantly (see the map's own maintenance rule).
 

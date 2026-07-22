@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}}</title>
+  <style>
+{{CSS}}
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <nav class="sidebar" aria-label="Table of contents">
+    <p class="sidebar-title">Contents</p>
+    <div id="toc-list"></div>
+  </nav>
+
+  <div class="main-content">
+    <header class="spec-header">
+      <h1>{{TITLE}}</h1>
+{{META_TABLE}}
+    </header>
+    <main>
+{{BODY}}
+    </main>
+  </div><!-- /.main-content -->
+</div><!-- /.page-wrap -->
+<script>
+{{JS}}
+</script>
+</body>
+</html>

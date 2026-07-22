@@ -17,7 +17,7 @@ Read:
 - task description;
 - project `CLAUDE.md`;
 - `.claude/skills/sdd-workflow/spec-format.md`;
-- existing docs such as `docs/architecture.html`, `docs/conventions.html`, `README.md`;
+- existing docs such as `docs/architecture.md`, `docs/conventions.md`, `README.md`;
 - relevant existing code only as needed to understand design constraints.
 
 ## Outputs
@@ -25,18 +25,24 @@ Read:
 Create or update:
 
 ```text
-specs/<feature-slug>/requirements.html
-specs/<feature-slug>/design.html
-specs/<feature-slug>/tasks.html
-specs/<feature-slug>/spec.css   (copy from .claude/skills/sdd-workflow/templates/spec.css)
-specs/<feature-slug>/spec.js    (copy from .claude/skills/sdd-workflow/templates/spec.js)
+specs/<feature-slug>/requirements.md
+specs/<feature-slug>/design.md
+specs/<feature-slug>/tasks.md
 ```
 
 Optionally prepare:
 
 ```text
-specs/<feature-slug>/review.html
+specs/<feature-slug>/review.md
 ```
+
+Spec files are markdown, instantiated from the `.md.template` files in `.claude/skills/sdd-workflow/templates/` using the conventions in `spec-format.md`. Never hand-write spec HTML — the developer renders it (or you render it when asked) with the project's render script. Do not copy `spec.css`/`spec.js` into the feature folder.
+
+## Conciseness rules
+
+- Each file owns its content type; reference other files by ID (`REQ-001`, a section anchor) and never restate their content. Duplicated prose is a spec defect the reviewer will flag.
+- Short declarative sentences; one line per requirement, risk, or rule; no filler narrative.
+- Collapse non-applicable sections to one line (`None.` / `Not applicable.`) and delete their placeholder tables.
 
 ## Requirements rules
 
@@ -75,8 +81,8 @@ specs/<feature-slug>/review.html
 
 ## Task rules
 
-- Every task in `tasks.html` must be an `<li class="task-item">` inside the `<ol class="task-timeline">`, following the structure in the `tasks.html` template (`.task-item-header` with a `T<n>` ID, plus `.task-item-body`).
-- Subtask progress is tracked by adding a status class to the `<li>`: `done`, `in-progress`, or `blocked`. New tasks carry no status class. The global task status lives in `tasks.json`.
+- Every task in `tasks.md` is an ordered-list item with a status marker and a `T<n>` label: `1. [ ] T1: Title — detail` (see the `tasks.md` template).
+- Subtask progress is tracked by the marker: `[ ]` pending, `[x]` done, `[>]` in progress, `[!]` blocked. New tasks start `[ ]`. The global task status lives in `tasks.json`.
 - Tasks must be small enough for the implementer to execute sequentially.
 - Each task should reference requirements where possible.
 - Include test tasks.
@@ -127,14 +133,12 @@ The functional document is not an approved spec.
 
 Before implementation can happen, create:
 
-- `specs/<feature-slug>/requirements.html`
-- `specs/<feature-slug>/design.html`
-- `specs/<feature-slug>/tasks.html`
-- `specs/<feature-slug>/assumptions.html`
-- `specs/<feature-slug>/open-questions.html`
-- `specs/<feature-slug>/acceptance-tests.html`
-- `specs/<feature-slug>/spec.css` (copy from `.claude/skills/sdd-workflow/templates/spec.css`)
-- `specs/<feature-slug>/spec.js` (copy from `.claude/skills/sdd-workflow/templates/spec.js`)
+- `specs/<feature-slug>/requirements.md`
+- `specs/<feature-slug>/design.md`
+- `specs/<feature-slug>/tasks.md`
+- `specs/<feature-slug>/assumptions.md`
+- `specs/<feature-slug>/open-questions.md`
+- `specs/<feature-slug>/acceptance-tests.md`
 
 If blocking questions remain, set the task status to `spec_draft`.
 If the spec is ready for human review, set the task status to `spec_ready`.

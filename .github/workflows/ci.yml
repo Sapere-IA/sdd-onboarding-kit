@@ -24,27 +24,46 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: No stale Markdown spec-artifact references
+      - name: No stale HTML spec-artifact references
         run: |
-          # Spec artifacts were migrated to HTML; their old .md names must not
-          # reappear anywhere in the kit.
+          # Spec artifacts are markdown since 2.0.0; the old .html names must not
+          # reappear as source-of-truth references. Allowed exceptions: the
+          # changelog migration notes and the gitignore snippets that name the
+          # rendered artifacts (instructions.md, output-project-structure.md,
+          # questions.md), plus this workflow itself.
           if grep -rn \
-            -e 'requirements\.md\b' -e 'design\.md\b' -e 'tasks\.md\b' \
-            -e 'review\.md\b' -e 'acceptance-tests\.md\b' -e 'assumptions\.md\b' \
-            -e 'open-questions\.md\b' -e 'history\.md\b' -e 'architecture\.md\b' \
-            -e 'conventions\.md\b' -e 'functional-brief\.md\b' \
+            -e 'requirements\.html' -e 'design\.html' -e 'tasks\.html' \
+            -e 'review\.html' -e 'acceptance-tests\.html' -e 'assumptions\.html' \
+            -e 'open-questions\.html' -e 'history\.html' -e 'architecture\.html' \
+            -e 'conventions\.html' -e 'functional-brief\.html' \
             --include='*.md' --include='*.sh' --include='*.template' \
-            --include='*.html' --include='*.json' .; then
-            echo "::error::Stale .md spec-artifact reference found (specs are HTML now)."
+            --include='*.html' --include='*.json' . \
+            | grep -v '^\./CHANGELOG\.md:' \
+            | grep -v '^\./instructions\.md:' \
+            | grep -v '^\./output-project-structure\.md:' \
+            | grep -v '^\./questions\.md:' \
+            | grep -q .; then
+            echo "::error::Stale .html spec-artifact reference found (specs are markdown now; HTML is a rendered artifact)."
+            grep -rn \
+              -e 'requirements\.html' -e 'design\.html' -e 'tasks\.html' \
+              -e 'review\.html' -e 'acceptance-tests\.html' -e 'assumptions\.html' \
+              -e 'open-questions\.html' -e 'history\.html' -e 'architecture\.html' \
+              -e 'conventions\.html' -e 'functional-brief\.html' \
+              --include='*.md' --include='*.sh' --include='*.template' \
+              --include='*.html' --include='*.json' . \
+              | grep -v '^\./CHANGELOG\.md:' \
+              | grep -v '^\./instructions\.md:' \
+              | grep -v '^\./output-project-structure\.md:' \
+              | grep -v '^\./questions\.md:' || true
             exit 1
           fi
-          echo "OK: no stale .md spec-artifact references."
+          echo "OK: no stale .html spec-artifact references."
 
       - name: Placeholder tokens only where expected
         run: |
           # {{PLACEHOLDER}} tokens belong in templates/ and scripts/*.template.
           # A few docs legitimately mention the convention itself.
-          allowlist='^\./(templates/|scripts/[^/]+\.template$|README\.md$|README\.html$|instructions\.md$|skills/sdd-workflow/spec-format\.md$|scripts/validate-sdd-structure\.sh$|\.github/)'
+          allowlist='^\./(templates/|scripts/[^/]+\.template$|README\.md$|README\.html$|instructions\.md$|skills/sdd-workflow/spec-format\.md$|skills/sdd-update/SKILL\.md$|scripts/validate-sdd-structure\.sh$|\.github/)'
           offenders=$(grep -rl "{{[A-Z0-9_][A-Z0-9_]*}}" . --include='*.md' --include='*.sh' --include='*.html' --include='*.json' --include='*.template' --include='*.css' --include='*.js' | grep -Ev "$allowlist" || true)
           if [ -n "$offenders" ]; then
             echo "::error::Unexpected {{PLACEHOLDER}} tokens in:"

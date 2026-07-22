@@ -33,12 +33,12 @@ For each functional document, Claude Code must create or update:
 
 ```text
 specs/<feature-slug>/
-├── requirements.html
-├── design.html
-├── tasks.html
-├── assumptions.html
-├── open-questions.html
-└── acceptance-tests.html
+├── requirements.md
+├── design.md
+├── tasks.md
+├── assumptions.md
+├── open-questions.md
+└── acceptance-tests.md
 ```
 
 Some files may be short, but they should exist if the project has enabled the full SDD intake flow.
@@ -53,9 +53,9 @@ The required conversion flow is:
 
 ```text
 functional document
-    → requirements.html
-    → design.html
-    → tasks.html
+    → requirements.md
+    → design.md
+    → tasks.md
     → human approval
     → implementation
     → review
@@ -135,8 +135,8 @@ Do not invent external task IDs.
 Before writing specs, inspect relevant project context:
 
 - `CLAUDE.md`
-- `docs/architecture.html`
-- `docs/conventions.html`
+- `docs/architecture.md`
+- `docs/conventions.md`
 - `docs/adr/`
 - existing specs under `specs/`
 - existing tests
@@ -178,8 +178,8 @@ The functional document is mostly clear, but some details are missing.
 Action:
 
 - generate a draft spec;
-- write explicit assumptions in `assumptions.html`;
-- write unresolved questions in `open-questions.html`;
+- write explicit assumptions in `assumptions.md`;
+- write unresolved questions in `open-questions.md`;
 - do not hide uncertainty;
 - set task to `spec_ready` only if assumptions are safe and reversible.
 
@@ -189,15 +189,15 @@ The functional document lacks essential information.
 
 Action:
 
-- create `open-questions.html`;
-- optionally create partial `requirements.html`;
+- create `open-questions.md`;
+- optionally create partial `requirements.md`;
 - do not create a detailed implementation plan;
 - keep task in `spec_draft`;
 - ask the developer for clarification.
 
 ---
 
-## Step 5 — Generate `requirements.html`
+## Step 5 — Generate `requirements.md`
 
 Convert the functional document into testable requirements.
 
@@ -238,7 +238,7 @@ When no notes exist, the system shall display a clear empty-state message instea
 
 ---
 
-## Step 6 — Generate `design.html`
+## Step 6 — Generate `design.md`
 
 Translate the requirements into a technical plan.
 
@@ -264,7 +264,7 @@ If unsure about the technical approach, mark it as an open question instead of g
 
 ---
 
-## Step 7 — Generate `tasks.html`
+## Step 7 — Generate `tasks.md`
 
 Break the design into small implementation tasks.
 
@@ -298,9 +298,9 @@ Tasks should include validation tasks:
 
 ---
 
-## Step 8 — Generate `assumptions.html`
+## Step 8 — Generate `assumptions.md`
 
-Use `assumptions.html` for decisions Claude Code had to make because the functional document was incomplete.
+Use `assumptions.md` for decisions Claude Code had to make because the functional document was incomplete.
 
 Assumptions must be explicit and reviewable.
 
@@ -315,9 +315,9 @@ Each assumption should include:
 
 ---
 
-## Step 9 — Generate `open-questions.html`
+## Step 9 — Generate `open-questions.md`
 
-Use `open-questions.html` for unresolved questions that require developer input.
+Use `open-questions.md` for unresolved questions that require developer input.
 
 A question is blocking if implementation could produce the wrong product behavior without an answer.
 
@@ -325,7 +325,7 @@ A question is non-blocking if it only affects polish, naming, copy, or a reversi
 
 ---
 
-## Step 10 — Generate `acceptance-tests.html`
+## Step 10 — Generate `acceptance-tests.md`
 
 Generate test scenarios that validate the requirements.
 
@@ -413,12 +413,12 @@ When finished, respond with:
 Generated SDD spec for <feature-name>.
 
 Created or updated:
-- specs/<feature-slug>/requirements.html
-- specs/<feature-slug>/design.html
-- specs/<feature-slug>/tasks.html
-- specs/<feature-slug>/assumptions.html
-- specs/<feature-slug>/open-questions.html
-- specs/<feature-slug>/acceptance-tests.html
+- specs/<feature-slug>/requirements.md
+- specs/<feature-slug>/design.md
+- specs/<feature-slug>/tasks.md
+- specs/<feature-slug>/assumptions.md
+- specs/<feature-slug>/open-questions.md
+- specs/<feature-slug>/acceptance-tests.md
 
 Current task status: <spec_ready | spec_draft>
 

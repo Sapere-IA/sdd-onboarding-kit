@@ -1,0 +1,39 @@
+---
+doc: assumptions
+title: Assumptions — {{FEATURE_NAME}}
+task_id: {{TASK_ID}}
+feature_slug: {{FEATURE_SLUG}}
+source_document: {{SOURCE_DOCUMENT}}
+created: {{CREATED_DATE}}
+---
+
+## Summary
+
+- Risk counts: low {{LOW_RISK_COUNT}} · medium {{MEDIUM_RISK_COUNT}} · high {{HIGH_RISK_COUNT}}
+- Blocking assumptions present: {{BLOCKING_ASSUMPTIONS_PRESENT}}
+
+## Pending
+
+<!-- One card per assumption; card class: risk-low / risk-medium / risk-high. Assumptions are explicit, reviewable, and accepted, corrected or removed before implementation — never treated as approved silently. Do not implement while any assumption blocks and is pending. Assumptions touching security, permissions, data deletion, billing, public APIs or irreversible migrations belong in open-questions.md instead. If implementation needs a new assumption, stop and add it here first. -->
+
+::: card risk-high
+#### A1 — {{ASSUMPTION_TITLE}} [!pending Pending]
+
+- **Assumption:** {{ASSUMPTION_TEXT}}
+- **Reason:** {{ASSUMPTION_REASON}}
+- **Risk / impact if wrong:** {{RISK_LEVEL}} — {{IMPACT_IF_WRONG}}
+- **Blocks implementation:** {{BLOCKS_IMPLEMENTATION}}
+- **Related requirements:** {{RELATED_REQUIREMENT}}
+:::
+
+## Accepted
+
+<!-- Move cards here when the developer explicitly accepts them; badge [!ok Accepted], add "Accepted YYYY-MM-DD" and the decision. -->
+
+None yet.
+
+## Rejected or replaced
+
+<!-- Move cards here on rejection; badge [!rejected Rejected], record the replacement decision. -->
+
+None yet.

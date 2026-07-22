@@ -1,0 +1,38 @@
+---
+doc: conventions
+title: Conventions — {{PROJECT_NAME}}
+---
+
+<!-- Claude Code follows these when writing specs, code, tests and reviews. One line per rule; no narrative. -->
+
+## Language and style
+
+TODO: language-specific style rules.
+
+## Naming
+
+| Artifact | Convention | Example |
+| --- | --- | --- |
+| TODO | TODO | TODO |
+
+## Tests
+
+TODO: test organization, naming and coverage expectations.
+
+## Error handling
+
+TODO: error handling rules.
+
+## Logging and observability
+
+TODO: logging / metrics / tracing conventions.
+
+## Security
+
+<!-- Use PROT-n rows for protected files or areas Claude Code must not modify without explicit approval. -->
+
+PROT-1: TODO — never modify without explicit approval.
+
+## Documentation
+
+TODO: documentation expectations.

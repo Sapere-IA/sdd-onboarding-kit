@@ -62,7 +62,7 @@ Files or directories that require explicit approval before changes:
 |---|---|
 | Task state | {{TASK_STORAGE}} |
 | Specs | specs/<feature-slug>/ |
-| History | history.html |
+| History | history.md |
 | Decisions | decisions/ |
 
 ## Generated files and do-not-edit
