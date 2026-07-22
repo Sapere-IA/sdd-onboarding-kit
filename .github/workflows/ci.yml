@@ -28,8 +28,9 @@ jobs:
         run: |
           # Spec artifacts are markdown since 2.0.0; the old .html names must not
           # reappear as source-of-truth references. Allowed exceptions: the
-          # changelog migration notes and the gitignore snippets that name the
-          # rendered artifacts (instructions.md, output-project-structure.md,
+          # changelog migration notes, the generated manifest (it lists the
+          # committed rendered example HTML), the gitignore snippets that name
+          # the rendered artifacts (instructions.md, output-project-structure.md,
           # questions.md), plus this workflow itself.
           if grep -rn \
             -e 'requirements\.html' -e 'design\.html' -e 'tasks\.html' \
@@ -39,6 +40,7 @@ jobs:
             --include='*.md' --include='*.sh' --include='*.template' \
             --include='*.html' --include='*.json' . \
             | grep -v '^\./CHANGELOG\.md:' \
+            | grep -v '^\./manifest\.md:' \
             | grep -v '^\./instructions\.md:' \
             | grep -v '^\./output-project-structure\.md:' \
             | grep -v '^\./questions\.md:' \
@@ -52,6 +54,7 @@ jobs:
               --include='*.md' --include='*.sh' --include='*.template' \
               --include='*.html' --include='*.json' . \
               | grep -v '^\./CHANGELOG\.md:' \
+            | grep -v '^\./manifest\.md:' \
               | grep -v '^\./instructions\.md:' \
               | grep -v '^\./output-project-structure\.md:' \
               | grep -v '^\./questions\.md:' || true
