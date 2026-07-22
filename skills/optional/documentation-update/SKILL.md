@@ -44,7 +44,7 @@ The phase uses task fields, not extra states.
 2. Update them to match the reviewed implementation; keep each doc's
    existing voice and structure.
 3. Link or cite the source spec/task where the doc format allows it.
-4. Append the task summary to `history.html` if the project uses it.
+4. Append the task summary to `history.md` if the project uses it.
 5. Report which docs were updated and which were judged unaffected, so the
    reviewer can re-check.
 6. Set `documentation_status: "updated"` only after the report; the

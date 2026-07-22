@@ -71,16 +71,15 @@ Specs are stored in:
 
 ```text
 specs/<feature-slug>/
-├── requirements.html
-├── design.html
-├── tasks.html
-├── review.html
-├── spec.css
-└── spec.js
+├── requirements.md
+├── design.md
+├── tasks.md
+└── review.md
 ```
 
-Spec files are self-contained HTML. Open any of them in a browser to read the spec.
-Structured state (task status, approval) lives in `tasks.json`, not in the HTML files.
+Spec files are markdown — the source of truth (format: `.claude/skills/sdd-workflow/spec-format.md`).
+Render them to styled HTML for human review with `{{RENDER_COMMAND}}` (e.g. `node scripts/render-spec.mjs specs/<feature-slug>/`); the rendered `.html` files are gitignored artifacts — never hand-edit them.
+Structured state (task status, approval) lives in `tasks.json`, not in spec files.
 
 ## Required SDD workflow
 
@@ -94,7 +93,7 @@ For each SDD task:
 6. Run reviewer.
 7. If the reviewer requires documentation updates, run documenter, then the reviewer re-checks the docs.
 8. Mark done only if requirements, implementation, tests and required docs are aligned.
-9. Append a summary to `history.html`.
+9. Append a summary to `history.md`.
 
 ## SDD skill
 
@@ -158,7 +157,7 @@ The context window is a scarce resource. Rules:
 - Long procedures belong in skills, not here.
 - Use `/context` to inspect usage; use `/compact` between unrelated tasks, with focus instructions to preserve decisions, task status, architecture constraints, and unresolved questions.
 - Delegate noisy, many-file exploration to subagents; keep only conclusions in the main conversation.
-- Durable truth lives in artifacts (`tasks.json`, `specs/`, decision logs, `history.html`), not in chat history.
+- Durable truth lives in artifacts (`tasks.json`, `specs/`, decision logs, `history.md`), not in chat history.
 
 ## Session recovery
 
@@ -180,13 +179,15 @@ specs/<feature-slug>/
 
 Required files:
 
-- requirements.html
-- design.html
-- tasks.html
-- assumptions.html
-- open-questions.html
-- acceptance-tests.html
-- spec.css (copy from .claude/skills/sdd-workflow/templates/spec.css)
-- spec.js (copy from .claude/skills/sdd-workflow/templates/spec.js)
+- requirements.md
+- design.md
+- tasks.md
+- assumptions.md
+- open-questions.md
+- acceptance-tests.md
 
 Claude Code must stop after generating the spec and wait for human approval before implementation.
+
+## Harness updates
+
+The SDD harness was installed from the sdd-onboarding-kit (version and file inventory: `.claude/sdd-kit-manifest.json`). To update it when the kit publishes a new version, invoke `/sdd-update`.

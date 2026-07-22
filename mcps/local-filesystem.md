@@ -14,11 +14,11 @@ Use local files when:
 
 ```text
 tasks.json
-specs/<feature-slug>/requirements.html
-specs/<feature-slug>/design.html
-specs/<feature-slug>/tasks.html
-specs/<feature-slug>/review.html
-history.html
+specs/<feature-slug>/requirements.md
+specs/<feature-slug>/design.md
+specs/<feature-slug>/tasks.md
+specs/<feature-slug>/review.md
+history.md
 ```
 
 ## Advantages

@@ -1,0 +1,106 @@
+---
+doc: functional-brief
+title: Functional brief — {{FEATURE_NAME}}
+feature_slug: {{FEATURE_SLUG}}
+created: {{CREATED_DATE}}
+---
+
+<!-- Product-side description of intended functionality. NOT an implementation spec: Claude Code converts it into an SDD spec before writing code (procedure: intake-from-functional-doc.md; output goes to specs/<feature-slug>/). Optional sections keep "None." when they do not apply. -->
+
+## Summary
+
+TODO: the feature, change or problem in 2–3 sentences.
+
+## Goal
+
+TODO: the desired outcome in business, product or user terms.
+
+## Background
+
+TODO: why this is needed — context, current limitations, pain points.
+
+## Users
+
+| Role | Description |
+| --- | --- |
+| Primary user | TODO |
+
+## User-facing behavior
+
+TODO: what the user should experience, in natural language — no implementation details.
+
+## Main scenarios
+
+| # | Scenario | Expected result |
+| --- | --- | --- |
+| 1 | TODO | TODO |
+| 2 | TODO | TODO |
+
+## Inputs and outputs
+
+- Inputs: TODO — commands, fields, parameters, files or user actions that trigger the feature.
+- Outputs: TODO — what the system should produce.
+
+## Rules and constraints
+
+- TODO
+
+## Error and edge cases
+
+| Case | Expected behavior |
+| --- | --- |
+| TODO | TODO |
+
+## Non-goals
+
+<!-- Claude Code must not infer extra functionality. -->
+
+- TODO
+
+## Acceptance criteria
+
+- TODO: concrete, testable criteria a human can check.
+
+## Requirement format
+
+TODO: EARS / user stories / Given-When-Then / plain / let Claude Code recommend.
+
+## Technical hints
+
+None.
+
+## Dependencies
+
+None.
+
+## Security, privacy and permissions
+
+None. <!-- Or name what applies: authentication, authorization, personal data, secrets, logging, external services. -->
+
+## Performance expectations
+
+None.
+
+## UX copy
+
+None.
+
+## Open questions
+
+<!-- Claude Code asks the developer about these before finalizing the spec, unless explicitly instructed to make assumptions. -->
+
+| Question | Why it matters |
+| --- | --- |
+| TODO | TODO |
+
+## Assumptions allowed
+
+<!-- Only if the brief is incomplete: assumptions Claude Code may use for a draft spec. They land in assumptions.md, explicit and reviewable. -->
+
+| Assumption | Impact if wrong |
+| --- | --- |
+| TODO | TODO |
+
+## Source material
+
+None.

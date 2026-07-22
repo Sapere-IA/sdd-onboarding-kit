@@ -3,8 +3,594 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Review — Recent notes CLI command</title>
-  <link rel="stylesheet" href="spec.css">
+  <title>Review — Recent notes command</title>
+  <style>
+/* spec.css — SDD spec artifact stylesheet — dark edition */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800&display=swap');
+
+:root {
+  --bg:           #0c111c;
+  --bg-soft:      #111827;
+  --card:         #131a28;
+  --card-border:  rgba(255,255,255,0.08);
+  --text:         #e8eaef;
+  --text-muted:   #9aa3b2;
+  --orange:       #f29a55;
+  --orange-soft:  rgba(242,154,85,0.12);
+  --green:        #2ee07e;
+  --green-soft:   rgba(46,224,126,0.10);
+  --red:          #ff6b6b;
+  --red-soft:     rgba(255,107,107,0.12);
+  --yellow:       #fbbf24;
+  --yellow-soft:  rgba(251,191,36,0.12);
+  --radius:       12px;
+  --radius-sm:    7px;
+  --font: 'Montserrat', system-ui, sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --sidebar-w: 230px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page layout ─────────────────────── */
+.page-wrap { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--bg);
+  border-right: 1px solid var(--card-border);
+  padding: 1.75rem 1.25rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.sidebar-brand-name {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+}
+
+.sidebar-brand-name::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+
+.sidebar-brand span {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  padding-left: 1rem;
+}
+
+.sidebar-title {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 0.65rem;
+  opacity: 0.6;
+}
+
+.toc-list { list-style: none; }
+.toc-list li { margin-bottom: 0.2rem; }
+.toc-list a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.78rem;
+  display: block;
+  padding: 0.28rem 0.6rem;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.toc-list a:hover {
+  color: var(--orange);
+  background: var(--orange-soft);
+}
+.toc-list .toc-h3 { padding-left: 1.1rem; }
+
+/* ── Main content ────────────────────── */
+.main-content {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  max-width: 900px;
+  background: var(--bg-soft);
+}
+
+/* ── Spec header ─────────────────────── */
+.spec-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.spec-header h1 {
+  font-size: 1.65rem;
+  font-weight: 900;
+  margin-bottom: 1.1rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+/* ── Meta table ─────────────────────── */
+.meta-table {
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+.meta-table th,
+.meta-table td {
+  border: 1px solid var(--card-border);
+  padding: 0.5rem 0.85rem;
+  text-align: left;
+}
+
+.meta-table th {
+  background: var(--card);
+  color: var(--orange);
+  font-weight: 700;
+  white-space: nowrap;
+  width: 160px;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.meta-table td {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── Badges ─────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.22em 0.75em;
+  border-radius: 9999px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.badge-draft    { background: rgba(255,255,255,0.08); color: var(--text-muted); }
+.badge-pending  { background: var(--yellow-soft);     color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+.badge-ok       { background: var(--green-soft);      color: var(--green);  border: 1px solid rgba(46,224,126,0.3); }
+.badge-approved { background: var(--green-soft);      color: var(--green);  border: 1px solid rgba(46,224,126,0.3); }
+.badge-blocking { background: var(--red-soft);        color: var(--red);    border: 1px solid rgba(255,107,107,0.3); }
+.badge-rejected { background: var(--red-soft);        color: var(--red);    border: 1px solid rgba(255,107,107,0.3); }
+.badge-warning  { background: var(--orange-soft);     color: var(--orange); border: 1px solid rgba(242,154,85,0.3); }
+
+/* ── Headings ───────────────────────── */
+h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 2.5rem 0 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--card-border);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+}
+
+h2::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: var(--orange);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--orange);
+  letter-spacing: 0.01em;
+}
+
+h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 1rem 0 0.4rem;
+  color: var(--text-muted);
+  padding-left: 12px;
+  border-left: 3px solid var(--orange);
+}
+
+p { margin: 0.7rem 0; color: var(--text-muted); }
+p strong { color: var(--text); }
+ul, ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+li { margin: 0.3rem 0; color: var(--text-muted); }
+
+hr { border: none; border-top: 1px solid var(--card-border); margin: 1.75rem 0; }
+a { color: var(--orange); text-decoration: none; transition: color 0.15s; }
+a:hover { color: var(--green); }
+
+/* ── Requirement rows ──────────────── */
+.req-id {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.18em 0.6em;
+  border-radius: var(--radius-sm);
+  background: var(--orange-soft);
+  color: var(--orange);
+  border: 1px solid rgba(242,154,85,0.3);
+  margin-right: 0.4rem;
+  vertical-align: middle;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.req-id.nfr  { background: rgba(139,92,246,0.12); color: #a78bfa; border-color: rgba(167,139,250,0.3); }
+.req-id.edge { background: var(--yellow-soft);    color: var(--yellow); border-color: rgba(251,191,36,0.3); }
+.req-id.err  { background: var(--red-soft);       color: var(--red);    border-color: rgba(255,107,107,0.3); }
+.req-id.ac   { background: var(--green-soft);     color: var(--green);  border-color: rgba(46,224,126,0.3); }
+.req-id.t    { background: var(--orange-soft);    color: var(--orange); border-color: rgba(242,154,85,0.3); }
+
+.req-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0.65rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--orange);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.req-row.nfr  { border-left-color: #a78bfa; }
+.req-row.edge { border-left-color: var(--yellow); }
+.req-row.err  { border-left-color: var(--red); }
+.req-row.ac   { border-left-color: var(--green); }
+
+/* ── Tables ─────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin: 1.1rem 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+th, td {
+  border-bottom: 1px solid var(--card-border);
+  padding: 0.7rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--card);
+  color: var(--orange);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--card-border);
+  white-space: nowrap;
+}
+
+td {
+  background: var(--bg-soft);
+  color: var(--text-muted);
+}
+
+td:first-child { color: var(--text); font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+
+td.blocking { background: var(--red-soft);    color: var(--red);    font-weight: 700; }
+td.warning  { background: var(--orange-soft); color: var(--orange); font-weight: 700; }
+td.ok       { background: var(--green-soft);  color: var(--green);  font-weight: 700; }
+td.pending  { background: rgba(255,255,255,0.04); color: var(--text-muted); font-style: italic; }
+
+/* ── Code ───────────────────────────── */
+pre {
+  background: var(--bg);
+  color: #c8d8e8;
+  padding: 1.1rem 1.35rem;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  margin: 1rem 0;
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--orange);
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--card);
+  color: var(--orange);
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
+  border: 1px solid var(--card-border);
+}
+
+pre code { background: none; padding: 0; font-size: inherit; color: inherit; border: none; }
+
+/* ── Task timeline ──────────────────── */
+.task-timeline {
+  list-style: none;
+  position: relative;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.task-timeline::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--orange), var(--green));
+  opacity: 0.4;
+}
+
+.task-item {
+  position: relative;
+  padding: 0.75rem 1rem 0.75rem 3.5rem;
+  margin-bottom: 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.task-item:hover {
+  border-color: rgba(242,154,85,0.3);
+  transform: translateX(2px);
+}
+
+.task-item::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--card-border);
+  z-index: 1;
+}
+
+.task-item.done::before        { background: var(--green);  border-color: var(--green); }
+.task-item.in-progress::before { background: var(--orange); border-color: var(--orange); }
+.task-item.blocked::before     { background: var(--red);    border-color: var(--red); }
+
+.task-item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+.task-item-body   { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+/* ── Checklist ──────────────────────── */
+.checklist { list-style: none; padding: 0; margin: 0.75rem 0; }
+.checklist li {
+  position: relative;
+  padding: 0.45rem 0 0.45rem 1.75rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition: background 0.1s;
+}
+.checklist li::before {
+  content: '→';
+  position: absolute;
+  left: 0.25rem;
+  color: var(--orange);
+  font-weight: 700;
+}
+.checklist li input[type="checkbox"] { display: none; }
+.checklist li strong { color: var(--text); }
+
+/* ── Collapsible ────────────────────── */
+.collapsible-section {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.collapse-btn {
+  width: 100%;
+  text-align: left;
+  background: var(--card);
+  border: none;
+  padding: 0.8rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  border-left: 3px solid var(--orange);
+  transition: background 0.15s;
+  font-family: var(--font);
+  letter-spacing: 0.02em;
+}
+
+.collapse-btn:hover { background: var(--orange-soft); }
+.collapse-btn .arrow { font-size: 0.8rem; transition: transform 0.2s; display: inline-block; margin-left: auto; color: var(--orange); }
+.collapse-btn.collapsed .arrow { transform: rotate(-90deg); }
+
+.collapse-body { padding: 1rem 1.1rem; border-top: 1px solid var(--card-border); background: var(--bg-soft); }
+.collapse-body.hidden { display: none; }
+
+/* ── Tabs ───────────────────────────── */
+.tabs {
+  margin: 1rem 0;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--card-border);
+  list-style: none;
+  padding: 0;
+  background: var(--card);
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: var(--font);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+.tab-panel { display: none; padding: 1rem; background: var(--bg-soft); }
+.tab-panel.active { display: block; }
+
+/* ── Diagram container ─────────────── */
+.diagram-container {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 1.75rem;
+  margin: 1rem 0;
+  background: var(--card);
+  text-align: center;
+  overflow-x: auto;
+}
+
+/* ── Cards (assumptions, questions) ── */
+.card {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  margin: 1rem 0;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.card-header {
+  background: var(--bg);
+  padding: 0.75rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--card-border);
+  border-left: 4px solid var(--orange);
+}
+
+.card.risk-high .card-header, .card.blocking-yes .card-header { border-left-color: var(--red); }
+.card.risk-medium .card-header                                { border-left-color: var(--yellow); }
+.card.risk-low .card-header                                   { border-left-color: var(--green); }
+
+.card-title { font-weight: 800; font-size: 0.9rem; color: var(--text); }
+.card-body { padding: 1rem 1.1rem; }
+dl.card-fields { display: grid; grid-template-columns: 170px 1fr; gap: 0.4rem 1rem; font-size: 0.875rem; }
+dl.card-fields dt { font-weight: 700; color: var(--text-muted); }
+dl.card-fields dd { margin: 0; color: var(--text-muted); }
+
+/* ── Claude note ────────────────────── */
+.claude-note {
+  border: 1px dashed rgba(242,154,85,0.4);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.1rem;
+  background: var(--orange-soft);
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+.claude-note h4 { color: var(--orange); margin-bottom: 0.5rem; font-size: 0.85rem; border: none; padding: 0; }
+.claude-note ol { padding-left: 1.25rem; }
+
+/* ── History entries ───────────────── */
+.history-entry {
+  border-left: 3px solid var(--orange);
+  padding: 0.85rem 1.1rem;
+  margin: 0.85rem 0;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.history-date { font-size: 0.8rem; color: var(--text-muted); font-family: var(--mono); }
+
+/* ── Print ──────────────────────────── */
+@media print {
+  body { background: #fff; color: #111; }
+  .sidebar { display: none; }
+  .main-content { max-width: none; padding: 0; background: #fff; }
+  .collapse-body.hidden { display: block !important; }
+  .tab-panel { display: block !important; }
+  a { color: inherit; text-decoration: none; }
+  pre { overflow: visible; white-space: pre-wrap; background: #f5f5f5; color: #111; }
+}
+
+/* ── Responsive ─────────────────────── */
+@media (max-width: 768px) {
+  .page-wrap { flex-direction: column; }
+  .sidebar { position: static; width: 100%; height: auto; }
+  .main-content { padding: 1.25rem; }
+}
+
+  </style>
 </head>
 <body>
 <div class="page-wrap">
@@ -16,138 +602,135 @@
 
   <div class="main-content">
     <header class="spec-header">
-      <h1>Review — Recent notes CLI command</h1>
+      <h1>Review — Recent notes command</h1>
       <table class="meta-table">
         <tbody>
-          <tr><th>Task ID</th>       <td><code>FEAT-007</code></td></tr>
-          <tr><th>Feature slug</th>  <td><code>example-feature</code></td></tr>
-          <tr><th>Reviewer</th>      <td>reviewer</td></tr>
-          <tr><th>Review status</th> <td><span class="badge badge-ok">approved</span></td></tr>
+          <tr><th>Task id</th><td><code>TASK-001</code></td></tr>
+          <tr><th>Feature slug</th><td><code>example-feature</code></td></tr>
+          <tr><th>Reviewer</th><td>reviewer</td></tr>
+          <tr><th>Review status</th><td><span class="badge badge-pending">pending</span></td></tr>
         </tbody>
       </table>
     </header>
-
     <main>
-
-      <section id="traceability">
-        <h2>Traceability</h2>
-        <p>
-          Each row maps a requirement to its implementation and test evidence.
-          Cell colors: <span class="badge badge-blocking">blocking</span> issue present,
-          <span class="badge badge-warning">warning</span> minor concern,
-          <span class="badge badge-ok">ok</span> verified.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Requirement</th>
-              <th>Implemented?</th>
-              <th>Tested?</th>
-              <th>Evidence</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="req-id">REQ-001</span></td>
-              <td class="ok">Yes</td>
-              <td class="ok">Yes</td>
-              <td><code>src/cli.py</code>, <code>tests/test_cli_recent.py::test_default_limit</code></td>
-            </tr>
-            <tr>
-              <td><span class="req-id">REQ-002</span></td>
-              <td class="ok">Yes</td>
-              <td class="ok">Yes</td>
-              <td><code>src/cli.py</code>, <code>tests/test_cli_recent.py::test_custom_limit</code></td>
-            </tr>
-            <tr>
-              <td><span class="req-id">REQ-003</span></td>
-              <td class="ok">Yes</td>
-              <td class="ok">Yes</td>
-              <td><code>src/cli.py</code>, <code>tests/test_cli_recent.py::test_invalid_limit</code></td>
-            </tr>
-            <tr>
-              <td><span class="req-id edge">EDGE-001</span></td>
-              <td class="ok">Yes</td>
-              <td class="ok">Yes</td>
-              <td><code>tests/test_cli_recent.py::test_empty_store</code></td>
-            </tr>
-            <tr>
-              <td><span class="req-id err">ERR-001</span></td>
-              <td class="ok">Yes</td>
-              <td class="warning">Partial</td>
-              <td><code>tests/test_cli_recent.py::test_store_unreadable</code> — skipped on Windows (permission semantics); accepted as NBK-1</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section id="commands-run">
-        <h2>Commands run</h2>
-        <pre><code>./scripts/run-tests.sh        # 41 passed, 1 skipped (Windows-only skip)
-./scripts/run-lint.sh         # clean
-./scripts/validate-sdd-structure.sh   # passed</code></pre>
-      </section>
-
-      <section id="findings">
-        <h2>Findings</h2>
-
-        <div class="collapsible-section">
-          <button class="collapse-btn" type="button">
-            <span class="arrow">▾</span> Blocking findings
-          </button>
-          <div class="collapse-body">
-            <p><code>None</code>.</p>
-          </div>
-        </div>
-
-        <div class="collapsible-section">
-          <button class="collapse-btn" type="button">
-            <span class="arrow">▾</span> Non-blocking findings
-          </button>
-          <div class="collapse-body">
-            <div class="req-row edge">
-              <span class="req-id edge">NBK-1</span>
-              <span><code>test_store_unreadable</code> is skipped on Windows because POSIX permission revocation does not apply. Deferral recorded here with developer agreement; behavior is covered on Linux CI.</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="decision">
-        <h2>Decision</h2>
-        <p>Reviewer selects one:</p>
-        <table>
-          <thead>
-            <tr><th>Option</th><th>Meaning</th><th>Selected</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="badge badge-ok">approved</span></td>
-              <td>Task can move to <code>done</code>.</td>
-              <td>☑</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-blocking">rejected</span></td>
-              <td>Blocking defects found; return to <code>in_progress</code>.</td>
-              <td>☐</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-warning">needs_changes</span></td>
-              <td>Non-blocking fixes required before <code>done</code>.</td>
-              <td>☐</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section id="notes">
-        <h2>Notes</h2>
-        <p>Implementation matches <code>design.html</code> exactly; no files outside the design were touched. NBK-1 resolved by explicit deferral above before marking <code>done</code>.</p>
-      </section>
-
+<h2 id="traceability">Traceability</h2>
+<table>
+<thead>
+<tr><th>Requirement</th><th>Implemented?</th><th>Tested?</th><th>Evidence</th></tr>
+</thead>
+<tbody>
+<tr><td><span class="req-id">REQ-001</span></td><td class="pending">TODO</td><td class="pending">TODO</td><td>TODO</td></tr>
+<tr><td><span class="req-id">REQ-002</span></td><td class="pending">TODO</td><td class="pending">TODO</td><td>TODO</td></tr>
+<tr><td><span class="req-id">REQ-003</span></td><td class="pending">TODO</td><td class="pending">TODO</td><td>TODO</td></tr>
+</tbody>
+</table>
+<h2 id="commands-run">Commands run</h2>
+<pre><code class="language-text">TODO</code></pre>
+<h2 id="findings">Findings</h2>
+<h3 id="blocking">Blocking</h3>
+<p>None.</p>
+<h3 id="non-blocking">Non-blocking</h3>
+<p>None.</p>
+<h2 id="visual-verification">Visual verification</h2>
+<p>Not applicable.</p>
+<h2 id="spec-drift-check">Spec drift check</h2>
+<p>None.</p>
+<h2 id="high-risk-and-deep-review">High-risk and deep review</h2>
+<p>None.</p>
+<h2 id="documentation-decision">Documentation decision</h2>
+<p>Decision: <span class="badge badge-pending">TODO</span> — <code>required</code> (targets below; <code>documentation_status: pending</code> until the documenter reports) or <code>not_required</code>.</p>
+<table>
+<thead>
+<tr><th>Documentation target</th><th>Updated / justified unaffected</th></tr>
+</thead>
+<tbody>
+<tr><td><code>README.md</code> command table</td><td>TODO</td></tr>
+</tbody>
+</table>
+<h2 id="proposals">Proposals</h2>
+<ul>
+<li><strong>Decision-log entries:</strong> None.</li>
+<li><strong>Failure-learning entry:</strong> None.</li>
+</ul>
+<h2 id="decision">Decision</h2>
+<p>Decision: <span class="badge badge-pending">TODO</span> — one of <code>approved</code>, <code>needs_changes</code>, <code>spec_revision_required</code>, <code>blocked</code> (meanings and transitions: task-state-machine.md).</p>
+<h2 id="notes">Notes</h2>
+<p>None.</p>
     </main>
   </div><!-- /.main-content -->
 </div><!-- /.page-wrap -->
-<script src="spec.js"></script>
+<script>
+/* spec.js — lightweight interactivity for SDD spec documents
+ * No external dependencies. Runs after DOMContentLoaded.
+ */
+(function () {
+  'use strict';
+
+  /* --- Table of Contents ---
+   * Auto-populates #toc-list from h2/h3 headings in .main-content.
+   */
+  function buildToc() {
+    var container = document.getElementById('toc-list');
+    if (!container) return;
+    var headings = document.querySelectorAll('.main-content h2, .main-content h3');
+    if (!headings.length) return;
+    var ul = document.createElement('ul');
+    ul.className = 'toc-list';
+    headings.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + i;
+      var li = document.createElement('li');
+      if (h.tagName === 'H3') li.className = 'toc-h3';
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent.replace(/\s*#\s*$/, '');
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    container.appendChild(ul);
+  }
+
+  /* --- Collapsible sections ---
+   * Toggles .hidden on .collapse-body and .collapsed on .collapse-btn.
+   */
+  function initCollapsibles() {
+    document.querySelectorAll('.collapse-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var body = btn.nextElementSibling;
+        if (!body) return;
+        var nowHidden = body.classList.toggle('hidden');
+        btn.classList.toggle('collapsed', nowHidden);
+      });
+    });
+  }
+
+  /* --- Tab panels ---
+   * Each .tabs block: .tab-btn elements activate the matching .tab-panel by index.
+   */
+  function initTabs() {
+    document.querySelectorAll('.tabs').forEach(function (tabs) {
+      var btns   = Array.from(tabs.querySelectorAll('.tab-btn'));
+      var panels = Array.from(tabs.querySelectorAll('.tab-panel'));
+
+      function activate(idx) {
+        btns.forEach(function (b, i) { b.classList.toggle('active', i === idx); });
+        panels.forEach(function (p, i) { p.classList.toggle('active', i === idx); });
+      }
+
+      btns.forEach(function (btn, i) {
+        btn.addEventListener('click', function () { activate(i); });
+      });
+
+      if (btns.length) activate(0);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    buildToc();
+    initCollapsibles();
+    initTabs();
+  });
+}());
+
+</script>
 </body>
 </html>

@@ -1,17 +1,21 @@
 # Spec folder format
 
-Each SDD feature spec may contain:
+Each SDD feature spec is a folder of markdown documents (the source of truth):
 
-- `requirements.html` — testable behavioral requirements.
-- `design.html` — technical implementation plan.
-- `tasks.html` — ordered implementation tasks.
-- `assumptions.html` — explicit assumptions made during spec creation.
-- `open-questions.html` — unresolved questions requiring developer input.
-- `acceptance-tests.html` — acceptance-level test scenarios.
-- `review.html` — written by the reviewer after implementation.
-- `spec.css` — shared stylesheet (link with `<link rel="stylesheet" href="spec.css">`).
-- `spec.js` — lightweight interactivity (TOC, collapsibles, tabs).
+- `requirements.md` — testable behavioral requirements.
+- `design.md` — technical implementation plan.
+- `tasks.md` — ordered implementation tasks.
+- `assumptions.md` — explicit assumptions made during spec creation.
+- `open-questions.md` — unresolved questions requiring developer input.
+- `acceptance-tests.md` — acceptance-level test scenarios.
+- `review.md` — written by the reviewer after implementation.
 
-All spec files are self-contained HTML that renders correctly when opened directly from disk via the relative `spec.css` link.
+Styled HTML is rendered on demand from these files (`scripts/render-spec.mjs` or `scripts/render_spec.py`) and is a gitignored artifact. The rendering assets live in this directory:
 
-If the spec was generated from a functional document, `assumptions.html`, `open-questions.html`, and `acceptance-tests.html` should be created even if some sections are empty.
+- `spec-shell.html.template` — HTML page shell filled by the renderer.
+- `spec.css` — stylesheet, inlined into the rendered page.
+- `spec.js` — TOC and collapsible-section behavior, inlined into the rendered page.
+
+Markdown conventions (frontmatter, requirement rows, status markers, cards): see `spec-format.md`.
+
+If the spec was generated from a functional document, `assumptions.md`, `open-questions.md`, and `acceptance-tests.md` should be created even if some sections are empty.

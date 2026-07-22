@@ -38,12 +38,23 @@ check_file ".claude/skills/sdd-workflow/review-checklist.md"
 check_dir ".claude/skills/sdd-workflow/templates"
 check_file ".claude/skills/sdd-workflow/templates/spec.css"
 check_file ".claude/skills/sdd-workflow/templates/spec.js"
+check_file ".claude/skills/sdd-workflow/templates/spec-shell.html.template"
+check_file ".claude/skills/sdd-workflow/templates/requirements.md.template"
+check_file ".claude/skills/sdd-workflow/templates/design.md.template"
+check_file ".claude/skills/sdd-workflow/templates/tasks.md.template"
+check_file ".claude/skills/sdd-workflow/templates/review.md.template"
 check_dir "specs"
 check_file "tasks.json"
-check_file "history.html"
+check_file "history.md"
 check_dir "scripts"
 check_file "scripts/run-tests.sh"
 check_file "scripts/run-lint.sh"
+
+# Exactly one spec renderer must be installed (Node or Python).
+if [[ ! -f "scripts/render-spec.mjs" && ! -f "scripts/render_spec.py" ]]; then
+  echo "Missing spec renderer: scripts/render-spec.mjs or scripts/render_spec.py" >&2
+  missing=1
+fi
 
 if [[ "$missing" -ne 0 ]]; then
   echo "SDD structure validation failed." >&2
@@ -67,15 +78,26 @@ if [[ -n "$unresolved" ]]; then
   exit 1
 fi
 
-# Check for unresolved {{PLACEHOLDER}} tokens in generated HTML spec files
-if find specs -name "*.html" -exec grep -l "{{[A-Z0-9_]*}}" {} + 2>/dev/null | grep -q .; then
-  echo "Unresolved template placeholders found in HTML spec files:" >&2
-  find specs -name "*.html" -exec grep -l "{{[A-Z0-9_]*}}" {} + 2>/dev/null >&2
+# Check for unresolved {{PLACEHOLDER}} tokens in instantiated spec sources
+# (markdown is the source of truth; rendered .html files are gitignored artifacts).
+if find specs -name "*.md" -exec grep -l "{{[A-Z0-9_]*}}" {} + 2>/dev/null | grep -q .; then
+  echo "Unresolved template placeholders found in spec markdown files:" >&2
+  find specs -name "*.md" -exec grep -l "{{[A-Z0-9_]*}}" {} + 2>/dev/null >&2
+  exit 1
+fi
+
+# Every spec markdown source must start with YAML frontmatter.
+missing_fm=$(find specs -name "*.md" ! -name "README.md" 2>/dev/null | while read -r f; do
+  head -n 1 "$f" | grep -q '^---$' || echo "$f"
+done)
+if [[ -n "$missing_fm" ]]; then
+  echo "Spec markdown files missing YAML frontmatter:" >&2
+  echo "$missing_fm" >&2
   exit 1
 fi
 
 # Validate tasks.json against its own state machine. State is read from JSON
-# only — spec HTML files are never parsed. Skipped with a warning if jq is
+# only — spec files are never parsed. Skipped with a warning if jq is
 # unavailable.
 if command -v jq >/dev/null 2>&1; then
   if ! jq -e . tasks.json >/dev/null 2>&1; then

@@ -42,7 +42,7 @@ rel_path="${file_path#"$project_dir"/}"
 # Spec and harness files are always in scope: specs evolve during work and
 # the harness must stay editable.
 case "$rel_path" in
-  specs/*|tasks.json|history.html|decisions/*|.claude/*)
+  specs/*|tasks.json|history.md|decisions/*|.claude/*)
     exit 0
     ;;
 esac

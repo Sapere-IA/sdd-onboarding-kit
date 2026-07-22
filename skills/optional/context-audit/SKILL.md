@@ -37,7 +37,7 @@ linked during onboarding).
    decisions made, current task state, architecture constraints, and
    unresolved questions.
 4. Before compacting, write anything durable to its artifact (`tasks.json`,
-   spec files, decision log, `history.html`) — artifacts, not chat, are the
+   spec files, decision log, `history.md`) — artifacts, not chat, are the
    source of truth.
 5. Recommend subagents for upcoming noisy exploration instead of doing it
    in the main conversation.

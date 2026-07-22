@@ -4,7 +4,7 @@ set -euo pipefail
 # Pre-compact capture hook (example, disabled by default).
 #
 # Before the context window is compacted, remind that durable state must
-# live in artifacts (tasks.json, specs/, decisions/, history.html), not in
+# live in artifacts (tasks.json, specs/, decisions/, history.md), not in
 # chat history. This hook NEVER writes memory or project files — it only
 # reminds; persisting anything stays a deliberate, visible action.
 #
@@ -28,9 +28,9 @@ CAPTURE_MODE="${CAPTURE_MODE:-warn}"
 input="$(cat)"
 
 checklist="Before compacting, make sure durable state is recorded in artifacts, not only in chat history:
-- unresolved decisions and open questions -> decisions/ or the spec's open-questions.html
+- unresolved decisions and open questions -> decisions/ or the spec's open-questions.md
 - current task status and immediate next step -> tasks.json
-- failures and lessons worth keeping -> review.html or a failure-learning proposal
+- failures and lessons worth keeping -> review.md or a failure-learning proposal
 - architecture constraints discovered this session -> decisions/architecture-decisions.md or the design spec
 Nothing is written automatically: review and persist what matters, then compact again."
 

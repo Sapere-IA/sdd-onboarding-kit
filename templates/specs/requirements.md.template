@@ -1,0 +1,80 @@
+---
+doc: requirements
+title: Requirements — {{FEATURE_TITLE}}
+task_id: {{TASK_ID}}
+feature_slug: {{FEATURE_SLUG}}
+status: spec_draft
+author: spec-author
+human_approval: pending
+---
+
+## Summary
+
+{{FEATURE_SUMMARY}}
+
+## Functional requirements
+
+<!-- Use the configured requirements format (EARS shown). One line per requirement; no surrounding prose. -->
+
+REQ-001: When <trigger>, the system shall <expected response>.
+REQ-002: If <condition>, the system shall <expected response>.
+
+## Non-functional requirements
+
+NFR-001: TODO.
+
+## Edge cases
+
+EDGE-001: TODO.
+
+## Error states
+
+ERR-001: TODO.
+
+## Acceptance criteria
+
+AC-001: TODO.
+
+## UI acceptance criteria
+
+<!-- Only when the change affects a browser UI; otherwise keep "Not applicable." and delete the table. Screenshots/mockups are evidence, not complete requirements — ask when visual intent is ambiguous. Auth constraints name the account type only; never record credentials. -->
+
+Not applicable.
+
+| ID | Route | Expected visual state | Interaction flow | Checks (a11y / responsive) |
+| --- | --- | --- | --- | --- |
+| UI-001 | TODO | TODO | TODO | TODO |
+
+## Visual evidence
+
+<!-- Only when images are inputs for this task; otherwise keep "Not applicable." and delete the table. Testable expectations go to the UI acceptance criteria referencing the IMG IDs; unresolved visual questions go to open-questions.md. Never transcribe secrets or personal data from images. -->
+
+Not applicable.
+
+| ID | Image | Shows | Provenance | Intent |
+| --- | --- | --- | --- | --- |
+| IMG-001 | TODO | TODO | TODO | design to build / bug evidence / before-after / acceptance criterion |
+
+## External dependencies
+
+<!-- External systems, SDKs, APIs or framework features touched — one line each, or "None." Verification evidence belongs in the design's External dependencies section. -->
+
+None.
+
+## Documentation expectations
+
+<!-- Docs this feature is expected to affect (README, API docs, changelog, …) or "None expected." The reviewer makes the final documentation decision. -->
+
+None expected.
+
+## Decision candidates
+
+<!-- Significant decisions this task will settle (architecture choice, rejected alternative, workflow rule) — or "None." Proposed at review time; never written without developer approval. -->
+
+None.
+
+## Requirement-to-test mapping
+
+| Requirement | Expected test(s) |
+| --- | --- |
+| REQ-001 | TODO |

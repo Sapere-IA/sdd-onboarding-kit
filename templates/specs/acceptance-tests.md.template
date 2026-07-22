@@ -1,0 +1,47 @@
+---
+doc: acceptance-tests
+title: Acceptance tests — {{FEATURE_NAME}}
+task_id: {{TASK_ID}}
+feature_slug: {{FEATURE_SLUG}}
+source_document: {{SOURCE_DOCUMENT}}
+created: {{CREATED_DATE}}
+---
+
+## Test strategy
+
+<!-- Acceptance-level scenarios: the observable behavior that must be true for the feature to be accepted. The implementer automates them where feasible; the reviewer verifies that implemented tests cover this document. Tests map back to requirements.md — never invent behavior absent from the brief or approved assumptions; unresolved behavior goes to open-questions.md. -->
+
+- Testing style: `{{TESTING_STYLE}}`
+- Test command: `{{TEST_COMMAND}}`
+- Test locations: `{{TEST_LOCATIONS}}`
+
+## Coverage matrix
+
+| Requirement | Acceptance test(s) | Covered |
+| --- | --- | --- |
+| REQ-001 | AT1 | !blocking No |
+
+## Acceptance tests
+
+<!-- One card per test. ID prefixes: AT-n success paths, AT-EDGE-n edge cases, AT-ERR-n error cases, AT-REG-n non-regression. If a test cannot be automated, mark it in the card and say why. -->
+
+::: card
+#### AT1 — {{TEST_TITLE}} [!draft Draft]
+
+- **Requirements:** {{RELATED_REQUIREMENT}}
+- **Scenario:** {{SCENARIO}}
+- **Preconditions:** {{PRECONDITION}}
+- **Action:** {{ACTION}}
+- **Expected result:** {{EXPECTED_RESULT}}
+- **Negative expectations:** {{NEGATIVE_EXPECTATION}}
+- **Test location:** `{{SUGGESTED_TEST_LOCATION}}`
+:::
+
+## Manual acceptance checklist
+
+- [ ] Every requirement has at least one acceptance test.
+- [ ] Main success path, empty state and invalid input are covered, where relevant.
+- [ ] Permission / security behavior is covered, if relevant.
+- [ ] Non-goals are protected, if relevant.
+- [ ] Tests are feasible with the current project test setup.
+- [ ] No acceptance test depends on hidden assumptions.

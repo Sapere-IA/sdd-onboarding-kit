@@ -69,8 +69,8 @@ Do not memorize:
      entry is project-independent and contains no project internals.
    - **Project memory** (option 2, the default recommendation): append to
      the project's decision log (e.g. `decisions/failure-learnings.md`).
-   - **Review/history** (option 3): record in the task's `review.html` or
-     `history.html`; no memory write.
+   - **Review/history** (option 3): record in the task's `review.md` or
+     `history.md`; no memory write.
    - **Revise** (option 4): rewrite and ask again.
    If the developer does not answer, write nothing.
 4. If the same lesson is proposed twice, that is a signal it belongs in a

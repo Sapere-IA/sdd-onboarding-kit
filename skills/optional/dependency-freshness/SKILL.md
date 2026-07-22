@@ -62,8 +62,8 @@ Purely internal changes never require freshness evidence under any level.
 ## Output artifact
 
 Freshness evidence in the `External dependencies and freshness` section of
-the feature's `design.html` (the spec template carries it), or in
-`review.html` when verification happened during implementation: systems
+the feature's `design.md` (the spec template carries it), or in
+`review.md` when verification happened during implementation: systems
 involved, docs checked (source and date), version constraints, deprecations
 avoided, compatibility notes. For changes with no external surface the
 section states `None`.

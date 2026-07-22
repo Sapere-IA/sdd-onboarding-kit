@@ -7,8 +7,8 @@ all of these — and one rule keeps them safe in an SDD project:
 
 > **Durable artifacts are the source of truth, never chat history.**
 > `tasks.json` holds task state, `specs/` holds requirements and
-> design, `review.html` holds verdicts, the decision logs hold settled
-> decisions, `history.html` holds what already happened. A summary,
+> design, `review.md` holds verdicts, the decision logs hold settled
+> decisions, `history.md` holds what already happened. A summary,
 > restored checkpoint, or resumed conversation is a convenience for
 > reorienting — anything it claims is verified against the artifacts
 > before acting on it.
@@ -51,7 +51,7 @@ Capability-level summary (names verified against the official docs on
 After days away: read the recap (or run `/recap`), then open the
 durable artifacts before doing anything: `tasks.json` for every task's
 actual status, the active spec for what is approved, the latest
-`review.html` for unresolved findings, `history.html` for what was
+`review.md` for unresolved findings, `history.md` for what was
 completed. The recap tells you where to look; the artifacts tell you
 what is true. If recap and artifacts disagree, the artifacts win.
 
@@ -72,7 +72,7 @@ Drift rarely fixes itself: a wrong assumption compounds with every
 turn, and each correction pollutes context further. Stop the turn
 (Esc) as soon as the direction is visibly wrong, and reprompt with a
 reference to the governing artifact ("follow the design in
-`specs/<slug>/design.html`, section X") rather than a long in-chat
+`specs/<slug>/design.md`, section X") rather than a long in-chat
 correction. If the conversation is already cluttered with failed
 attempts, prefer rewinding past them or compacting with focus
 instructions over pushing through.
@@ -83,7 +83,7 @@ This is what makes the other three safe — and it cuts both ways:
 
 - **Reading:** after any resume, rewind, or compaction, state is read
   from `tasks.json`, specs, reviews, decision logs, and
-  `history.html` — not assumed from the (possibly stale or truncated)
+  `history.md` — not assumed from the (possibly stale or truncated)
   conversation.
 - **Writing:** decisions, task-state changes, review findings, and
   constraints are written to those artifacts *when they happen*, so
@@ -99,11 +99,11 @@ After resuming a session (or after compaction), before continuing work:
    any task marked `in_progress`).
 2. The active spec under `specs/<slug>/` — requirements and design as
    approved, not as remembered.
-3. The latest `review.html` — unresolved blocking/non-blocking
+3. The latest `review.md` — unresolved blocking/non-blocking
    findings.
 4. `git status` and the current diff — what is actually changed but
    uncommitted, including anything a rewind could not revert.
-5. Decision logs / `history.html` — decisions settled since the
+5. Decision logs / `history.md` — decisions settled since the
    context you remember.
 
 If conversation memory and any of these disagree, trust the artifact

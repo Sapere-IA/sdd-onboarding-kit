@@ -30,14 +30,12 @@ If SDD applies, continue.
 For a `pending` task, create:
 
 ```text
-specs/<feature-slug>/requirements.html
-specs/<feature-slug>/design.html
-specs/<feature-slug>/tasks.html
-specs/<feature-slug>/spec.css
-specs/<feature-slug>/spec.js
+specs/<feature-slug>/requirements.md
+specs/<feature-slug>/design.md
+specs/<feature-slug>/tasks.md
 ```
 
-Use `spec-format.md`.
+Use `spec-format.md` (markdown is the source of truth; do not hand-write spec HTML). Keep each file concise: reference other spec files by ID, never restate their content.
 
 Recommended order:
 
@@ -51,9 +49,10 @@ Recommended order:
 When the spec is complete:
 
 1. Set status to `spec_ready`.
-2. Summarize the spec.
-3. Ask the developer to approve or request changes.
-4. Do not implement.
+2. Render the spec for the developer: `node scripts/render-spec.mjs specs/<feature-slug>/` (or the Python renderer — see `spec-format.md` § Rendering). The HTML output is a gitignored artifact.
+3. Summarize the spec and point the developer at the rendered files.
+4. Ask the developer to approve or request changes.
+5. Do not implement.
 
 ## 5. Revise spec if requested
 
@@ -69,11 +68,11 @@ If the developer asks for changes:
 Only after approval:
 
 1. Set status to `in_progress`.
-2. Read `tasks.html`.
+2. Read `tasks.md`.
 3. Execute tasks sequentially.
 4. Add/update tests.
 5. Run configured validation.
-6. Mark completed tasks in `tasks.html` (add `class="done"` to the `<li class="task-item">`).
+6. Mark completed tasks in `tasks.md` (change the item's status marker to `[x]`; `[>]` in progress, `[!]` blocked).
 7. Set status to `review`.
 
 ## 7. Review
@@ -91,7 +90,9 @@ The reviewer also flags significant decisions settled by the spec,
 implementation, or review (architectural choices, rejected alternatives,
 workflow rules) for the decision log — see §9.
 
-Write `review.html`.
+The reviewer also checks conciseness: content duplicated within a spec file or across the spec's files is a finding.
+
+Write `review.md`, then re-render the spec directory so the developer reads current HTML.
 
 ## 8. Documentation phase
 
@@ -99,7 +100,7 @@ Runs after the reviewer approves and before the task is marked `done`. The state
 
 1. The reviewer decides whether documentation is required and lists the targets (see the review checklist §7).
 2. If not required: set `documentation_required: false`, `documentation_status: "not_required"`, and continue to completion.
-3. If required: invoke the `documenter` agent. It updates only the listed targets, cites the source spec/task where possible, appends the `history.html` entry, and reports updated vs unaffected targets.
+3. If required: invoke the `documenter` agent. It updates only the listed targets, cites the source spec/task where possible, appends the `history.md` entry, and reports updated vs unaffected targets.
 4. The reviewer runs a lightweight docs re-check and sets `documentation_status: "updated"` — or returns the gaps to the documenter.
 
 The documenter never runs before technical review; docs must describe the implementation as reviewed.
@@ -109,7 +110,7 @@ The documenter never runs before technical review; docs must describe the implem
 If reviewer approves and documentation is `updated` or `not_required`:
 
 1. Set task status to `done`.
-2. Append to `history.html` (skip if the documenter already did).
+2. Append to `history.md` (skip if the documenter already did).
 3. Include changed files and commands run.
 4. If the spec or review settled a significant decision, propose a
    decision-log entry: architectural choices →
@@ -126,8 +127,8 @@ If reviewer rejects:
 
 ## 10. History entry format
 
-Append to `history.html` by copying the commented entry block from the file itself
-(the format lives in `templates/history.html.template`) and inserting the filled-in
+Append to `history.md` by copying the commented entry block from the file itself
+(the format lives in `templates/history.md.template`) and inserting the filled-in
 entry immediately after the `<!-- INSERT-ENTRY-HERE -->` marker, newest first.
 Remove the "No entries yet" paragraph when adding the first entry.
 
@@ -140,12 +141,12 @@ Flow:
 ```text
 functional document
 → intake analysis
-→ assumptions.html
-→ open-questions.html
-→ requirements.html
-→ design.html
-→ tasks.html
-→ acceptance-tests.html
+→ assumptions.md
+→ open-questions.md
+→ requirements.md
+→ design.md
+→ tasks.md
+→ acceptance-tests.md
 → human approval
 → implementation
 → review

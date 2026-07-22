@@ -64,11 +64,11 @@ Two rules govern everything this skill does:
 5. **Map into the spec:**
    - Screenshots inventory, observed behavior, expected behavior, and
      affected routes/components → the `Visual evidence` section of
-     `requirements.html`.
+     `requirements.md`.
    - Testable visual expectations → rows in the `UI acceptance
      criteria` table (route, expected state, interaction flow,
      accessibility, responsive states).
-   - Open visual questions → `open-questions.html`, like any other
+   - Open visual questions → `open-questions.md`, like any other
      unresolved requirement.
 6. **Keep the link.** Reference image identifiers from requirements and
    acceptance criteria so the reviewer and the `ui-qa` skill can verify
@@ -76,7 +76,7 @@ Two rules govern everything this skill does:
 
 ## Output artifact
 
-A filled `Visual evidence` section in the spec's `requirements.html`
+A filled `Visual evidence` section in the spec's `requirements.md`
 (plus UI acceptance criteria rows where expectations are testable), with
 every entry traceable to a listed image.
 
@@ -89,7 +89,7 @@ every entry traceable to a listed image.
   real browser; provide the image identifiers it should compare
   against.
 - **Reviewer:** records the comparison results in the
-  `Visual verification` section of `review.html`.
+  `Visual verification` section of `review.md`.
 
 ## Safety constraints
 

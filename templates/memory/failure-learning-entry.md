@@ -3,7 +3,7 @@
 - **Date:** {{DATE}}
 - **Scope:** {{SCOPE}} <!-- project | global (global only with explicit approval) -->
 - **Trigger:** {{TRIGGER}} <!-- failed tests | reviewer finding | developer correction | wrong command/tool | out-of-scope edit | wrong API/framework pattern | repeated error -->
-- **Source:** {{SOURCE_TASK_SPEC_OR_REVIEW}} <!-- e.g. task ID, specs/<feature-slug>/review.html -->
+- **Source:** {{SOURCE_TASK_SPEC_OR_REVIEW}} <!-- e.g. task ID, specs/<feature-slug>/review.md -->
 
 ## What went wrong
 

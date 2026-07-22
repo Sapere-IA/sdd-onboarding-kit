@@ -5,7 +5,7 @@ set -euo pipefail
 # Adapt this script to the project's real task storage and source directories.
 # This script assumes local tasks.json and blocks edits to implementation files
 # when there is an active SDD task without human approval.
-# Edits to spec files (specs/, tasks.json, history.html, etc.) are always allowed.
+# Edits to spec files (specs/, tasks.json, history.md, etc.) are always allowed.
 #
 # KNOWN LIMITATION (deliberate, to keep the example simple): the guard is
 # project-wide, not per-task. If ANY sdd:true task is pending/spec_draft/
@@ -29,8 +29,8 @@ FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null |
 # Allow edits to SDD spec/config files regardless of task status.
 # These are the files that must be editable during spec_draft and spec_ready phases.
 case "$FILE_PATH" in
-  */specs/*|*/tasks.json|*/history.html|*/open-questions.html|*/requirements.html|\
-  */design.html|*/tasks.html|*/assumptions.html|*/acceptance-tests.html|*/review.html|\
+  */specs/*|*/tasks.json|*/history.md|*/open-questions.md|*/requirements.md|\
+  */design.md|*/tasks.md|*/assumptions.md|*/acceptance-tests.md|*/review.md|\
   */.claude/*)
     exit 0
     ;;
@@ -47,7 +47,7 @@ ACTIVE_UNAPPROVED=$(jq '[.tasks[]? | select(.sdd == true and (.status == "pendin
 if [[ "$ACTIVE_UNAPPROVED" -gt 0 ]]; then
   echo "Blocked by SDD policy: there is an SDD task awaiting spec approval." >&2
   echo "File attempted: ${FILE_PATH:-unknown}" >&2
-  echo "Only spec files (specs/, tasks.json, history.html, .claude/) are allowed until status is human_approved or in_progress." >&2
+  echo "Only spec files (specs/, tasks.json, history.md, .claude/) are allowed until status is human_approved or in_progress." >&2
   exit 2
 fi
 

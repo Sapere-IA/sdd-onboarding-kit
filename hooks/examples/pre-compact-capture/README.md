@@ -1,7 +1,7 @@
 # Pre-compact capture hook example (advisory)
 
 Reminds — before the context window is compacted — that durable state must
-live in artifacts (`tasks.json`, `specs/`, `decisions/`, `history.html`),
+live in artifacts (`tasks.json`, `specs/`, `decisions/`, `history.md`),
 not in chat history. Example only — **disabled by default**, like every
 kit hook.
 

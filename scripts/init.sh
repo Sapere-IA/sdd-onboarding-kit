@@ -7,7 +7,7 @@ cd "$PROJECT_DIR"
 echo "SDD init check"
 echo "Project: $PROJECT_DIR"
 
-required=("CLAUDE.md" ".claude/agents" ".claude/skills/sdd-workflow" "specs" "tasks.json" "history.html")
+required=("CLAUDE.md" ".claude/agents" ".claude/skills/sdd-workflow" "specs" "tasks.json" "history.md")
 
 missing=0
 for path in "${required[@]}"; do

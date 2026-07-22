@@ -1,0 +1,28 @@
+---
+doc: history
+title: SDD History
+---
+
+## Entries
+
+<!-- Append a new entry each time a task reaches done — newest first, immediately after the INSERT-ENTRY-HERE marker. Remove the "No entries yet." line when adding the first entry. Entry format:
+
+::: card
+#### TASK-001 — feature-slug [!ok done]
+
+- **Date:** YYYY-MM-DD
+- **Spec:** `specs/feature-slug/`
+- **Summary:** …
+- **Files changed:** …
+- **Tests run:** …
+- **Reviewer decision:** approved
+- **Human approval ref:** …
+- **Docs updated:** … (targets updated, or "not required")
+- **Decisions recorded:** … (entries accepted by the developer, or "none")
+- **Follow-ups:** … (or "none")
+:::
+-->
+
+<!-- INSERT-ENTRY-HERE -->
+
+No entries yet.

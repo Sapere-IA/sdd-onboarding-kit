@@ -22,7 +22,7 @@
 {{HIGH_RISK_RECORD_VISUAL_VERIFICATION_FRESHNESS_OR_NONE}}
 
 <!-- Notes for the generator (delete before use):
-- Build this from the task's review.html when it exists (git-discipline
+- Build this from the task's review.md when it exists (git-discipline
   skill: reviewer-output mapping) instead of re-deriving.
 - Review status must not claim more than the review supports — if review
   is pending, say "review pending", never imply approval.

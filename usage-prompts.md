@@ -21,7 +21,7 @@ Create a new SDD task for: <description>. First generate requirements/design/tas
 ## Approve a spec
 
 ```text
-I have reviewed the spec for `<feature-slug>` and I approve it. Change the status to `human_approved` and prepare the implementation following `tasks.html`.
+I have reviewed the spec for `<feature-slug>` and I approve it. Change the status to `human_approved` and prepare the implementation following `tasks.md`.
 ```
 
 ## Implement an approved spec
@@ -33,5 +33,17 @@ Implement feature `<feature-slug>` following the approved spec strictly. Run tes
 ## Review an implementation
 
 ```text
-Use the reviewer to validate the implementation of `<feature-slug>` against requirements.html, design.html and tasks.html. Run tests and tell me if it can be marked as done.
+Use the reviewer to validate the implementation of `<feature-slug>` against requirements.md, design.md and tasks.md. Run tests and tell me if it can be marked as done.
+```
+
+## Render a spec for reading
+
+```text
+Render the spec for `<feature-slug>` to HTML so I can review it in the browser.
+```
+
+## Update the SDD harness
+
+```text
+Run /sdd-update to bring this project's SDD harness up to date with the latest kit version. Show me what changed before applying anything.
 ```

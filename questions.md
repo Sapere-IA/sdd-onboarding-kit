@@ -30,7 +30,7 @@ If the developer accepts the profile, ask only: the §7 commands (never inferabl
 ## 2. Human approval policy
 
 1. Is human approval mandatory before implementation?
-2. Should Claude stop after creating `requirements.html`, `design.html`, and `tasks.html`?
+2. Should Claude stop after creating `requirements.md`, `design.md`, and `tasks.md`?
 3. Who approves specs: the current developer, a reviewer, or a team process?
 4. Can Claude revise specs after feedback without resetting the task?
 5. Should Claude be allowed to continue automatically after approval is recorded in `tasks.json`?
@@ -53,11 +53,18 @@ Additional questions:
 
 ## 4. Design format
 
-1. Should `design.html` include exact files/classes/functions to modify?
+1. Should `design.md` include exact files/classes/functions to modify?
 2. Should Claude propose alternatives before selecting a design?
 3. Should architecture impacts be mandatory?
 4. Should database/schema/API changes require an explicit migration section?
 5. Should performance, security, accessibility or observability be mandatory sections?
+
+## 4b. Spec rendering
+
+Ask only when Phase 1 could not decide (both Node and Python plausible, or neither detected):
+
+1. Which renderer should be installed — `scripts/render-spec.mjs` (Node) or `scripts/render_spec.py` (Python)?
+2. Rendered HTML is gitignored by default (markdown is the source of truth). Should rendered HTML be committed instead? (Only on explicit preference; record it in `decisions/answers.md`.)
 
 ## 5. Task format and storage
 
@@ -74,7 +81,7 @@ If using local storage:
 
 - What task ID format should be used?
 - Should task slugs be generated from titles?
-- Should completed tasks move to `history.html`?
+- Should completed tasks move to `history.md`?
 
 If using an external tracker:
 
@@ -176,7 +183,7 @@ Questions:
 
 ## 12. Documentation and history
 
-1. Should every completed task append to `history.html`?
+1. Should every completed task append to `history.md`?
 2. Where should architectural decisions be recorded? (Detailed in §17.)
 3. Should specs remain permanently, or be archived after completion?
 4. Should rejected design options be recorded? (Detailed in §17.)
@@ -278,7 +285,7 @@ Beyond it, ask:
       `decision-log` pack is selected; created from the kit's template).
    2. `docs/adr/` — if the project already uses ADRs, keep using them in
       the project's existing format and numbering.
-   3. Not recorded: decisions live only in specs and `history.html`.
+   3. Not recorded: decisions live only in specs and `history.md`.
 2. Should rejected options/designs be recorded in
    `decisions/rejected-options.md`? (Default: yes when the pack is
    selected — rejected alternatives are what future sessions most often

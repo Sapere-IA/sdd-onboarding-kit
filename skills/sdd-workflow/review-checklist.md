@@ -4,11 +4,16 @@ The reviewer must validate the implementation against the approved spec.
 
 ## 1. Spec completeness
 
-- [ ] `requirements.html` exists.
-- [ ] `design.html` exists.
-- [ ] `tasks.html` exists.
+- [ ] `requirements.md` exists.
+- [ ] `design.md` exists.
+- [ ] `tasks.md` exists.
 - [ ] Human approval is recorded if required.
 - [ ] No unresolved TODOs remain in approved requirements unless explicitly accepted.
+
+## 1b. Conciseness and duplication
+
+- [ ] No content is duplicated within a spec file or across the spec's files — shared content is referenced by ID (`REQ-001`, a section anchor), not restated. Duplication is a finding.
+- [ ] Spec files are concise: no filler narrative, no padded boilerplate sections; non-applicable sections are collapsed to a single `None.` / `Not applicable.` line.
 
 ## 2. Requirement traceability
 
@@ -22,7 +27,7 @@ For every functional requirement:
 
 ## 3. Design conformance
 
-- [ ] The implementation follows `design.html`.
+- [ ] The implementation follows `design.md`.
 - [ ] Files changed are listed in the design or justified.
 - [ ] Public APIs were not changed unexpectedly.
 - [ ] Data/schema changes are documented.
@@ -79,7 +84,7 @@ refactors, or data-loss risks (full policy:
 - [ ] For each category touched, a deeper review ran: at minimum a security-focused pass for security-relevant changes, and an adversarial second pass (independent reviewer per lens: security, correctness/edge cases, performance) where feasible.
 - [ ] Paid/limited review modes (cloud deep review, automated PR review services) were used only with explicit developer approval — and their absence did not block the task (the adversarial pass is the accepted substitute, with the substitution noted).
 - [ ] The deep-review output covers: security findings, performance findings, edge cases, reproduction attempts (reproduced vs theoretical, labeled), and a remediation plan with severities.
-- [ ] A high-risk change reviewed only at the standard level has the reason recorded in `review.html`.
+- [ ] A high-risk change reviewed only at the standard level has the reason recorded in `review.md`.
 
 ## 10. Decision
 

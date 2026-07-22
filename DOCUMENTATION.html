@@ -429,18 +429,21 @@
 │   ├── skills/sdd-workflow/
 │   │   ├── SKILL.md
 │   │   ├── … (8 supporting files)
-│   │   └── templates/ (spec HTML templates + spec.css + spec.js)
+│   │   └── templates/ (markdown spec templates + spec-shell.html.template + spec.css + spec.js)
+│   ├── skills/sdd-update/SKILL.md (self-update: run /sdd-update to pull new kit versions)
 │   ├── reference/ (policy files vendored from the kit, so links survive kit removal)
 │   ├── hooks/README.md
-│   └── settings.json
+│   ├── settings.json
+│   └── sdd-kit-manifest.json (kit version + per-file hashes, written last)
 ├── specs/
 ├── decisions/answers.md
 ├── tasks.json
-├── history.html
+├── history.md
 └── scripts/
     ├── init.sh
     ├── run-tests.sh
     ├── run-lint.sh
+    ├── render-spec.mjs (or render_spec.py — the spec renderer matching the project runtime)
     ├── validate-sdd-structure.sh
     └── validate-sdd-structure.ps1 (PowerShell port — for Windows-primary teams)</code></pre>
 
@@ -462,17 +465,17 @@
 
       <h3>Start a new feature</h3>
       <div class="prompt-box">Create a new SDD task for: &lt;description&gt;. First generate requirements/design/tasks and do not implement anything until I approve the spec.</div>
-      <p>Claude will create a task in <code>tasks.json</code>, create <code>specs/&lt;slug&gt;/requirements.html</code>, <code>design.html</code>, and <code>tasks.html</code>, then stop for your review.</p>
+      <p>Claude will create a task in <code>tasks.json</code>, create <code>specs/&lt;slug&gt;/requirements.md</code>, <code>design.md</code>, and <code>tasks.md</code>, then stop for your review.</p>
 
       <h3>Review and approve a spec</h3>
       <p>Open the HTML spec files under <code>specs/&lt;feature-slug&gt;/</code> in a browser. When satisfied:</p>
-      <div class="prompt-box">I have reviewed the spec for `&lt;feature-slug&gt;` and I approve it. Change the status to `human_approved` and prepare the implementation following `tasks.html`.</div>
+      <div class="prompt-box">I have reviewed the spec for `&lt;feature-slug&gt;` and I approve it. Change the status to `human_approved` and prepare the implementation following `tasks.md`.</div>
 
       <h3>Implement an approved spec</h3>
       <div class="prompt-box">Implement feature `&lt;feature-slug&gt;` following the approved spec strictly. Run tests and leave traceability of what you changed.</div>
 
       <h3>Review an implementation</h3>
-      <div class="prompt-box">Use the reviewer to validate the implementation of `&lt;feature-slug&gt;` against requirements.html, design.html and tasks.html. Run tests and tell me if it can be marked as done.</div>
+      <div class="prompt-box">Use the reviewer to validate the implementation of `&lt;feature-slug&gt;` against requirements.md, design.md and tasks.md. Run tests and tell me if it can be marked as done.</div>
     </section>
 
     <hr>
@@ -517,26 +520,25 @@
       <h2>6. Spec format</h2>
       <p>Each feature gets a directory under <code>specs/</code>:</p>
       <pre><code>specs/&lt;feature-slug&gt;/
-├── requirements.html
-├── design.html
-├── tasks.html
-├── assumptions.html       (when derived from a functional document)
-├── open-questions.html    (when derived from a functional document)
-├── acceptance-tests.html  (when derived from a functional document)
-├── review.html            (written by the reviewer)
-├── spec.css               (shared stylesheet)
-└── spec.js                (collapsible sections, TOC, tabs)</code></pre>
+├── requirements.md
+├── design.md
+├── tasks.md
+├── assumptions.md       (when derived from a functional document)
+├── open-questions.md    (when derived from a functional document)
+├── acceptance-tests.md  (when derived from a functional document)
+└── review.md            (written by the reviewer)</code></pre>
+      <p>Spec files are <strong>markdown with YAML frontmatter</strong> — the source of truth, cheap for the model to read and write. A zero-dependency renderer (<code>scripts/render-spec.mjs</code> for Node projects, <code>scripts/render_spec.py</code> for Python projects) converts them on demand into styled, self-contained HTML for human review; the rendered <code>.html</code> files are gitignored artifacts. Markdown conventions (requirement rows, verdict markers, task status markers, cards) live in <code>spec-format.md</code>. Each file owns one content type and references the others by ID — duplicated content is a review finding.</p>
 
-      <h3>requirements.html</h3>
+      <h3>requirements.md</h3>
       <p>Defines observable behavior. Supported formats: EARS, user stories, Given/When/Then, numbered requirements.</p>
 
-      <h3>design.html</h3>
+      <h3>design.md</h3>
       <p>Translates requirements into a technical plan. Contains files to change, interfaces, data model changes, test design, risks, rollback plan, and an inline SVG data-flow diagram.</p>
 
-      <h3>tasks.html</h3>
+      <h3>tasks.md</h3>
       <p>An ordered milestone view with status badges. Each task references requirements. Test and validation tasks are included.</p>
 
-      <h3>review.html</h3>
+      <h3>review.md</h3>
       <p>Written by the reviewer. Contains a color-coded traceability table (blocking / warning / ok), commands run, findings, and a final decision.</p>
     </section>
 
@@ -550,13 +552,13 @@
       <p>The routing advisor. Reads task state and returns which specialist the main conversation should invoke next (subagents cannot invoke other subagents in Claude Code, so orchestration happens in the main conversation, guided by the <code>sdd-workflow</code> skill). Never writes production code, recommends stopping for human approval at <code>spec_ready</code>.</p>
 
       <h3>Spec Author</h3>
-      <p>Writes and revises specs. Produces <code>requirements.html</code>, <code>design.html</code>, <code>tasks.html</code>. When working from a functional document also produces <code>assumptions.html</code>, <code>open-questions.html</code>, and <code>acceptance-tests.html</code>.</p>
+      <p>Writes and revises specs. Produces <code>requirements.md</code>, <code>design.md</code>, <code>tasks.md</code>. When working from a functional document also produces <code>assumptions.md</code>, <code>open-questions.md</code>, and <code>acceptance-tests.md</code>.</p>
 
       <h3>Implementer</h3>
       <p>The only agent allowed to write production code. Implements in task order, adds tests, runs validation, marks tasks complete. Does not deviate from the spec without asking.</p>
 
       <h3>Reviewer</h3>
-      <p>Validates that the implementation satisfies the spec. Checks requirement coverage, test coverage, design adherence, conventions. Writes <code>review.html</code> with one of: <span class="badge badge-ok">approved</span>, <span class="badge badge-blocking">rejected</span>, <span class="badge badge-warning">needs_changes</span>. After approving, decides whether documentation updates are required and re-checks them before the task can become <code>done</code> (see <a href="#documentation-phase">§22</a>).</p>
+      <p>Validates that the implementation satisfies the spec. Checks requirement coverage, test coverage, design adherence, conventions. Writes <code>review.md</code> with one of: <span class="badge badge-ok">approved</span>, <span class="badge badge-blocking">rejected</span>, <span class="badge badge-warning">needs_changes</span>. After approving, decides whether documentation updates are required and re-checks them before the task can become <code>done</code> (see <a href="#documentation-phase">§22</a>).</p>
 
       <h3>Documenter</h3>
       <p>Updates the documentation affected by a reviewed task — after technical review (so docs describe the implementation as reviewed) and before <code>done</code> (so docs are not forgotten). Updates only the targets the reviewer listed, cites the source spec/task, never documents unreviewed details, and reports back for the reviewer's docs re-check (see <a href="#documentation-phase">§22</a>).</p>
@@ -585,7 +587,7 @@
         <tbody>
           <tr><td>Block implementation before approval</td><td><code>PreToolUse</code> on Edit/Write</td><td>Blocking</td><td>Prevents code edits while an SDD task is <code>pending</code>, <code>spec_draft</code>, or <code>spec_ready</code>; spec/harness files stay editable.</td></tr>
           <tr><td>Run tests after edits</td><td><code>PostToolUse</code> on Edit/Write</td><td>Advisory</td><td>Runs the configured test suite after source edits; never blocks.</td></tr>
-          <tr><td>Validate spec before status change</td><td><code>PreToolUse</code></td><td>Blocking</td><td>Ensures <code>requirements.html</code>, <code>design.html</code>, and <code>tasks.html</code> exist before a task moves to <code>spec_ready</code>.</td></tr>
+          <tr><td>Validate spec before status change</td><td><code>PreToolUse</code></td><td>Blocking</td><td>Ensures <code>requirements.md</code>, <code>design.md</code>, and <code>tasks.md</code> exist before a task moves to <code>spec_ready</code>.</td></tr>
           <tr><td>Block destructive commands</td><td><code>PreToolUse</code> on Bash</td><td>Blocking</td><td>Intercepts <code>rm -rf</code>, <code>git reset --hard</code>, <code>drop database</code>, and similar.</td></tr>
           <tr><td>Notify for human approval</td><td><code>Stop</code> / <code>Notification</code></td><td>Advisory</td><td>Alerts you when Claude stops waiting for spec approval (environment-specific).</td></tr>
           <tr><td>Failure-learning suggestion (<a href="#failure-learning">§21</a>)</td><td><code>PostToolUse</code> on Bash</td><td>Advisory</td><td>After the same validation command fails twice, reminds Claude that the failure-learning skill exists; never writes memory.</td></tr>
@@ -714,13 +716,13 @@
       <div class="prompt-box">Create a new SDD task for: &lt;description&gt;. First generate requirements/design/tasks and do not implement anything until I approve the spec.</div>
 
       <h3>Approve a spec</h3>
-      <div class="prompt-box">I have reviewed the spec for `&lt;feature-slug&gt;` and I approve it. Change the status to `human_approved` and prepare the implementation following `tasks.html`.</div>
+      <div class="prompt-box">I have reviewed the spec for `&lt;feature-slug&gt;` and I approve it. Change the status to `human_approved` and prepare the implementation following `tasks.md`.</div>
 
       <h3>Implement an approved spec</h3>
       <div class="prompt-box">Implement feature `&lt;feature-slug&gt;` following the approved spec strictly. Run tests and leave traceability of what you changed.</div>
 
       <h3>Review an implementation</h3>
-      <div class="prompt-box">Use the reviewer to validate the implementation of `&lt;feature-slug&gt;` against requirements.html, design.html and tasks.html. Run tests and tell me if it can be marked as done.</div>
+      <div class="prompt-box">Use the reviewer to validate the implementation of `&lt;feature-slug&gt;` against requirements.md, design.md and tasks.md. Run tests and tell me if it can be marked as done.</div>
 
       <h3>Convert a functional document to a spec</h3>
       <div class="prompt-box">Here is the functional document for &lt;feature&gt;. Convert it into an SDD spec. Do not implement anything until I approve.</div>
@@ -837,7 +839,7 @@
         </tbody>
       </table>
 
-      <p>In an SDD project, compaction and session resets are safe by design: durable truth lives in <code>tasks.json</code>, <code>specs/</code>, decision logs, and <code>history.html</code>, not in chat history. If something matters beyond the session, write it to an artifact before compacting.</p>
+      <p>In an SDD project, compaction and session resets are safe by design: durable truth lives in <code>tasks.json</code>, <code>specs/</code>, decision logs, and <code>history.md</code>, not in chat history. If something matters beyond the session, write it to an artifact before compacting.</p>
       <p>Command behavior verified against the Claude Code commands reference (2026-06): <code>/context [all]</code>, <code>/compact [instructions]</code>.</p>
     </section>
 
@@ -886,7 +888,7 @@ Node 22, Express 5, Prisma 6, PostgreSQL 16 (docker compose).
 prisma/migrations/, .env*, .github/workflows/
 
 ## SDD locations
-tasks.json · specs/&lt;feature-slug&gt;/ · history.html · decisions/
+tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
 
 ## Generated files and do-not-edit
 | src/generated/** | regenerate via npm run codegen, never edit |</code></pre>
@@ -997,7 +999,7 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.html · decisions/
       <p>These are illustrations — the generated skill always uses the project's verified commands, never assumed ones.</p>
 
       <h3>Review integration</h3>
-      <p>When the skill is installed, the review flow depends on it: the implementer runs validation through it before moving a task to <code>review</code> (<code>agents/implementer.md</code>), and the reviewer verifies that applicable checks were run through it, with the evidence — commands run, results, unverified items — recorded in <code>review.html</code> (<code>agents/reviewer.md</code>, review checklist §4). TODO entries in the skill surface as explicitly unverified items, never as silent gaps.</p>
+      <p>When the skill is installed, the review flow depends on it: the implementer runs validation through it before moving a task to <code>review</code> (<code>agents/implementer.md</code>), and the reviewer verifies that applicable checks were run through it, with the evidence — commands run, results, unverified items — recorded in <code>review.md</code> (<code>agents/reviewer.md</code>, review checklist §4). TODO entries in the skill surface as explicitly unverified items, never as silent gaps.</p>
 
       <h3>Secrets</h3>
       <p>The generated skill never stores secret values. Environment variables appear by name only; values come from the developer's local environment or the project's documented mechanism. This applies to verification evidence too: never paste tokens, credentials, or secret-bearing output into specs, reviews, or the skill itself. Verification runs against local/test environments — never production without explicit instruction.</p>
@@ -1032,7 +1034,7 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.html · decisions/
         <li><strong>Deprecated APIs avoided</strong> — deprecations or breaking changes found and how the design avoids them;</li>
         <li><strong>Compatibility notes</strong> — migration steps, behavior changes, peer-dependency constraints.</li>
       </ul>
-      <p>The spec-author fills this section when authoring the design (<code>agents/spec-author.md</code>). If verification happens or changes during implementation, the reviewer records the updated evidence in <code>review.html</code>. The reviewer verifies the evidence as checklist item 10 (<code>agents/reviewer.md</code>) and via the safety section of <code>skills/sdd-workflow/review-checklist.md</code>.</p>
+      <p>The spec-author fills this section when authoring the design (<code>agents/spec-author.md</code>). If verification happens or changes during implementation, the reviewer records the updated evidence in <code>review.md</code>. The reviewer verifies the evidence as checklist item 10 (<code>agents/reviewer.md</code>) and via the safety section of <code>skills/sdd-workflow/review-checklist.md</code>.</p>
 
       <h3>Usage example</h3>
       <p><em>"Upgrade the project from Express 4 to Express 5."</em> Framework upgrade → required tier. The spec-author checks the current Express 5 migration guide, records the source and date, notes the removed/renamed APIs the design avoids, and lists behavior changes in the compatibility notes. The reviewer blocks approval if that section is missing or cites only training-data knowledge.</p>
@@ -1063,8 +1065,8 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.html · decisions/
           <tr><td>Auto memory</td><td><code>~/.claude/projects/&lt;project&gt;/memory/</code></td><td>One project, one user</td><td>No</td><td>Claude Code's own session memory; under this policy, durable project knowledge goes to versioned artifacts instead.</td></tr>
           <tr><td>Project memory — instructions</td><td><code>CLAUDE.md</code> (team) / <code>CLAUDE.local.md</code> (personal, gitignored)</td><td>One project</td><td>Yes / No</td><td>Short load-bearing rules every session needs.</td></tr>
           <tr><td>Project memory — decision logs</td><td><code>decisions/</code></td><td>One project</td><td>Yes</td><td>Reusable lessons, architectural and workflow decisions (see <a href="#decision-logs">§23</a>). <strong>Preferred default.</strong></td></tr>
-          <tr><td>Task history</td><td><code>history.html</code></td><td>One project</td><td>Yes</td><td>Completed-work summaries.</td></tr>
-          <tr><td>Review notes</td><td><code>specs/&lt;feature-slug&gt;/review.html</code></td><td>One task</td><td>Yes</td><td>One-off findings that do not generalize.</td></tr>
+          <tr><td>Task history</td><td><code>history.md</code></td><td>One project</td><td>Yes</td><td>Completed-work summaries.</td></tr>
+          <tr><td>Review notes</td><td><code>specs/&lt;feature-slug&gt;/review.md</code></td><td>One task</td><td>Yes</td><td>One-off findings that do not generalize.</td></tr>
         </tbody>
       </table>
       <p>Global memory is the most expensive and most dangerous layer: it loads into every session of every project, so a project-specific rule written there contaminates unrelated work. Project-specific lessons therefore go to project memory by default; global memory only when the developer explicitly chooses it for a genuinely project-independent lesson.</p>
@@ -1074,7 +1076,7 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.html · decisions/
         <li>Never store secrets, credentials, tokens, or connection strings in any memory layer.</li>
         <li>Never store personal or private data unrelated to the project.</li>
         <li>Never put project-specific rules in global memory without explicit approval of exactly that.</li>
-        <li>Everything in <code>decisions/</code>, <code>history.html</code>, or <code>CLAUDE.md</code> is visible to everyone with repo access — write accordingly.</li>
+        <li>Everything in <code>decisions/</code>, <code>history.md</code>, or <code>CLAUDE.md</code> is visible to everyone with repo access — write accordingly.</li>
         <li>Speculative, unconfirmed conclusions are not memorized.</li>
       </ul>
       <p>Memory locations verified against the Claude Code docs (2026-06): user memory <code>~/.claude/CLAUDE.md</code>; project <code>CLAUDE.md</code> / <code>CLAUDE.local.md</code>; auto memory directory with <code>MEMORY.md</code> index, managed via the <code>/memory</code> command.</p>
@@ -1134,7 +1136,7 @@ Where to apply: src/services tests. Where not: unit tests of pure helpers.</code
 Title: Be more careful with tests
 What went wrong: tests failed.
 Rule: always double-check everything before running tests.</code></pre>
-      <p>The bad entry has no trigger, no scope boundary, no source, and no rule anyone can apply. The reviewer can recommend a failure-learning entry in <code>review.html</code>; the proposal still goes through the prompt above.</p>
+      <p>The bad entry has no trigger, no scope boundary, no source, and no rule anyone can apply. The reviewer can recommend a failure-learning entry in <code>review.md</code>; the proposal still goes through the prompt above.</p>
 
       <h3>Advisory hook</h3>
       <p>An optional example hook (<code>hooks/examples/failure-learning/</code>, disabled by default like all kit hooks) watches validation commands and — when the same command fails more than once in a session — injects a reminder that the skill exists. It is strictly advisory: it never writes memory or project files, never blocks, and fails open without <code>jq</code>. See <a href="#hooks">§8</a> for the kit's general hook rules.</p>
@@ -1167,9 +1169,9 @@ Rule: always double-check everything before running tests.</code></pre>
           <tr><th>Reviewer</th><th>Documenter</th></tr>
         </thead>
         <tbody>
-          <tr><td>Decides whether documentation is required and lists the exact targets in <code>review.html</code> and the task fields.</td><td>Updates only the listed targets (plus factually stale docs it discovers — reported as additions).</td></tr>
+          <tr><td>Decides whether documentation is required and lists the exact targets in <code>review.md</code> and the task fields.</td><td>Updates only the listed targets (plus factually stale docs it discovers — reported as additions).</td></tr>
           <tr><td>Blocks <code>done</code> while required documentation is pending.</td><td>Describes the implementation as reviewed — never unmerged, rejected, or speculative details.</td></tr>
-          <tr><td>Re-checks the updated docs: targets covered or justified, text matches the reviewed implementation, no secrets.</td><td>Cites/links the source spec/task where the format allows; appends the <code>history.html</code> entry; never exposes secrets.</td></tr>
+          <tr><td>Re-checks the updated docs: targets covered or justified, text matches the reviewed implementation, no secrets.</td><td>Cites/links the source spec/task where the format allows; appends the <code>history.md</code> entry; never exposes secrets.</td></tr>
           <tr><td>Sets the final <code>documentation_status</code>.</td><td>Reports updated vs unaffected targets for the re-check; never marks the task <code>done</code>.</td></tr>
         </tbody>
       </table>
@@ -1189,7 +1191,7 @@ Rule: always double-check everything before running tests.</code></pre>
           <tr><td>README</td><td>changes quick start, installation, top-level usage, or feature overview.</td></tr>
           <tr><td>API docs</td><td>changes endpoints, request/response shapes, public function signatures, or error semantics.</td></tr>
           <tr><td>Setup docs</td><td>changes required services, environment variable names, install steps, or local dev workflow.</td></tr>
-          <tr><td>Changelog / history</td><td>completes any user-visible change; <code>history.html</code> always gets the completed-task entry.</td></tr>
+          <tr><td>Changelog / history</td><td>completes any user-visible change; <code>history.md</code> always gets the completed-task entry.</td></tr>
           <tr><td>ADRs</td><td>made or reversed an architectural decision (see <a href="#decision-logs">§23</a>).</td></tr>
           <tr><td>Migration notes</td><td>requires action from users/operators when upgrading (schema, config, breaking changes).</td></tr>
           <tr><td>Project map</td><td>changed structure significantly: new top-level directory, moved entrypoint, changed commands, new protected area.</td></tr>
@@ -1198,7 +1200,7 @@ Rule: always double-check everything before running tests.</code></pre>
       </table>
 
       <h3>Usage example</h3>
-      <p>A task adds a <code>--json</code> flag to a CLI. The reviewer approves the code and sets <code>documentation_required: true</code> with targets <code>["README", "user docs", "history.html"]</code>. The documenter updates the README flag table and the usage guide, appends the history entry citing the task ID, and reports that API docs were unaffected (no API change). The reviewer re-checks the three targets, sets <code>documentation_status: "updated"</code>, and marks the task <code>done</code>.</p>
+      <p>A task adds a <code>--json</code> flag to a CLI. The reviewer approves the code and sets <code>documentation_required: true</code> with targets <code>["README", "user docs", "history.md"]</code>. The documenter updates the README flag table and the usage guide, appends the history entry citing the task ID, and reports that API docs were unaffected (no API change). The reviewer re-checks the three targets, sets <code>documentation_status: "updated"</code>, and marks the task <code>done</code>.</p>
 
       <h3>Safety</h3>
       <ul>
@@ -1226,7 +1228,7 @@ Rule: always double-check everything before running tests.</code></pre>
       <h3>How entries get proposed</h3>
       <ol>
         <li>The <strong>spec-author</strong> reports significant decisions and rejected alternatives when a spec is ready for approval.</li>
-        <li>The <strong>reviewer</strong> flags decisions settled during implementation or review in <code>review.html</code> (or records <code>None</code> — review checklist §8).</li>
+        <li>The <strong>reviewer</strong> flags decisions settled during implementation or review in <code>review.md</code> (or records <code>None</code> — review checklist §8).</li>
         <li>At completion, Claude proposes the exact entry text; the developer approves, revises, or declines. <strong>Nothing is written without approval.</strong></li>
         <li>A decision that replaces an earlier one marks the old entry as superseded — entries are never silently deleted.</li>
       </ol>
@@ -1247,7 +1249,7 @@ Rule: always double-check everything before running tests.</code></pre>
         <tbody>
           <tr><td>Decision logs (<code>decisions/</code>, <code>docs/adr/</code>)</td><td>Why is it built this way? What was rejected and why?</td><td>A spec, review, or discussion settles a durable decision.</td></tr>
           <tr><td>Failure-learning entries (<a href="#failure-learning">§21</a>)</td><td>What mistake must not be repeated?</td><td>After a meaningful mistake, via the confirmation prompt.</td></tr>
-          <tr><td><code>history.html</code></td><td>What was done, when, by which task?</td><td>Every task completion.</td></tr>
+          <tr><td><code>history.md</code></td><td>What was done, when, by which task?</td><td>Every task completion.</td></tr>
           <tr><td><code>specs/&lt;feature-slug&gt;/</code></td><td>What was required and designed for one feature?</td><td>During the spec phase of that feature.</td></tr>
           <tr><td>Global memory (<a href="#memory-policy">§20</a>)</td><td>What does this user prefer across all projects?</td><td>Only with explicit approval; never project-specific rules.</td></tr>
         </tbody>
@@ -1314,7 +1316,7 @@ mcpServers:
       <p>The requirements template carries an optional <code>UI acceptance criteria</code> section — target route, expected visual state, interaction flow, accessibility checks, responsive states, login/auth constraints, plus referenced screenshots/mockups — and the design template an optional <code>UI verification plan</code>. Both state <code>None</code> for non-UI changes. Screenshots are evidence, not complete requirements: when visual intent is ambiguous, the spec-author asks.</p>
 
       <h3>Usage example</h3>
-      <p>A task restyles the checkout form. The spec lists <code>UI-001: route /checkout, all fields visible at 375px width, submit disabled until valid, error summary announced to screen readers</code>. The reviewer (or the <code>ui-qa</code> skill) invokes <code>browser-tester</code>; it starts the dev server, walks the criterion at the named viewport, captures a screenshot, and returns <code>UI-001: pass</code> with the evidence — which lands in <code>review.html</code>.</p>
+      <p>A task restyles the checkout form. The spec lists <code>UI-001: route /checkout, all fields visible at 375px width, submit disabled until valid, error summary announced to screen readers</code>. The reviewer (or the <code>ui-qa</code> skill) invokes <code>browser-tester</code>; it starts the dev server, walks the criterion at the named viewport, captures a screenshot, and returns <code>UI-001: pass</code> with the evidence — which lands in <code>review.md</code>.</p>
 
       <h3>Safety</h3>
       <ul>
@@ -1443,7 +1445,7 @@ mcpServers:
         <li><strong>Recommended:</strong> an adversarial second pass — at least one independent reviewer subagent per relevant lens (security, correctness/edge cases, performance), each trying to refute the implementation rather than confirm it.</li>
         <li><strong>Optional, if available and the developer approves the cost:</strong> cloud deep review or an automated PR review service — never run without explicit approval per invocation.</li>
       </ol>
-      <p>Rungs 1–2 use only included features, so the policy works on every plan. If a paid mode is unavailable or declined, rung 2 is the accepted substitute — noted in <code>review.html</code>; a missing paid feature never blocks a task.</p>
+      <p>Rungs 1–2 use only included features, so the policy works on every plan. If a paid mode is unavailable or declined, rung 2 is the accepted substitute — noted in <code>review.md</code>; a missing paid feature never blocks a task.</p>
 
       <h3>Output expectations</h3>
       <p>Whatever the mode, a deep review reports explicitly: <strong>security findings</strong> (<code>None found</code> is a valid result, silence is not), <strong>performance findings</strong>, <strong>edge cases</strong> (each mapped to a requirement or flagged as a spec gap), <strong>reproduction attempts</strong> (reproduced vs theoretical, labeled), and a <strong>remediation plan</strong> (per finding: severity, suggested fix, blocking or not). Blocking findings return the task to <code>in_progress</code>; the rest follow the normal resolve-or-defer rule before <code>done</code>.</p>
@@ -1451,7 +1453,7 @@ mcpServers:
       <h3>Integration with the workflow</h3>
       <ul>
         <li><strong>Spec-author:</strong> marks high-risk categories in the design (<code>agents/spec-author.md</code>) so the recommendation precedes implementation.</li>
-        <li><strong>Reviewer (<a href="#subagents">§7</a>):</strong> runs checklist §9 <code>High-risk review</code>, recommends the rung, records which rungs ran and their findings in <code>review.html</code> — one review record per task, whatever mix of modes produced it. A high-risk change reviewed only at rung 1 without a recorded reason is a checklist failure.</li>
+        <li><strong>Reviewer (<a href="#subagents">§7</a>):</strong> runs checklist §9 <code>High-risk review</code>, recommends the rung, records which rungs ran and their findings in <code>review.md</code> — one review record per task, whatever mix of modes produced it. A high-risk change reviewed only at rung 1 without a recorded reason is a checklist failure.</li>
         <li><strong>Documentation phase (<a href="#documentation-phase">§22</a>):</strong> unchanged — deep-review findings that alter behavior or APIs feed the documentation targets like any other finding.</li>
         <li><strong>State machine (<a href="#task-lifecycle">§5</a>):</strong> unchanged — <code>review → done</code> still requires the reviewer's decision plus the docs check, and autonomous workflows still cannot perform the transition (<a href="#autonomy-policy">§26</a>).</li>
       </ul>
@@ -1468,8 +1470,8 @@ mcpServers:
 
       <h3>Where the evidence lives</h3>
       <ul>
-        <li><strong><code>requirements.html</code> — <code>Visual evidence</code> section:</strong> image inventory (ID, what it shows, provenance, intent), affected routes/components, observed behavior, expected behavior. Testable expectations go to the <code>UI acceptance criteria</code> table (<a href="#browser-testing">§24</a>), referencing image IDs; unresolved visual questions go to <code>open-questions.html</code>.</li>
-        <li><strong><code>review.html</code> — <code>Visual verification</code> section:</strong> criterion/image → evidence → result (pass / fail with the observed difference / not verifiable with why), so UI changes are reviewed against the same screenshots the spec was built from.</li>
+        <li><strong><code>requirements.md</code> — <code>Visual evidence</code> section:</strong> image inventory (ID, what it shows, provenance, intent), affected routes/components, observed behavior, expected behavior. Testable expectations go to the <code>UI acceptance criteria</code> table (<a href="#browser-testing">§24</a>), referencing image IDs; unresolved visual questions go to <code>open-questions.md</code>.</li>
+        <li><strong><code>review.md</code> — <code>Visual verification</code> section:</strong> criterion/image → evidence → result (pass / fail with the observed difference / not verifiable with why), so UI changes are reviewed against the same screenshots the spec was built from.</li>
       </ul>
 
       <h3>The four input kinds</h3>
@@ -1524,19 +1526,19 @@ mcpServers:
       <p>The pack installs three templates (kit source <code>templates/git/</code> → project <code>.claude/skills/git-discipline/templates/</code>, adapted to the §8 answers during onboarding):</p>
       <ul>
         <li><strong>Commit message</strong> — type + imperative summary, the why in the body, and the task/spec reference. Example:<br><code>feat: add per-tenant rate limiting</code><br><code></code><br><code>Protects the public API from cross-tenant exhaustion; limits are</code><br><code>read from tenant config with a global fallback.</code><br><code></code><br><code>Task: T-042 (specs/rate-limiting/)</code></li>
-        <li><strong>PR description</strong> — Summary / Spec / Checks run / Review status / Safety notes. Generated from the task's <code>review.html</code> (traceability table → summary, <code>Commands run</code> → checks, <code>Decision</code> → review status, high-risk record + visual verification + freshness evidence → safety notes). A PR description must not claim more than the review supports — pending review reads "review pending", never implied approval.</li>
+        <li><strong>PR description</strong> — Summary / Spec / Checks run / Review status / Safety notes. Generated from the task's <code>review.md</code> (traceability table → summary, <code>Commands run</code> → checks, <code>Decision</code> → review status, high-risk record + visual verification + freshness evidence → safety notes). A PR description must not claim more than the review supports — pending review reads "review pending", never implied approval.</li>
         <li><strong>Release note / changelog snippet</strong> — user-visible behavior only, project's changelog categories, breaking changes clearly marked; internal task mechanics stay out.</li>
       </ul>
 
       <h3>Integration</h3>
-      <p>The reviewer keeps <code>review.html</code> sections complete so PR text can be generated without re-deriving evidence (<code>agents/reviewer.md</code>). The git policy itself is recorded during onboarding (<code>questions.md</code> §8: branch naming, commit cadence, task references, whether Claude may commit/push at all) and lives in the project's <code>CLAUDE.md</code> — the skill reads it, never overrides it. Branch protection and merge gates remain the platform's job: the skill's rules are discipline on top of, not a substitute for, repository settings.</p>
+      <p>The reviewer keeps <code>review.md</code> sections complete so PR text can be generated without re-deriving evidence (<code>agents/reviewer.md</code>). The git policy itself is recorded during onboarding (<code>questions.md</code> §8: branch naming, commit cadence, task references, whether Claude may commit/push at all) and lives in the project's <code>CLAUDE.md</code> — the skill reads it, never overrides it. Branch protection and merge gates remain the platform's job: the skill's rules are discipline on top of, not a substitute for, repository settings.</p>
     </section>
 
     <hr>
 
     <section id="session-recovery">
       <h2>30. Session recovery</h2>
-      <p>Sessions get interrupted, go stale, or go wrong. Claude Code ships recovery features for all three — and one rule keeps them safe in an SDD project: <strong>durable artifacts are the source of truth, never chat history.</strong> <code>tasks.json</code> holds task state, <code>specs/</code> holds requirements and design, <code>review.html</code> holds verdicts, decision logs hold settled decisions, <code>history.html</code> holds what already happened. A summary, restored checkpoint, or resumed conversation is a convenience for reorienting — anything it claims is verified against the artifacts before acting on it. Full guidance: <code>reference/session-recovery.md</code>.</p>
+      <p>Sessions get interrupted, go stale, or go wrong. Claude Code ships recovery features for all three — and one rule keeps them safe in an SDD project: <strong>durable artifacts are the source of truth, never chat history.</strong> <code>tasks.json</code> holds task state, <code>specs/</code> holds requirements and design, <code>review.md</code> holds verdicts, decision logs hold settled decisions, <code>history.md</code> holds what already happened. A summary, restored checkpoint, or resumed conversation is a convenience for reorienting — anything it claims is verified against the artifacts before acting on it. Full guidance: <code>reference/session-recovery.md</code>.</p>
 
       <h3>What exists</h3>
       <p>Capability-level summary (names verified against the official docs in June 2026 — re-verify before relying on exact syntax): a recap command summarizes the session (and an automatic recap appears after time away); rewind/checkpoints restore the conversation, the code, or both to an earlier point — but track only Claude's direct file edits, <em>not</em> bash side effects, manual edits, or concurrent sessions (local undo, not version control — git stays authoritative); resume flags reopen the most recent session or offer a picker (sessions do not sync across machines); branching forks a conversation to try an alternative; compaction with focus instructions controls what survives summarization; Esc stops the current turn immediately; full transcripts stay on disk with limited retention.</p>
@@ -1547,9 +1549,9 @@ mcpServers:
           <tr><th>Situation</th><th>Practice</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>Resuming after days away</strong></td><td>Read the recap to find where to look, then verify against the artifacts before doing anything: <code>tasks.json</code> for actual task status, the active spec for what is approved, the latest review for open findings, <code>history.html</code> for what was completed. If recap and artifacts disagree, the artifacts win.</td></tr>
+          <tr><td><strong>Resuming after days away</strong></td><td>Read the recap to find where to look, then verify against the artifacts before doing anything: <code>tasks.json</code> for actual task status, the active spec for what is approved, the latest review for open findings, <code>history.md</code> for what was completed. If recap and artifacts disagree, the artifacts win.</td></tr>
           <tr><td><strong>Claude went in a wrong direction for several turns</strong></td><td>Rewind to the fork — restored context is cleaner than corrected context. Then check what the rewind could <em>not</em> revert: bash side effects (deleted files, installed packages, run migrations) survive checkpoints. <code>git status</code>/<code>git diff</code> show what was actually restored; recover anything else through git.</td></tr>
-          <tr><td><strong>Execution drifting mid-task</strong></td><td>Stop the turn early (Esc) as soon as the direction is visibly wrong — drift compounds, and every in-chat correction pollutes context further. Reprompt with a reference to the governing artifact ("follow <code>specs/&lt;slug&gt;/design.html</code> section X"), not a long correction. If the session is cluttered with failed attempts, rewind past them or compact with focus instructions.</td></tr>
+          <tr><td><strong>Execution drifting mid-task</strong></td><td>Stop the turn early (Esc) as soon as the direction is visibly wrong — drift compounds, and every in-chat correction pollutes context further. Reprompt with a reference to the governing artifact ("follow <code>specs/&lt;slug&gt;/design.md</code> section X"), not a long correction. If the session is cluttered with failed attempts, rewind past them or compact with focus instructions.</td></tr>
           <tr><td><strong>Compacting between tasks</strong></td><td>Compact with focus instructions naming what must survive (decisions, task status, constraints, unresolved questions). Anything durable should already be in artifacts — the pre-compact capture hook (<a href="#hooks">§8</a>) reminds about exactly this, and the <code>CLAUDE.md</code> session-recovery rule covers reorientation afterwards.</td></tr>
         </tbody>
       </table>
@@ -1558,9 +1560,9 @@ mcpServers:
       <ol>
         <li><code>tasks.json</code> — status of the task at hand, and anything marked <code>in_progress</code>.</li>
         <li>The active spec under <code>specs/&lt;slug&gt;/</code> — as approved, not as remembered.</li>
-        <li>The latest <code>review.html</code> — unresolved blocking/non-blocking findings.</li>
+        <li>The latest <code>review.md</code> — unresolved blocking/non-blocking findings.</li>
         <li><code>git status</code> + current diff — actual uncommitted changes, including anything a rewind could not revert.</li>
-        <li>Decision logs / <code>history.html</code> — decisions settled since the context you remember.</li>
+        <li>Decision logs / <code>history.md</code> — decisions settled since the context you remember.</li>
       </ol>
       <p>When conversation memory and any artifact disagree, trust the artifact and say so explicitly before continuing. The generated project <code>CLAUDE.md</code> carries this as a standing rule (<code>templates/CLAUDE.md.template</code>, <code>Session recovery</code> section).</p>
 
@@ -1616,19 +1618,19 @@ mcpServers:
       <h2>32. Templates and generated artifacts</h2>
       <p>A harness is only effective if its rules show up in the artifacts Claude actually writes and reviews. The spec templates (kit source <code>templates/specs/</code>, installed to <code>.claude/skills/sdd-workflow/templates/</code>) therefore carry every policy as a section in the generated files. Two conventions keep simple tasks simple: <strong>every optional section accepts <code>None</code></strong> (one word, not an empty table), and the optional closing tasks ship as a commented block that is copied in only when the design says it applies.</p>
 
-      <h3>requirements.html</h3>
+      <h3>requirements.md</h3>
       <p>Always: summary, functional/non-functional requirements, edge cases, error states, acceptance criteria, requirement-to-test mapping. Optional (fill or <code>None</code>): <strong>UI acceptance criteria</strong> and <strong>Visual evidence</strong> (<a href="#visual-evidence">§28</a>) when a browser UI or images are involved; <strong>External dependencies and APIs</strong> — the requirements-level inventory of touched systems (verification evidence lives in the design); <strong>Documentation expectations</strong> — which docs the feature will likely affect (the reviewer decides finally); <strong>Memory and decision implications</strong> — expected decision-log candidates (<a href="#decision-logs">§23</a>), proposed at review time only.</p>
 
-      <h3>design.html</h3>
+      <h3>design.md</h3>
       <p>Always: technical summary, data flow, files to change / not to change, interfaces, data model changes, test design, risks, rollback plan. Optional: <strong>Project map references</strong> — orient against the map instead of re-describing structure, and flag map staleness; <strong>External dependencies and freshness</strong> (<a href="#dependency-freshness">§19</a>) — mandatory evidence for high-risk categories; <strong>Security and permissions</strong> — trust boundaries, authz, secrets handling, permission-gated operations, and whether the deep-review ladder applies (<a href="#deep-review-policy">§27</a>); <strong>UI verification plan</strong> (<a href="#browser-testing">§24</a>); <strong>Documentation targets</strong> — feeds the review's documentation decision.</p>
 
-      <h3>tasks.html</h3>
+      <h3>tasks.md</h3>
       <p>Always: the implementation task timeline (tests first, smallest change, edge cases, validation) and the validation checklist — which now includes the documentation decision. Optional closing tasks (commented block, copy in what applies): update affected documentation, update the project map, propose decision-log entries, run UI QA, run the dependency freshness check. The design's optional sections say which apply — a task list without UI work gets no UI QA task.</p>
 
-      <h3>review.html</h3>
+      <h3>review.md</h3>
       <p>Always: traceability table (implementation + test evidence per requirement), commands run, blocking/non-blocking findings, decision, notes. Policy sections: <strong>Spec drift check</strong> — out-of-scope file changes listed with justification or <code>None</code> (unjustified drift is blocking; pairs with the spec-drift hook, <a href="#hooks">§8</a>); <strong>High-risk and deep review</strong> — categories touched, escalation rungs run, and the five deep-review outputs (<a href="#deep-review-policy">§27</a>); <strong>Visual verification</strong> (<a href="#visual-evidence">§28</a>); <strong>Documentation decision</strong> — required (with a target-by-target updated/justified table) or not required; the task is not <code>done</code> while required docs are pending (<a href="#documentation-phase">§22</a>); <strong>Proposals</strong> — decision-log and failure-learning entries, propose-only, never written without developer approval (<a href="#decision-logs">§23</a>, <a href="#failure-learning">§21</a>).</p>
 
-      <h3>history.html</h3>
+      <h3>history.md</h3>
       <p>One entry per completed task, newest first: date, task/slug, summary, files changed, tests run, reviewer decision, human approval reference — plus <strong>Docs updated</strong> (targets updated, or "not required") and <strong>Decisions recorded</strong> (accepted decision-log/memory entries, or "none"), so the project's timeline shows not just what was built but what it changed in the documentation and the decision record.</p>
 
       <h3>Why sections, not prose rules</h3>
@@ -1647,7 +1649,7 @@ mcpServers:
         <tbody>
           <tr><td>SDD core workflow (spec → approval → implement → review → docs → done)</td><td>Always installed</td><td><code>questions.md</code> §1–§6</td><td>Gated (human approval; state machine)</td><td><code>skills/sdd-workflow/</code>, <code>templates/CLAUDE.md.template</code>, <code>templates/tasks.json.template</code></td></tr>
           <tr><td>Subagents (leader, spec-author, implementer, reviewer, documenter)</td><td>Always installed</td><td>—</td><td>Gated (each respects state machine)</td><td><code>agents/*.md</code></td></tr>
-          <tr><td>Spec/review/history templates with policy sections</td><td>Always installed</td><td>—</td><td>Advisory (<code>None</code> convention)</td><td><code>templates/specs/</code>, <code>templates/history.html.template</code> (<a href="#templates-artifacts">§32</a>)</td></tr>
+          <tr><td>Spec/review/history templates with policy sections</td><td>Always installed</td><td>—</td><td>Advisory (<code>None</code> convention)</td><td><code>templates/specs/</code>, <code>templates/history.md.template</code> (<a href="#templates-artifacts">§32</a>)</td></tr>
           <tr><td>Project map</td><td>Generated at onboarding</td><td><code>questions.md</code> §12</td><td>Advisory</td><td><code>templates/project-map.md.template</code>, <code>skills/optional/project-map/</code></td></tr>
           <tr><td>Documentation phase</td><td>Enabled</td><td><code>questions.md</code> §20</td><td>Blocking (no <code>done</code> with docs pending)</td><td><code>agents/documenter.md</code>, <code>agents/reviewer.md</code> (<a href="#documentation-phase">§22</a>)</td></tr>
           <tr><td>Dependency/API freshness</td><td>Required for high-risk categories</td><td><code>questions.md</code> §16</td><td>Blocking (high-risk evidence)</td><td><code>reference/dependency-freshness-policy.md</code>, <code>skills/optional/dependency-freshness/</code> (<a href="#dependency-freshness">§19</a>)</td></tr>
@@ -1677,16 +1679,16 @@ mcpServers:
 
       <h3>End-to-end workflow (what the kit produces)</h3>
       <pre><code>developer picks/describes task
-   → spec-author writes requirements.html + design.html + tasks.html
+   → spec-author writes requirements.md + design.md + tasks.md
         (visual evidence, freshness, security, docs targets as applicable)
    → ⛔ human approval (spec_ready → human_approved; humans only)
    → implementer codes within scope (gate hooks enforce if enabled)
    → tests / lint / typecheck / run-and-verify
    → reviewer: traceability, checklist §1–§9, spec drift, high-risk rungs
-        → review.html (+ visual verification, documentation decision, proposals)
+        → review.md (+ visual verification, documentation decision, proposals)
    → documenter updates targets → reviewer re-checks docs
    → developer approves proposed decision-log/memory entries (or not)
-   → done → history.html entry (docs updated, decisions recorded)</code></pre>
+   → done → history.md entry (docs updated, decisions recorded)</code></pre>
 
       <h3>Maintainer checklist</h3>
       <ol>

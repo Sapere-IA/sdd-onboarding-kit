@@ -24,7 +24,7 @@ fully usable with no external CLI and no MCP at all.
    tickets, changing infrastructure — each mutation needs its own
    approval, exactly as the git policy treats commits and pushes.
 5. **When in doubt, neither.** Ask the developer; the local harness
-   (`tasks.json`, `specs/`, `history.html`) keeps working without
+   (`tasks.json`, `specs/`, `history.md`) keeps working without
    external access.
 
 This policy does not demonize MCPs. A scoped, structured MCP is the

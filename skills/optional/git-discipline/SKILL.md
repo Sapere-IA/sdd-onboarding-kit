@@ -54,7 +54,7 @@ ask-first.
 - The task/spec reference the change traces to.
 - The project's git policy from `CLAUDE.md` (branch naming, commit
   conventions, whether Claude may commit/push at all).
-- For PR descriptions: the task's `review.html`, when it exists.
+- For PR descriptions: the task's `review.md`, when it exists.
 
 ## Procedure
 
@@ -74,10 +74,10 @@ ask-first.
 
 ## Reviewer output → PR description
 
-When `review.html` exists for the task, build the PR description from
+When `review.md` exists for the task, build the PR description from
 it instead of re-deriving:
 
-| PR template field | Source in `review.html` |
+| PR template field | Source in `review.md` |
 |---|---|
 | Summary / what changed | Traceability table + findings resolved |
 | Spec reference | The spec slug the review belongs to |

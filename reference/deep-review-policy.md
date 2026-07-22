@@ -6,7 +6,7 @@ adversarial reviewers. This policy says when to escalate and what a
 deep review must produce. Two rules frame everything:
 
 1. **Deep review supplements the SDD reviewer — it never replaces it.**
-   The reviewer agent, the checklist, and `review.html` still run; deep
+   The reviewer agent, the checklist, and `review.md` still run; deep
    review feeds extra findings into them.
 2. **Deep review is recommended, not required**, unless the project
    records a stricter rule (e.g. in `decisions/workflow-decisions.md`).
@@ -82,7 +82,7 @@ rung actually available to the project:
 
 Rungs 1–2 use only included features, so the policy works on every
 plan. If a paid mode is unavailable or declined, rung 2 is the
-accepted substitute — note that in `review.html` and move on; a missing
+accepted substitute — note that in `review.md` and move on; a missing
 paid feature never blocks a task.
 
 ## Output expectations
@@ -104,7 +104,7 @@ A deep review (whatever the mode) must report, explicitly:
   `in_progress`; the rest follow the normal non-blocking rule (resolve
   or record an explicit deferral before `done`).
 
-Findings land in `specs/<feature-slug>/review.html` alongside the
+Findings land in `specs/<feature-slug>/review.md` alongside the
 standard checklist results — one review record per task, whatever mix
 of modes produced it.
 
@@ -114,7 +114,7 @@ of modes produced it.
   deep-review recommendation is visible before implementation starts.
 - The **reviewer** runs the `High-risk review` checklist section,
   recommends the appropriate rung, and records which rungs ran and
-  their findings in `review.html`. A high-risk change reviewed only at
+  their findings in `review.md`. A high-risk change reviewed only at
   rung 1 without a recorded reason is a checklist failure.
 - The **documentation phase** is unchanged: deep-review findings that
   alter behavior, APIs, or operational guidance feed the documentation
