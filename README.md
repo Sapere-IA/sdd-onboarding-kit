@@ -71,6 +71,10 @@ Claude Code will inspect the repository, ask you the configuration questions fro
 
 Nothing in the kit phones home, stores credentials, or enables external access by itself — the default install is fully local.
 
+## Staying up to date
+
+To get notified of new kit versions, watch this repository's releases (**Watch → Custom → Releases** on GitHub). To update an installed project, run `/sdd-update` in it — the skill fetches the kit at the latest tag, refreshes unmodified assets mechanically, merges adapted files with your approval, and follows the migration notes in [`CHANGELOG.md`](CHANGELOG.md). Updates are per-repository: once one teammate merges the update, everyone else gets it with `git pull`.
+
 ## Key files
 
 | File | Purpose |
