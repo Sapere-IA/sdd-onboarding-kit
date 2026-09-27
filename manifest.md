@@ -6,6 +6,7 @@
 - `.github/pull_request_template.md`
 - `.github/workflows/ci.yml`
 - `.gitignore`
+- `AGENTS.md`
 - `CHANGELOG.md`
 - `CLAUDE.md`
 - `DOCUMENTATION.html`
@@ -106,6 +107,7 @@
 - `templates/.claude/settings.json.template`
 - `templates/.mcp.json.template`
 - `templates/AGENTS.md.template`
+- `templates/CLAUDE.md.template`
 - `templates/architecture.md.template`
 - `templates/conventions.md.template`
 - `templates/functional/functional-brief.md.template`

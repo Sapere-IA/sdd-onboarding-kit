@@ -69,7 +69,7 @@ sdd_session="${sdd_session:-no-session}"
 sdd_event="${SDD_HOOK_EVENT:-}"
 [ -n "$sdd_event" ] || sdd_event="$(sdd_jq '.hook_event_name // empty')"
 sdd_event="${sdd_event:-PreCompact}"
-# shellcheck disable=SC2329  # helper may be unused in a given hook
+# shellcheck disable=SC2329,SC2317  # helper may be unused in a given hook
 sdd_block() {  # deny with a reason, then exit
   case "${SDD_HOOK_OUTPUT:-exit}" in
     antigravity) jq -n --arg r "$1" '{decision: "deny", reason: $r}'; exit 0 ;;
@@ -77,7 +77,7 @@ sdd_block() {  # deny with a reason, then exit
     *) printf '%s\n' "$1" >&2; exit 2 ;;
   esac
 }
-# shellcheck disable=SC2329  # helper may be unused in a given hook
+# shellcheck disable=SC2329,SC2317  # helper may be unused in a given hook
 sdd_context() {  # advisory text for the agent; never blocks
   case "${SDD_HOOK_OUTPUT:-exit}" in
     exit) if command -v jq >/dev/null 2>&1; then
