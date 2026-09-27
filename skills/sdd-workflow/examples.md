@@ -57,7 +57,7 @@ milestone timeline:
 3. [ ] T3: Add tests for invalid limits (REQ-003)
 4. [ ] T4: Implement `get_recent_notes(limit)` — Business logic in `src/notes.py`.
 5. [ ] T5: Register the `notes recent` subcommand — Wire `--limit` in `src/cli.py`.
-6. [ ] T6: Run validation — Tests, lint and typecheck as configured in CLAUDE.md.
+6. [ ] T6: Run validation — Tests, lint and typecheck as configured in AGENTS.md.
 ```
 
 ## Example: editing open-questions.md during spec_draft

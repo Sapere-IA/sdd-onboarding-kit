@@ -31,7 +31,7 @@ Read only the context needed for implementation:
 - approved `requirements.md`;
 - approved `design.md`;
 - approved `tasks.md`;
-- project `CLAUDE.md`;
+- the project instruction file (`AGENTS.md`);
 - architecture/conventions docs referenced by the spec;
 - relevant code files.
 
@@ -66,9 +66,9 @@ scripts/run-lint.sh
 scripts/init.sh
 ```
 
-If project-specific commands differ, use those from `CLAUDE.md`.
+If project-specific commands differ, use those from `AGENTS.md`.
 
-If the project has `.claude/skills/run-and-verify/SKILL.md`, run validation through that skill: it records the project's real commands, required services, environment variable names, and how to verify UI/API behavior. Do not invent commands it does not list; report its `TODO` entries as unverified items.
+If the project has the `run-and-verify` skill, run validation through it: it records the project's real commands, required services, environment variable names, and how to verify UI/API behavior. Do not invent commands it does not list; report its `TODO` entries as unverified items.
 
 ## Completion
 

@@ -28,7 +28,7 @@ Read:
 - `specs/<feature-slug>/requirements.md` and `design.md` — what the change does;
 - the implementation diff or changed files listed in the review;
 - the listed documentation targets themselves;
-- project `CLAUDE.md`.
+- the project instruction file (`AGENTS.md`).
 
 ## Responsibilities
 

@@ -1,6 +1,6 @@
 # Required onboarding questions
 
-Claude Code must use this file to ask the developer about project-specific SDD decisions.
+The onboarding agent must use this file to ask the developer about project-specific SDD decisions. It applies to every supported harness (Claude Code, Codex CLI, Cursor, OpenCode, Antigravity); §0 records which one(s) the project uses.
 
 Ask only unanswered questions. If the repository already provides a reliable answer, state the inferred answer and ask for confirmation only if the decision is risky. Keep onboarding concise: ask section by section (not question by question), batch inferred answers into a single confirmation list, and skip sections whose packs/features were not selected.
 
@@ -17,7 +17,23 @@ Before walking the sections, offer the profile in one question: *"Apply the reco
 - **Autonomy disabled** except documented read-only monitoring with explicit stop conditions (§22).
 - **Git mutations require explicit permission** — no commit/push/merge unless asked (§8).
 
-If the developer accepts the profile, ask only: the §7 commands (never inferable safely), §11 protected files, §1 SDD scope, and any section they flag as a deviation. Record the acceptance in `decisions/answers.md`.
+If the developer accepts the profile, ask only: §0 harness (when not obvious from the environment), the §7 commands (never inferable safely), §11 protected files, §1 SDD scope, and any section they flag as a deviation. Record the acceptance in `decisions/answers.md`.
+
+## 0. Harness
+
+The harness is the coding-agent product that runs the SDD workflow. The kit's files use the Claude Code layout as the reference; `reference/harness-primitives.md` maps it to every supported harness.
+
+1. Which harness is running this onboarding? (Usually inferable from the environment — state it and confirm.)
+   1. Claude Code (`.claude/`, `AGENTS.md` + `CLAUDE.md` import stub)
+   2. OpenAI Codex CLI (`.codex/` for agents/hooks/config, `.agents/skills/`, `AGENTS.md`)
+   3. Cursor (`.cursor/`, `AGENTS.md`)
+   4. OpenCode (`.opencode/`, `AGENTS.md`)
+   5. Google Antigravity (`.agents/`, `AGENTS.md`)
+   6. Another harness — name it; the agent maps the concepts using the fallbacks in `reference/harness-primitives.md`.
+2. Does the team use additional harnesses on this repository? (Default: none. Existing `.claude/`, `.codex/`, `.cursor/`, `.opencode/`, `.agents/` directories are hints — confirm, do not assume.) Each additional harness gets copies of the skills and agents in its own directory plus its own hook wiring and MCP config; `AGENTS.md`, specs, tasks, history, decisions and scripts are shared.
+3. Which harness directory is primary (the one the manifest and validators treat as `<harness-dir>`)? (Default: the harness running the onboarding.)
+
+Record the primary harness, its directory, and every additional harness directory in `decisions/answers.md` and in the manifest's `harness` block.
 
 ## 1. Scope of SDD
 
@@ -30,10 +46,10 @@ If the developer accepts the profile, ask only: the §7 commands (never inferabl
 ## 2. Human approval policy
 
 1. Is human approval mandatory before implementation?
-2. Should Claude stop after creating `requirements.md`, `design.md`, and `tasks.md`?
+2. Should the agent stop after creating `requirements.md`, `design.md`, and `tasks.md`?
 3. Who approves specs: the current developer, a reviewer, or a team process?
-4. Can Claude revise specs after feedback without resetting the task?
-5. Should Claude be allowed to continue automatically after approval is recorded in `tasks.json`?
+4. Can the agent revise specs after feedback without resetting the task?
+5. Should the agent be allowed to continue automatically after approval is recorded in `tasks.json`?
 
 ## 3. Requirements format
 
@@ -54,7 +70,7 @@ Additional questions:
 ## 4. Design format
 
 1. Should `design.md` include exact files/classes/functions to modify?
-2. Should Claude propose alternatives before selecting a design?
+2. Should the agent propose alternatives before selecting a design?
 3. Should architecture impacts be mandatory?
 4. Should database/schema/API changes require an explicit migration section?
 5. Should performance, security, accessibility or observability be mandatory sections?
@@ -87,7 +103,7 @@ If using an external tracker:
 
 - Should local specs still be created under `specs/`?
 - Which statuses in the tracker map to SDD statuses?
-- Should Claude update the external tracker automatically?
+- Should the agent update the external tracker automatically?
 
 ## 6. State machine
 
@@ -118,12 +134,12 @@ Questions:
 
 ## 8. Git policy
 
-1. Should Claude create one branch per SDD feature?
+1. Should the agent create one branch per SDD feature?
 2. What branch naming convention should be used?
-3. Should Claude commit after each task, after each spec, or only at the end?
+3. Should the agent commit after each task, after each spec, or only at the end?
 4. Should commit messages reference task IDs?
-5. Should Claude open pull requests?
-6. Should Claude avoid git operations entirely unless explicitly requested?
+5. Should the agent open pull requests?
+6. Should the agent avoid git operations entirely unless explicitly requested?
 
 ## 9. Hooks
 
@@ -137,7 +153,9 @@ Potential hooks:
 4. Prevent editing protected files.
 5. Block destructive shell commands.
 6. Validate task state transitions.
-7. Notify when Claude is waiting for human approval.
+7. Notify when the agent is waiting for human approval.
+
+Hook support depends on the harness (`reference/harness-primitives.md`): Claude Code and Codex share the same hook format; Cursor and Antigravity have their own `hooks.json`; OpenCode needs a small JavaScript plugin; other harnesses may have none, in which case the rules stay instruction-only. The kit's hook scripts work unchanged in every harness that has hooks; only the wiring differs (`hooks/settings-snippets.md`).
 
 Questions:
 
@@ -164,22 +182,23 @@ Possible MCP integrations:
 
 Questions:
 
-- Which external systems should Claude Code access?
+- Which external systems should the agent access?
+- Which harness config file should hold the MCP definitions (`.mcp.json`, `.codex/config.toml`, `.cursor/mcp.json`, `opencode.json`, `.agents/mcp_config.json`)? Default: the primary harness's file; additional harnesses get the same definitions in their own file.
 - Are credentials already configured?
 - Should MCPs be project-scoped or user-scoped?
 - Should external content be treated as untrusted until reviewed?
-- Where both a CLI and an MCP can do the job, should Claude prefer the
+- Where both a CLI and an MCP can do the job, should the agent prefer the
   narrow CLI call? (Default: yes — see `reference/cli-vs-mcp-policy.md`;
   remote-mutating CLI commands always need explicit per-action
   permission.)
 
 ## 11. Protected files and boundaries
 
-1. Are there files Claude must not edit?
+1. Are there files the agent must not edit?
 2. Are there directories that require explicit approval before changes?
 3. Are migrations, infrastructure, secrets or deployment configs protected?
 4. Should generated files be excluded from SDD review?
-5. Should Claude avoid modifying public APIs without explicit approval?
+5. Should the agent avoid modifying public APIs without explicit approval?
 
 ## 12. Documentation and history
 
@@ -187,8 +206,8 @@ Questions:
 2. Where should architectural decisions be recorded? (Detailed in §17.)
 3. Should specs remain permanently, or be archived after completion?
 4. Should rejected design options be recorded? (Detailed in §17.)
-5. Should Claude maintain a changelog?
-6. Where should the project map live: `.claude/context/project-map.md`
+5. Should the agent maintain a changelog?
+6. Where should the project map live: `<harness-dir>/context/project-map.md`
    (default, harness-internal) or `docs/project-map.md` (visible in docs)?
 7. Should the project map be generated during onboarding (default), or
    deferred as a recorded TODO?
@@ -196,7 +215,7 @@ Questions:
 ## 13. Team conventions
 
 1. What language should project docs use?
-2. What coding style should Claude follow?
+2. What coding style should the agent follow?
 3. Are there naming conventions?
 4. Are there testing conventions?
 5. Are there review conventions?
@@ -226,7 +245,7 @@ Questions:
 1. Which optional skill packs should be installed now? (Default: none.)
 2. If the repository clearly indicates applicability (e.g. a frontend for
    `ui-qa`, frequent dependency changes for `dependency-freshness`),
-   should Claude suggest those packs? (Suggest yes; install only on
+   should the agent suggest those packs? (Suggest yes; install only on
    confirmation.)
 3. Should declined packs be recorded in `decisions/answers.md` so they are
    not re-proposed every session? (Default: yes.)
@@ -305,7 +324,7 @@ Notes:
 ## 18. Browser/UI testing with Playwright
 
 ```text
-Does this project have a browser UI that Claude should be allowed to inspect with Playwright?
+Does this project have a browser UI that the agent should be allowed to inspect with Playwright?
 1. No browser UI.
 2. Yes, add a browser-tester subagent with Playwright MCP scoped to that subagent.
 3. Yes, document setup only; do not configure it.
@@ -320,8 +339,10 @@ Notes:
   `ui-qa` pack from §14, which routes UI verification through the
   agent) — but install only on confirmation.
 - Option 2 installs `agents/optional/browser-tester.md` with the
-  Playwright MCP declared inline in the agent's frontmatter — the main
-  conversation never gets browser tools (see `mcps/playwright-policy.md`).
+  Playwright MCP declared inline in the agent where the harness supports
+  per-agent MCPs (Claude Code, Codex) — the main conversation never gets
+  browser tools; elsewhere it goes into the harness MCP config with the
+  same usage rules (see `mcps/playwright-policy.md`).
 - Option 3 records the setup reference from `mcps/playwright-policy.md`
   in the project's docs without configuring anything.
 - Credentials are never stored anywhere; test accounts preferred;
@@ -334,13 +355,13 @@ Notes:
 Memory rules come from `reference/memory-policy.md`: no memory write —
 project or global — without explicit approval of the exact entry text.
 
-1. Should Claude propose a reusable lesson after a meaningful mistake?
+1. Should the agent propose a reusable lesson after a meaningful mistake?
    (Default: yes — proposals only; the `failure-learning` pack from §14
    adds the procedure and the suggestion hook is separate, §9.)
 2. Where should accepted lessons live? (Default: project memory —
    `decisions/failure-learnings.md`; global memory only when the
    developer explicitly approves that specific entry for all projects.)
-3. May Claude ever write memory without showing the exact entry text
+3. May the agent ever write memory without showing the exact entry text
    first? (Default: no. This default should not be weakened.)
 
 ## 20. Documentation phase
@@ -388,11 +409,11 @@ SDD state or mark work complete.
 
 ## 23. Session recovery
 
-Guidance: `reference/session-recovery.md`. The generated `CLAUDE.md`
+Guidance: `reference/session-recovery.md`. The generated `AGENTS.md`
 carries the standing rule (inspect durable artifacts after
 resume/rewind/compaction; the artifact wins).
 
-1. Keep the session-recovery rule in the project's `CLAUDE.md`?
+1. Keep the session-recovery rule in the project's `AGENTS.md`?
    (Default: yes.)
 2. Should the pre-compact capture hook also be enabled to remind about
    durable artifacts before compaction? (Default: no — hooks are

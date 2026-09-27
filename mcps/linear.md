@@ -16,8 +16,8 @@ Use Linear when the team already manages product work in Linear.
 
 1. Which Linear team/project should be used?
 2. Which Linear statuses map to SDD statuses?
-3. Should Claude create Linear issues from local tasks?
-4. Should Claude update Linear automatically when local status changes?
+3. Should the agent create Linear issues from local tasks?
+4. Should the agent update Linear automatically when local status changes?
 5. Should specs remain in git even when tasks live in Linear?
 
 ## Safe default

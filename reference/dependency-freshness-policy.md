@@ -1,6 +1,6 @@
 # Dependency and API freshness policy
 
-Models may be out of date. Claude's training data lags behind the current state of fast-moving libraries, SDKs, cloud services, and frameworks — package versions, function signatures, configuration formats, and security recommendations all change faster than model knowledge. Code written purely from training data can silently target a deprecated API, a removed option, or an insecure default.
+Models may be out of date. a model's training data lags behind the current state of fast-moving libraries, SDKs, cloud services, and frameworks — package versions, function signatures, configuration formats, and security recommendations all change faster than model knowledge. Code written purely from training data can silently target a deprecated API, a removed option, or an insecure default.
 
 This kit treats that risk as an explicit policy: **before changing external dependencies, SDKs, APIs, framework configuration, or security-sensitive integrations, verify against current documentation and record the evidence.**
 

@@ -63,8 +63,8 @@ carries its own entry format in its header.
 6. If the decision contradicts an earlier entry, mark the old entry as
    superseded rather than deleting it.
 7. If the rule is load-bearing for every session, additionally propose a
-   one-line `CLAUDE.md` rule (see `reference/memory-policy.md` in the kit:
-   decisions live in `decisions/`; `CLAUDE.md` carries only short rules).
+   one-line `AGENTS.md` rule (see `reference/memory-policy.md` in the kit:
+   decisions live in `decisions/`; `AGENTS.md` carries only short rules).
 
 ## Output artifact
 
@@ -77,4 +77,4 @@ An appended entry in the project's decision log (`decisions/*.md` or
   logging.
 - Never write an entry without developer approval of the exact text.
 - Never log secrets, credentials, or personal data.
-- Decision logs are project memory; do not write to global Claude memory.
+- Decision logs are project memory; do not write to the harness's global (user-level) memory.

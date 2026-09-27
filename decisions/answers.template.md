@@ -9,6 +9,14 @@ Use this file during onboarding to record the developer's answers.
 - Main language/framework:
 - Package manager:
 
+## Harness
+
+- Primary harness (Claude Code / Codex CLI / Cursor / OpenCode / Antigravity / other):
+- Primary harness directory (`<harness-dir>`):
+- Instruction file(s) generated (`AGENTS.md`; `CLAUDE.md` import stub if Claude Code is used):
+- Additional harnesses and their directories:
+- Concepts not available in the harness and the fallback used (subagents → roles in the main conversation; skills → read on demand; hooks → instruction-only):
+
 ## Commands
 
 - Init command:
@@ -46,10 +54,12 @@ Use this file during onboarding to record the developer's answers.
 - Enabled hooks:
 - Hooks left as examples:
 - Hook failure mode:
+- Hook wiring file(s) per harness:
 
 ## MCPs
 
 - Configured MCPs:
+- MCP config file(s) per harness:
 - Read-only MCPs:
 - Read/write MCPs:
 - External task mapping:

@@ -41,7 +41,7 @@ Two execution paths:
   `spec-from-screenshot` skill if installed): image inventory with IDs,
   observed/expected behavior, affected routes. For bug fixes, compare
   the *before* screenshot with the implemented *after* state.
-- How to run the UI locally (dev server command from `CLAUDE.md` / the
+- How to run the UI locally (dev server command from `AGENTS.md` / the
   project map).
 - Test account credentials **names** if auth is required — provided by the
   developer at run time, never stored.
@@ -49,7 +49,7 @@ Two execution paths:
 ## Procedure
 
 0. If the project has the `browser-tester` agent installed
-   (`.claude/agents/browser-tester.md`), invoke it with the spec's UI
+   (`browser-tester` in the harness's agents directory), invoke it with the spec's UI
    acceptance criteria — it executes steps 1–3 in a real browser and
    returns the per-criterion checklist. Continue manually only for
    criteria it could not verify.

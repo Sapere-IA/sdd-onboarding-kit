@@ -2,7 +2,7 @@
 
 Durable workflow rules agreed with the developer ("from now on, X"). This
 file records the decision and its context; rules that every session needs
-loaded should additionally be promoted to a one-line `CLAUDE.md` rule (see
+loaded should additionally be promoted to a one-line `AGENTS.md` rule (see
 `reference/memory-policy.md` in the kit).
 
 Rules:

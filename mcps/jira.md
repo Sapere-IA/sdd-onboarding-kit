@@ -17,8 +17,8 @@ Use Jira when the organization manages work through Jira tickets.
 1. Which Jira project should be used?
 2. Which Jira issue types map to SDD tasks?
 3. Which statuses map to `pending`, `spec_ready`, `human_approved`, `in_progress`, `review`, `done`?
-4. Should Claude write comments to Jira?
-5. Should Claude update Jira status automatically?
+4. Should the agent write comments to Jira?
+5. Should the agent update Jira status automatically?
 
 ## Safe default
 

@@ -15,14 +15,15 @@ hook.
 
 ## How it works
 
-1. Wired to `PostToolUse` with matcher `Edit|Write`.
+1. Wired to the post-edit event (`PostToolUse` with matcher `Edit|Write` in Claude Code/Codex, `afterFileEdit` in Cursor, `PostToolUse` on the file tools in Antigravity).
 2. Matches the edited file's project-relative path against the `RULES`
    table (`pattern :: command`, first match wins). The shipped rules are
    placeholders — **adapt patterns and commands to the project during
    onboarding, and never map a command that was not confirmed** (the
    run-and-verify recipe and `questions.md` §7 are the sources).
-3. `suggest` mode (default): injects `additionalContext` naming the
-   matching check, once per session per command.
+3. `suggest` mode (default): emits an advisory message (`additionalContext`
+   JSON for Claude Code/Codex, plain text elsewhere) naming the matching
+   check, once per session per command.
 4. `run` mode (`VALIDATION_MODE=run`): executes the matching command
    synchronously and reports pass/fail plus the last 20 output lines.
    Keep mapped commands fast and side-effect-free — a command that
@@ -31,9 +32,7 @@ hook.
 
 ## Installation (after explicit developer approval)
 
-Copy `targeted-validation.sh` into the target project (e.g.
-`.claude/hooks/`), adapt the `RULES` table, make it executable, and add
-to `.claude/settings.json`:
+Copy `targeted-validation.sh` into the target project's hook directory (`<harness-dir>/hooks/`), adapt the `RULES` table, make it executable, and wire it with the matching snippet in `hooks/settings-snippets.md`. Claude Code / Codex example:
 
 ```json
 {
@@ -55,8 +54,8 @@ to `.claude/settings.json`:
 
 ## Version note
 
-The `tool_input` field names (`file_path`, `notebook_path`) and the
-`additionalContext` output shape can evolve between Claude Code versions.
+The payload field names and the advisory output shape can evolve between
+harness versions (the adapter block handles the documented ones).
 Verify against the installed version's hook documentation before
 enabling — the kit-wide rule in `hooks/settings-snippets.md` applies.
 

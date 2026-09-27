@@ -3,7 +3,7 @@
 ## Install SDD in a project
 
 ```text
-Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development. Ask me all necessary questions before making project-specific decisions.
+Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development with this harness. Ask me all necessary questions before making project-specific decisions.
 ```
 
 ## Start the next SDD task
@@ -45,5 +45,5 @@ Render the spec for `<feature-slug>` to HTML so I can review it in the browser.
 ## Update the SDD harness
 
 ```text
-Run /sdd-update to bring this project's SDD harness up to date with the latest kit version. Show me what changed before applying anything.
+Use the sdd-update skill to bring this project's SDD harness up to date with the latest kit version. Show me what changed before applying anything.
 ```

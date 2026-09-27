@@ -291,7 +291,7 @@
   <nav class="sidebar" aria-label="Documentation navigation">
     <div class="sidebar-brand">
       <div class="sidebar-brand-name">SDD Onboarding Kit</div>
-      <span>for Claude Code</span>
+      <span>for Claude Code, Codex, Cursor, OpenCode, Antigravity</span>
     </div>
 
     <div class="toc-section">
@@ -299,6 +299,7 @@
       <ul class="toc-list">
         <li><a href="#what-is-sdd">1. What is SDD</a></li>
         <li><a href="#what-this-kit-is">2. What this kit is</a></li>
+        <li><a href="#harness-support">2b. Harness support</a></li>
       </ul>
     </div>
 
@@ -356,18 +357,18 @@
   <main class="main">
     <div class="page-header">
       <h1>SDD Onboarding Kit — Documentation</h1>
-      <p class="lead">Complete reference for installation, daily workflow, subagents, hooks, and MCP integrations.</p>
+      <p class="lead">Complete reference for installation, daily workflow, subagents, hooks, MCP integrations, and harness support (Claude Code, Codex CLI, Cursor, OpenCode, Antigravity).</p>
     </div>
 
     <section id="what-is-sdd">
       <h2>1. What is SDD</h2>
-      <p><strong>Spec Driven Development (SDD)</strong> is a workflow where Claude Code writes and gets approval for a specification before touching any production code. The spec covers:</p>
+      <p><strong>Spec Driven Development (SDD)</strong> is a workflow where the coding agent writes and gets approval for a specification before touching any production code. The spec covers:</p>
       <ul>
         <li><strong>Requirements</strong> — observable behavior the feature must satisfy.</li>
         <li><strong>Design</strong> — which files to change, how, and why.</li>
         <li><strong>Tasks</strong> — an ordered, checkable implementation checklist.</li>
       </ul>
-      <p>The developer reviews the spec and explicitly approves it. Claude then implements strictly against the approved spec. An automated reviewer validates that the result matches the spec, requirements are traceable, and tests pass.</p>
+      <p>The developer reviews the spec and explicitly approves it. The agent then implements strictly against the approved spec. An automated reviewer validates that the result matches the spec, requirements are traceable, and tests pass.</p>
       <p>The goal is to eliminate ambiguity, prevent scope creep, and give the developer a meaningful decision point before code is written.</p>
     </section>
 
@@ -376,10 +377,10 @@
     <section id="what-this-kit-is">
       <h2>2. What this kit is</h2>
       <p>This kit is a <strong>reusable installer</strong>. It produces a project-specific SDD harness, not a global configuration.</p>
-      <p>When you run the onboarding prompt, Claude Code reads the kit, inspects your repository, asks you project-specific questions, and generates:</p>
+      <p>When you run the onboarding prompt in your harness (Claude Code, Codex CLI, Cursor, OpenCode, Antigravity — see <a href="#harness-support">§2b</a>), the agent reads the kit, inspects your repository, asks you project-specific questions, and generates:</p>
       <ul>
-        <li>A <code>CLAUDE.md</code> tailored to your project.</li>
-        <li>Five Claude subagents (leader, spec-author, implementer, reviewer, documenter).</li>
+        <li>An <code>AGENTS.md</code> tailored to your project (plus a two-line <code>CLAUDE.md</code> import stub when Claude Code is used).</li>
+        <li>Five subagents / roles (leader, spec-author, implementer, reviewer, documenter) in the harness's agent format.</li>
         <li>The full SDD workflow skill.</li>
         <li>Local task and spec storage.</li>
         <li>Optional hooks and MCP integrations.</li>
@@ -390,12 +391,35 @@
 
     <hr>
 
+    <section id="harness-support">
+      <h2>2b. Harness support</h2>
+      <p>The kit is <strong>harness-neutral</strong>: the same SDD workflow, artifacts and rules install under any supported coding-agent harness. The kit's files use the Claude Code layout (<code>.claude/</code>) as the <em>reference layout</em>; <code>reference/harness-primitives.md</code> maps every concept to each harness and defines the fallback when a harness lacks one. Onboarding asks which harness(es) the project uses (<code>questions.md</code> §0), installs into that harness's directory (<code>&lt;harness-dir&gt;</code>), and records the choice in the manifest.</p>
+      <table>
+        <thead>
+          <tr><th>Concept</th><th>Claude Code</th><th>Codex CLI</th><th>Cursor</th><th>OpenCode</th><th>Antigravity</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Harness directory</td><td><code>.claude/</code></td><td><code>.codex/</code> (agents, hooks) + <code>.agents/skills/</code></td><td><code>.cursor/</code></td><td><code>.opencode/</code></td><td><code>.agents/</code></td></tr>
+          <tr><td>Instruction file</td><td><code>AGENTS.md</code> via a <code>CLAUDE.md</code> <code>@AGENTS.md</code> stub (read natively since v2.1.277)</td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td></tr>
+          <tr><td>Skills (<code>SKILL.md</code>, same format everywhere)</td><td><code>.claude/skills/</code></td><td><code>.agents/skills/</code></td><td><code>.cursor/skills/</code> or <code>.agents/skills/</code></td><td><code>.opencode/skills/</code> (also reads <code>.claude/</code>, <code>.agents/</code>)</td><td><code>.agents/skills/</code></td></tr>
+          <tr><td>Subagents</td><td><code>.claude/agents/*.md</code></td><td><code>.codex/agents/*.toml</code> (body → <code>developer_instructions</code>)</td><td><code>.cursor/agents/*.md</code></td><td><code>.opencode/agents/*.md</code> (<code>mode: subagent</code>)</td><td><code>.agents/agents/*.md</code></td></tr>
+          <tr><td>Hooks</td><td><code>.claude/settings.json</code></td><td><code>.codex/hooks.json</code> (same shape as Claude Code)</td><td><code>.cursor/hooks.json</code></td><td>JavaScript plugin shelling out to the same scripts</td><td><code>.agents/hooks.json</code></td></tr>
+          <tr><td>MCP config</td><td><code>.mcp.json</code></td><td><code>.codex/config.toml</code></td><td><code>.cursor/mcp.json</code></td><td><code>opencode.json</code></td><td><code>.agents/mcp_config.json</code></td></tr>
+          <tr><td>Skill invocation</td><td><code>/sdd-workflow</code></td><td><code>$sdd-workflow</code></td><td><code>/</code> + name</td><td><code>skill</code> tool / by name</td><td><code>/sdd-workflow</code></td></tr>
+        </tbody>
+      </table>
+      <p>Fallbacks for a harness without a concept: subagents become <em>roles</em> the main conversation plays one at a time (the workflow already orchestrates from the main conversation); skills are read on demand from the same folder; hooks are simply not installed and the rules stay instruction-level — the kit's default posture anyway. The hook <em>scripts</em> are identical in every harness (an adapter block reads each harness's payload; <code>SDD_HOOK_OUTPUT</code> selects the deny format); only the wiring differs (<code>hooks/settings-snippets.md</code>). Validators take <code>SDD_HARNESS_DIR</code>. Mapping verified 2026-09-27 — re-verify against the installed version before generating configuration.</p>
+      <p>A project can be used with several harnesses at once: <code>AGENTS.md</code>, <code>specs/</code>, <code>tasks.json</code>, <code>history.md</code>, <code>decisions/</code> and <code>scripts/</code> are shared; each additional harness gets its own copies of skills and agents, its own hook wiring and MCP config, all recorded in the manifest so <code>sdd-update</code> refreshes them together.</p>
+    </section>
+
+    <hr>
+
     <section id="installation">
       <h2>3. Installation</h2>
 
       <h3>Prerequisites</h3>
       <ul>
-        <li>Claude Code (CLI, desktop app, or IDE extension).</li>
+        <li>A supported coding-agent harness: Claude Code (CLI, desktop app, or IDE extension), OpenAI Codex CLI, Cursor, OpenCode, or Google Antigravity (<a href="#harness-support">§2b</a>).</li>
         <li>A git repository where you want SDD installed. A greenfield repo with only a plan and no code yet is fine — see <em>"Greenfield and plan-only repositories"</em> below.</li>
         <li>Optional: bash and <code>jq</code> (Git Bash or WSL on Windows) for the hook scripts and the bash validator. Windows-primary teams can instead use the bundled PowerShell validator (<code>scripts/validate-sdd-structure.ps1</code>), which needs neither.</li>
       </ul>
@@ -405,23 +429,24 @@
       <pre><code>my-project/
 └── sdd-onboarding-kit/</code></pre>
 
-      <h3>Step 2 — Open Claude Code in your project</h3>
-      <p>Open Claude Code with <code>my-project/</code> as the working directory.</p>
+      <h3>Step 2 — Open your harness in your project</h3>
+      <p>Open Claude Code, Codex, Cursor, OpenCode or Antigravity with <code>my-project/</code> as the working directory. The kit's root <code>AGENTS.md</code> (and its <code>CLAUDE.md</code> import stub) tells any of them how to read the kit.</p>
 
       <h3>Step 3 — Run the onboarding prompt</h3>
-      <div class="prompt-box">Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development. Ask me all necessary questions before making project-specific decisions.</div>
+      <div class="prompt-box">Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development with this harness. Ask me all necessary questions before making project-specific decisions.</div>
 
       <h3>Step 4 — Answer the configuration questions</h3>
-      <p>Claude Code will inspect your repository and ask about scope, approval policy, requirements format, task storage, state machine, test commands, git policy, hooks, MCPs, and protected files.</p>
+      <p>The agent will confirm the harness(es) in use, inspect your repository and ask about scope, approval policy, requirements format, task storage, state machine, test commands, git policy, hooks, MCPs, and protected files.</p>
 
       <h3>Step 5 — Review and confirm</h3>
-      <p>Claude generates a summary of files created, hooks enabled, and any open TODOs. Review the generated <code>CLAUDE.md</code> and <code>.claude/</code> before starting work.</p>
+      <p>The agent generates a summary of files created, hooks enabled, and any open TODOs. Review the generated <code>AGENTS.md</code> and the harness directory before starting work.</p>
 
       <h3>What gets created</h3>
       <pre><code>&lt;project&gt;/
-├── CLAUDE.md
-├── .claude/
-│   ├── agents/
+├── AGENTS.md                      (project instructions — read by every harness)
+├── CLAUDE.md                      (2-line @AGENTS.md import stub — only with Claude Code)
+├── &lt;harness-dir&gt;/                 (.claude/ shown; .codex/ + .agents/, .cursor/, .opencode/, .agents/ elsewhere)
+│   ├── agents/                    (harness-native format: markdown, or .toml for Codex)
 │   │   ├── leader.md
 │   │   ├── spec-author.md
 │   │   ├── implementer.md
@@ -430,11 +455,11 @@
 │   │   ├── SKILL.md
 │   │   ├── … (8 supporting files)
 │   │   └── templates/ (markdown spec templates + spec-shell.html.template + spec.css + spec.js)
-│   ├── skills/sdd-update/SKILL.md (self-update: run /sdd-update to pull new kit versions)
+│   ├── skills/sdd-update/SKILL.md (self-update: invoke the sdd-update skill to pull new kit versions)
 │   ├── reference/ (policy files vendored from the kit, so links survive kit removal)
 │   ├── hooks/README.md
-│   ├── settings.json
-│   └── sdd-kit-manifest.json (kit version + per-file hashes, written last)
+│   ├── (hook wiring, if enabled: settings.json / hooks.json / plugins/)
+│   └── sdd-kit-manifest.json (kit version + harness block + per-file hashes, written last)
 ├── specs/
 ├── decisions/answers.md
 ├── tasks.json
@@ -448,12 +473,12 @@
     └── validate-sdd-structure.ps1 (PowerShell port — for Windows-primary teams)</code></pre>
 
       <h3>Greenfield and plan-only repositories</h3>
-      <p>The kit assumes a codebase to inspect, but it installs cleanly on a repo that has only a plan, brief, or build spec and no code yet. In that case Claude:</p>
+      <p>The kit assumes a codebase to inspect, but it installs cleanly on a repo that has only a plan, brief, or build spec and no code yet. In that case the agent:</p>
       <ul>
         <li>records the <em>planned</em> layout in the project map (clearly labeled as planned, never fabricated);</li>
         <li>defers test/lint/build commands as <code>TODO: ask the developer</code> rather than guessing — the generated <code>run-tests.sh</code>/<code>run-lint.sh</code> no-op cleanly until they are filled;</li>
         <li>seeds <code>tasks.json</code> from an existing phased plan (one <code>pending</code> task per unit of work, each linked back to its plan section) instead of shipping only the example task — confirm the granularity first;</li>
-        <li>does not run <code>git init</code> silently: if the repo is not yet under git, Claude asks or defers it to you and records the decision.</li>
+        <li>does not run <code>git init</code> silently: if the repo is not yet under git, the agent asks or defers it to you and records the decision.</li>
       </ul>
       <p>Until the toolchain and sources exist, leave tool-running hooks (e.g. run-tests-after-edit) disabled — on an empty repo they fire on every edit with nothing to run.</p>
     </section>
@@ -465,7 +490,7 @@
 
       <h3>Start a new feature</h3>
       <div class="prompt-box">Create a new SDD task for: &lt;description&gt;. First generate requirements/design/tasks and do not implement anything until I approve the spec.</div>
-      <p>Claude will create a task in <code>tasks.json</code>, create <code>specs/&lt;slug&gt;/requirements.md</code>, <code>design.md</code>, and <code>tasks.md</code>, then stop for your review.</p>
+      <p>The agent will create a task in <code>tasks.json</code>, create <code>specs/&lt;slug&gt;/requirements.md</code>, <code>design.md</code>, and <code>tasks.md</code>, then stop for your review.</p>
 
       <h3>Review and approve a spec</h3>
       <p>Open the HTML spec files under <code>specs/&lt;feature-slug&gt;/</code> in a browser. When satisfied:</p>
@@ -501,12 +526,12 @@
           <tr><th>State</th><th>Meaning</th><th>Who can advance it</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>pending</code></td>        <td>Task exists, no spec yet</td>              <td>Claude (starts drafting)</td></tr>
-          <tr><td><code>spec_draft</code></td>     <td>Spec is being written or revised</td>       <td>Claude</td></tr>
-          <tr><td><code>spec_ready</code></td>     <td>Spec complete, awaiting approval</td>       <td>Claude (sets after finishing spec)</td></tr>
+          <tr><td><code>pending</code></td>        <td>Task exists, no spec yet</td>              <td>The agent (starts drafting)</td></tr>
+          <tr><td><code>spec_draft</code></td>     <td>Spec is being written or revised</td>       <td>The agent</td></tr>
+          <tr><td><code>spec_ready</code></td>     <td>Spec complete, awaiting approval</td>       <td>The agent (sets after finishing spec)</td></tr>
           <tr><td><code>human_approved</code></td> <td>Developer approved the spec</td>            <td>Developer only</td></tr>
-          <tr><td><code>in_progress</code></td>    <td>Implementation underway</td>                <td>Claude</td></tr>
-          <tr><td><code>review</code></td>         <td>Implementation complete, under validation; the documentation phase (<a href="#documentation-phase">§22</a>) also happens here</td><td>Claude</td></tr>
+          <tr><td><code>in_progress</code></td>    <td>Implementation underway</td>                <td>The agent</td></tr>
+          <tr><td><code>review</code></td>         <td>Implementation complete, under validation; the documentation phase (<a href="#documentation-phase">§22</a>) also happens here</td><td>The agent</td></tr>
           <tr><td><code>done</code></td>           <td>Complete</td>                               <td>Reviewer (after passing tests and the docs check)</td></tr>
           <tr><td><code>blocked</code></td>        <td>Waiting on external input</td>              <td>Either party</td></tr>
           <tr><td><code>rejected</code></td>       <td>Review found blocking defects</td>          <td>Reviewer</td></tr>
@@ -546,10 +571,10 @@
 
     <section id="subagents">
       <h2>7. Subagents</h2>
-      <p>The harness installs five Claude subagents under <code>.claude/agents/</code>:</p>
+      <p>The harness installs five subagents under <code>&lt;harness-dir&gt;/agents/</code> in the harness's own agent format (markdown frontmatter, or TOML for Codex — <a href="#harness-support">§2b</a>). In a harness without subagents the same files are <em>roles</em> the main conversation plays one at a time.</p>
 
       <h3>Leader</h3>
-      <p>The routing advisor. Reads task state and returns which specialist the main conversation should invoke next (subagents cannot invoke other subagents in Claude Code, so orchestration happens in the main conversation, guided by the <code>sdd-workflow</code> skill). Never writes production code, recommends stopping for human approval at <code>spec_ready</code>.</p>
+      <p>The routing advisor. Reads task state and returns which specialist the main conversation should invoke next (roles never invoke each other, whatever the harness allows: orchestration happens in the main conversation, guided by the <code>sdd-workflow</code> skill). Never writes production code, recommends stopping for human approval at <code>spec_ready</code>.</p>
 
       <h3>Spec Author</h3>
       <p>Writes and revises specs. Produces <code>requirements.md</code>, <code>design.md</code>, <code>tasks.md</code>. When working from a functional document also produces <code>assumptions.md</code>, <code>open-questions.md</code>, and <code>acceptance-tests.md</code>.</p>
@@ -568,7 +593,7 @@
 
     <section id="hooks">
       <h2>8. Hooks</h2>
-      <p>Hooks are optional shell scripts that Claude Code executes automatically on workflow events. Prompts and skills guide Claude; hooks enforce rules deterministically, whether or not Claude remembers them. <strong>All kit hooks are examples, disabled by default — none is enabled without your explicit approval.</strong> They support the SDD state machine (block before approval, return out-of-scope work to the spec, keep durable state in artifacts); no kit hook bypasses it. Hooks also fire in headless and background runs, which makes them the enforcement layer for autonomous workflows (<a href="#autonomy-policy">§26</a>).</p>
+      <p>Hooks are optional shell scripts that the harness executes automatically on workflow events. Prompts and skills guide the agent; hooks enforce rules deterministically, whether or not the agent remembers them. The kit's hook <strong>scripts are harness-neutral</strong> — an identical adapter block reads the payloads of Claude Code, Codex, Cursor and Antigravity (or explicit <code>SDD_HOOK_*</code> variables) and emits the deny/advisory format selected by <code>SDD_HOOK_OUTPUT</code>; OpenCode wires them through a small plugin. Event names below are the Claude Code / Codex ones; equivalents and wiring per harness are in <code>hooks/settings-snippets.md</code>. <strong>All kit hooks are examples, disabled by default — none is enabled without your explicit approval.</strong> They support the SDD state machine (block before approval, return out-of-scope work to the spec, keep durable state in artifacts); no kit hook bypasses it. Hooks also fire in headless and background runs, which makes them the enforcement layer for autonomous workflows (<a href="#autonomy-policy">§26</a>).</p>
 
       <h3>Safety classification</h3>
       <p>Every hook is classified by its highest-risk behavior (full policy in <code>hooks/hooks-policy.md</code>):</p>
@@ -589,8 +614,8 @@
           <tr><td>Run tests after edits</td><td><code>PostToolUse</code> on Edit/Write</td><td>Advisory</td><td>Runs the configured test suite after source edits; never blocks.</td></tr>
           <tr><td>Validate spec before status change</td><td><code>PreToolUse</code></td><td>Blocking</td><td>Ensures <code>requirements.md</code>, <code>design.md</code>, and <code>tasks.md</code> exist before a task moves to <code>spec_ready</code>.</td></tr>
           <tr><td>Block destructive commands</td><td><code>PreToolUse</code> on Bash</td><td>Blocking</td><td>Intercepts <code>rm -rf</code>, <code>git reset --hard</code>, <code>drop database</code>, and similar.</td></tr>
-          <tr><td>Notify for human approval</td><td><code>Stop</code> / <code>Notification</code></td><td>Advisory</td><td>Alerts you when Claude stops waiting for spec approval (environment-specific).</td></tr>
-          <tr><td>Failure-learning suggestion (<a href="#failure-learning">§21</a>)</td><td><code>PostToolUse</code> on Bash</td><td>Advisory</td><td>After the same validation command fails twice, reminds Claude that the failure-learning skill exists; never writes memory.</td></tr>
+          <tr><td>Notify for human approval</td><td><code>Stop</code> / <code>Notification</code></td><td>Advisory</td><td>Alerts you when the agent stops waiting for spec approval (environment-specific).</td></tr>
+          <tr><td>Failure-learning suggestion (<a href="#failure-learning">§21</a>)</td><td><code>PostToolUse</code> on Bash</td><td>Advisory</td><td>After the same validation command fails twice, reminds the agent that the failure-learning skill exists; never writes memory.</td></tr>
           <tr><td>Pre-compact capture</td><td><code>PreCompact</code> + <code>SessionStart</code> (matcher <code>compact</code>)</td><td>Advisory</td><td>Before compaction, reminds that unresolved decisions, task state, failures, and constraints belong in durable artifacts; after compaction, injects a reminder to re-read them. Optional <code>gate</code> mode blocks one manual compaction per session.</td></tr>
           <tr><td>Targeted validation</td><td><code>PostToolUse</code> on Edit/Write</td><td>Advisory</td><td>Maps the changed file to a targeted check (frontend → frontend checks, backend → backend tests, schema → migration checks); suggests by default, opt-in <code>run</code> mode executes it. Never blocks.</td></tr>
           <tr><td>Spec drift</td><td><code>PreToolUse</code> on Edit/Write</td><td>Advisory (warn) / Blocking (block)</td><td>Detects edits outside the approved task's <code>scope</code> globs in <code>tasks.json</code>; <code>DRIFT_MODE=warn</code> warns, <code>DRIFT_MODE=block</code> denies until the spec and scope are updated.</td></tr>
@@ -600,19 +625,19 @@
       <h3>Installation</h3>
       <ol>
         <li>Get explicit developer approval for the specific hook and mode (<code>questions.md</code> §9). Confirm the environment has bash and <code>jq</code> (Git Bash or WSL on Windows). Do not enable tool-running hooks (run-tests/run-lint after edit) before the toolchain and sources exist — on a greenfield repo they only produce noise. The generated <code>run-tests.sh</code>/<code>run-lint.sh</code> carry no-op guards (they exit 0 cleanly when the command is unset, still a <code>TODO</code>, or its binary is not on <code>PATH</code>), so they are safe to wire up early, but a disabled hook is the better default until there is code to run.</li>
-        <li>Copy the script from <code>hooks/examples/</code> into the target project (e.g. <code>.claude/hooks/</code>) and make it executable.</li>
+        <li>Copy the script from <code>hooks/examples/</code> into the target project (<code>&lt;harness-dir&gt;/hooks/</code>, e.g. <code>.claude/hooks/</code>) and make it executable. Keep the adapter block at the top unchanged.</li>
         <li>Adapt the project-specific parts: the targeted-validation <code>RULES</code> table, the failure-learning <code>watch_pattern</code>, allowed paths. Never wire a command that was not confirmed.</li>
-        <li>Register it in <code>.claude/settings.json</code> using the matching snippet from <code>hooks/settings-snippets.md</code>.</li>
+        <li>Register it in the harness's wiring file (<code>.claude/settings.json</code>, <code>.codex/hooks.json</code>, <code>.cursor/hooks.json</code>, <code>.agents/hooks.json</code>, or the OpenCode plugin) using the matching snippet from <code>hooks/settings-snippets.md</code>.</li>
         <li>Start in the warn/suggest mode where the hook has one; move to blocking after the team trusts it.</li>
       </ol>
 
       <h3>Troubleshooting</h3>
       <ul>
-        <li><strong>Hook does not fire:</strong> check the event name and matcher in <code>.claude/settings.json</code>, the script path, and that the file is executable. Hook settings are read at session start — restart the session after changes.</li>
+        <li><strong>Hook does not fire:</strong> check the event name and matcher in the harness's wiring file, the script path, and that the file is executable. Hook settings are read at session start — restart the session after changes.</li>
         <li><strong>Hook blocks everything:</strong> the kit's blocking examples have deliberate limitations (e.g. the approval guard is project-wide, not per-task). Read the script's header comment; adapt the filter or fall back to warn mode.</li>
         <li><strong>Windows:</strong> hook scripts need Git Bash or WSL plus <code>jq</code> on <code>PATH</code>. All kit hooks fail open (warn and allow) when <code>jq</code> is missing — they never block for a missing dependency. For structure validation specifically, use the PowerShell port <code>scripts/validate-sdd-structure.ps1</code> instead: it needs neither bash nor <code>jq</code> and runs the full check, including the <code>tasks.json</code> state-machine validation that the bash version skips when <code>jq</code> is absent.</li>
         <li><strong>Testing a hook:</strong> run it manually with a sample JSON payload on stdin (e.g. <code>echo '{"tool_name":"Edit","tool_input":{"file_path":"src/x.ts"}}' | ./spec-drift.sh</code>) before registering it.</li>
-        <li><strong>Version drift:</strong> event names, stdin fields, and output shapes evolve with Claude Code versions. The kit's scripts were verified against the hooks docs (2026-06); re-verify against the installed version before enabling (rule in <code>hooks/settings-snippets.md</code>).</li>
+        <li><strong>Version drift:</strong> event names, stdin fields, and output shapes evolve with each harness's versions. The kit's adapter block was verified against the Claude Code, Codex, Cursor and Antigravity hook docs (2026-09); re-verify against the installed version before enabling (rule in <code>hooks/settings-snippets.md</code>).</li>
       </ul>
     </section>
 
@@ -620,7 +645,7 @@
 
     <section id="mcp-integrations">
       <h2>9. MCP integrations</h2>
-      <p>MCPs let Claude Code connect to external systems. The harness works fully without MCPs. <strong>MCPs are never configured without your explicit approval.</strong> Where a single CLI call can do the job, the kit prefers it over loading an MCP — see <a href="#cli-vs-mcp">§25</a>.</p>
+      <p>MCPs let the agent connect to external systems. The harness works fully without MCPs. Server definitions are the same in every harness; only the config file differs (<code>.mcp.json</code>, <code>.codex/config.toml</code>, <code>.cursor/mcp.json</code>, <code>opencode.json</code>, <code>.agents/mcp_config.json</code> — <a href="#harness-support">§2b</a>). <strong>MCPs are never configured without your explicit approval.</strong> Where a single CLI call can do the job, the kit prefers it over loading an MCP — see <a href="#cli-vs-mcp">§25</a>.</p>
 
       <table>
         <thead>
@@ -641,19 +666,19 @@
 
     <section id="configuration-reference">
       <h2>10. Configuration reference</h2>
-      <p>The generated <code>CLAUDE.md</code> is the central configuration file. Key sections:</p>
+      <p>The generated <code>AGENTS.md</code> is the central configuration file (Claude Code reads it through the <code>CLAUDE.md</code> import stub). Key sections:</p>
 
       <table>
         <thead>
           <tr><th>Section</th><th>What it controls</th></tr>
         </thead>
         <tbody>
-          <tr><td>Build/test/lint commands</td><td>What Claude runs for validation</td></tr>
+          <tr><td>Build/test/lint commands</td><td>What the agent runs for validation</td></tr>
           <tr><td>SDD workflow policy</td><td>Which tasks require SDD</td></tr>
           <tr><td>Human approval policy</td><td>Whether approval is mandatory and who grants it</td></tr>
           <tr><td>State machine</td><td>Allowed statuses and transitions</td></tr>
           <tr><td>Spec and task storage</td><td>Where specs and tasks live</td></tr>
-          <tr><td>Protected files</td><td>Files Claude must not modify without approval</td></tr>
+          <tr><td>Protected files</td><td>Files the agent must not modify without approval</td></tr>
         </tbody>
       </table>
 
@@ -683,8 +708,8 @@
           <tr><th>Path</th><th>Purpose</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>instructions.md</code></td>           <td>Step-by-step procedure Claude follows to install the harness</td></tr>
-          <tr><td><code>questions.md</code></td>              <td>All project-specific decisions Claude must ask</td></tr>
+          <tr><td><code>instructions.md</code></td>           <td>Step-by-step procedure the onboarding agent follows to install the harness (any harness)</td></tr>
+          <tr><td><code>questions.md</code></td>              <td>All project-specific decisions the agent must ask (§0: harness)</td></tr>
           <tr><td><code>output-project-structure.md</code></td><td>Expected structure of the target project after onboarding</td></tr>
           <tr><td><code>manifest.md</code></td>               <td>Complete list of all files in the kit</td></tr>
           <tr><td><code>agents/</code></td>                   <td>Leader, spec-author, implementer, reviewer, documenter subagent templates</td></tr>
@@ -696,7 +721,7 @@
           <tr><td><code>templates/functional/</code></td>     <td>Functional brief HTML template</td></tr>
           <tr><td><code>scripts/validate-sdd-structure.sh</code></td><td>Validates that all required harness files are present (bash; <code>tasks.json</code> checks need <code>jq</code>)</td></tr>
           <tr><td><code>scripts/validate-sdd-structure.ps1</code></td><td>PowerShell port of the validator — no bash or <code>jq</code> required; runs the full check on Windows</td></tr>
-          <tr><td><code>reference/</code></td>                <td>SDD theory, harness engineering, Claude Code primitives, and the policy files that installed agents/skills link to (vendored into <code>.claude/reference/</code> at install so the harness survives kit removal)</td></tr>
+          <tr><td><code>reference/</code></td>                <td>SDD theory, harness engineering, the harness primitives mapping (Claude Code, Codex, Cursor, OpenCode, Antigravity), and the policy files that installed agents/skills link to (vendored into <code>&lt;harness-dir&gt;/reference/</code> at install so the harness survives kit removal)</td></tr>
         </tbody>
       </table>
     </section>
@@ -735,7 +760,7 @@
 
     <section id="documentation-model">
       <h2>13. Documentation model</h2>
-      <p>The kit's documentation is layered so that each audience reads only what it needs, and so that <code>CLAUDE.md</code> files stay short. Each layer links down to the next instead of duplicating it.</p>
+      <p>The kit's documentation is layered so that each audience reads only what it needs, and so that <code>AGENTS.md</code> files stay short. Each layer links down to the next instead of duplicating it.</p>
 
       <table>
         <thead>
@@ -755,23 +780,23 @@
           <tr>
             <td>Theory and policy</td>
             <td><code>reference/</code></td>
-            <td>Deeper background material: <a href="reference/sdd-theory.md">SDD theory</a>, <a href="reference/harness-engineering.md">harness engineering</a>, <a href="reference/claude-code-primitives.md">Claude Code primitives</a>, <a href="reference/context-economy.md">context economy</a>.</td>
+            <td>Deeper background material: <a href="reference/sdd-theory.md">SDD theory</a>, <a href="reference/harness-engineering.md">harness engineering</a>, <a href="reference/harness-primitives.md">harness primitives</a>, <a href="reference/context-economy.md">context economy</a>.</td>
           </tr>
           <tr>
             <td>Procedures (skills)</td>
-            <td><code>skills/</code> → installed as <code>.claude/skills/</code></td>
-            <td>Reusable step-by-step procedures, e.g. <a href="skills/sdd-workflow/SKILL.md">the SDD workflow skill</a>. Long procedures live here, never in <code>CLAUDE.md</code>.</td>
+            <td><code>skills/</code> → installed as <code>&lt;harness-dir&gt;/skills/</code></td>
+            <td>Reusable step-by-step procedures, e.g. <a href="skills/sdd-workflow/SKILL.md">the SDD workflow skill</a>. Long procedures live here, never in <code>AGENTS.md</code>.</td>
           </tr>
           <tr>
             <td>Roles (agents)</td>
-            <td><code>agents/</code> → installed as <code>.claude/agents/</code></td>
+            <td><code>agents/</code> → installed as <code>&lt;harness-dir&gt;/agents/</code></td>
             <td>Role-specific subagent definitions: <a href="agents/leader.md">leader</a>, <a href="agents/spec-author.md">spec-author</a>, <a href="agents/implementer.md">implementer</a>, <a href="agents/reviewer.md">reviewer</a>.</td>
           </tr>
         </tbody>
       </table>
 
       <p>Related entry points: <a href="instructions.md">onboarding instructions</a>, <a href="questions.md">onboarding questions</a>, <a href="hooks/hooks-policy.md">hooks policy</a>, <a href="mcps/mcp-policy.md">MCP policy</a>.</p>
-      <p>The same hierarchy applies to the harness generated in a target project: the project's <code>CLAUDE.md</code> stays concise and links to the project's skill, agents, specs, and decision records instead of embedding them.</p>
+      <p>The same hierarchy applies to the harness generated in a target project: the project's <code>AGENTS.md</code> stays concise and links to the project's skill, agents, specs, and decision records instead of embedding them.</p>
     </section>
 
     <hr>
@@ -790,7 +815,7 @@
 
     <section id="context-economy">
       <h2>15. Context economy</h2>
-      <p>Claude Code's context window is a scarce, shared resource: project instructions, file contents, tool definitions, and conversation history all compete for the same space. The kit turns the well-known context-management tricks into one explicit policy, documented in full in <a href="reference/context-economy.md"><code>reference/context-economy.md</code></a>. The generated <code>CLAUDE.md</code> carries only a short summary of these rules and links out.</p>
+      <p>An agent's context window is a scarce, shared resource: project instructions, file contents, tool definitions, and conversation history all compete for the same space. The kit turns the well-known context-management tricks into one explicit policy, documented in full in <a href="reference/context-economy.md"><code>reference/context-economy.md</code></a>. The generated <code>CLAUDE.md</code> carries only a short summary of these rules and links out.</p>
 
       <h3>Good vs bad context loading</h3>
       <table>
@@ -798,18 +823,18 @@
           <tr><th>Situation</th><th>Bad (context-expensive)</th><th>Good (context-economical)</th></tr>
         </thead>
         <tbody>
-          <tr><td>Project orientation</td><td>Paste the directory tree and ten files into chat</td><td>Link a concise project map from <code>CLAUDE.md</code></td></tr>
-          <tr><td>Long procedure</td><td>Copy the full SDD workflow into <code>CLAUDE.md</code></td><td>Keep it in the <code>sdd-workflow</code> skill; it loads only when used</td></tr>
+          <tr><td>Project orientation</td><td>Paste the directory tree and ten files into chat</td><td>Link a concise project map from <code>AGENTS.md</code></td></tr>
+          <tr><td>Long procedure</td><td>Copy the full SDD workflow into <code>AGENTS.md</code></td><td>Keep it in the <code>sdd-workflow</code> skill; it loads only when used</td></tr>
           <tr><td>Finding code</td><td>Read 20 files in the main conversation</td><td>Delegate to a subagent; keep only paths and conclusions</td></tr>
-          <tr><td>Task switch</td><td>Continue in the same long session</td><td><code>/compact</code> between unrelated tasks (or <code>/clear</code> if truly unrelated)</td></tr>
+          <tr><td>Task switch</td><td>Continue in the same long session</td><td>Compact between unrelated tasks (or start fresh if truly unrelated) with the harness's command</td></tr>
           <tr><td>External tools</td><td>Enable every MCP globally</td><td>Configure per project; scope heavy toolsets to a dedicated subagent</td></tr>
-          <tr><td>Past decisions</td><td>Rely on chat history</td><td>Record in decision logs and specs, link from <code>CLAUDE.md</code></td></tr>
+          <tr><td>Past decisions</td><td>Rely on chat history</td><td>Record in decision logs and specs, link from <code>AGENTS.md</code></td></tr>
         </tbody>
       </table>
 
-      <h3><code>CLAUDE.md</code> length and linked documentation</h3>
+      <h3><code>AGENTS.md</code> length and linked documentation</h3>
       <ul>
-        <li><code>CLAUDE.md</code> is loaded into every session, so every line has a permanent cost. Keep it to stable facts and short rules.</li>
+        <li><code>AGENTS.md</code> is loaded into every session, so every line has a permanent cost. Keep it to stable facts and short rules.</li>
         <li>Link to deeper files (reference docs, skills, project map, decision logs) instead of duplicating their content.</li>
         <li>If a section grows past a screen, move it into a linked file or a skill.</li>
       </ul>
@@ -821,11 +846,11 @@
         </thead>
         <tbody>
           <tr>
-            <td><code>/context</code></td>
+            <td><code>/context</code> (Claude Code; <code>/status</code> in Codex, session view elsewhere)</td>
             <td>A session has been long and behavior degrades; deciding whether to compact; auditing what consumes the window (it shows usage as a grid with optimization suggestions).</td>
           </tr>
           <tr>
-            <td><code>/compact [instructions]</code></td>
+            <td><code>/compact [instructions]</code> (Claude Code; <code>/compact</code> in Codex and OpenCode; summarize / new chat elsewhere)</td>
             <td>Between unrelated tasks or after a noisy investigation. Prefer <em>selective</em> compacting: pass focus instructions to preserve decisions, task status, architecture constraints, and unresolved questions.</td>
           </tr>
           <tr>
@@ -834,27 +859,27 @@
           </tr>
           <tr>
             <td>Skills</td>
-            <td>Repeatable multi-step procedures that would otherwise be pasted into chat or bloat <code>CLAUDE.md</code>; a skill's body loads only when invoked.</td>
+            <td>Repeatable multi-step procedures that would otherwise be pasted into chat or bloat <code>AGENTS.md</code>; a skill's body loads only when invoked.</td>
           </tr>
         </tbody>
       </table>
 
       <p>In an SDD project, compaction and session resets are safe by design: durable truth lives in <code>tasks.json</code>, <code>specs/</code>, decision logs, and <code>history.md</code>, not in chat history. If something matters beyond the session, write it to an artifact before compacting.</p>
-      <p>Command behavior verified against the Claude Code commands reference (2026-06): <code>/context [all]</code>, <code>/compact [instructions]</code>.</p>
+      <p>Claude Code command behavior verified against its commands reference (2026-06): <code>/context [all]</code>, <code>/compact [instructions]</code>; other harnesses' commands verified 2026-09-27 (table in <code>reference/context-economy.md</code>).</p>
     </section>
 
     <hr>
 
     <section id="project-map">
       <h2>16. Project map</h2>
-      <p>Onboarding generates a <strong>project map</strong>: a one-to-two-screen orientation artifact describing where things live in the target repository. It is the context-economy answer to "how does Claude learn the repository structure?" — instead of embedding a directory tree in <code>CLAUDE.md</code> or reading many files at session start, Claude reads one concise, linked artifact.</p>
+      <p>Onboarding generates a <strong>project map</strong>: a one-to-two-screen orientation artifact describing where things live in the target repository. It is the context-economy answer to "how does the agent learn the repository structure?" — instead of embedding a directory tree in <code>AGENTS.md</code> or reading many files at session start, the agent reads one concise, linked artifact.</p>
 
       <h3>Location and generation</h3>
       <ul>
-        <li>Default location: <code>.claude/context/project-map.md</code> (harness-internal). Teams that want it visible in their docs may choose <code>docs/project-map.md</code> instead (onboarding question, <code>questions.md</code> §12).</li>
+        <li>Default location: <code>&lt;harness-dir&gt;/context/project-map.md</code> (harness-internal). Teams that want it visible in their docs may choose <code>docs/project-map.md</code> instead (onboarding question, <code>questions.md</code> §12).</li>
         <li>Generated during onboarding from the Phase 1 repository inspection, using <code>templates/project-map.md.template</code>.</li>
         <li>If the developer defers generation, onboarding records a clear TODO instead of creating an empty file.</li>
-        <li>The generated <code>CLAUDE.md</code> links to the map; it never embeds the tree.</li>
+        <li>The generated <code>AGENTS.md</code> links to the map; it never embeds the tree.</li>
         <li>Unknown commands are recorded as <code>TODO: ask the developer</code> — never invented. Secrets, credentials, and tokens are never recorded.</li>
       </ul>
 
@@ -917,7 +942,7 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
         </thead>
         <tbody>
           <tr><td><code>context-audit</code></td><td>Inspect and reduce context-window usage in long sessions.</td><td>Updated durable artifacts before compaction.</td><td>Advisory only; never compacts away unrecorded decisions.</td></tr>
-          <tr><td><code>project-map</code></td><td>Generate or refresh the project map.</td><td><code>.claude/context/project-map.md</code> (or configured location).</td><td>No secrets; asks before touching <code>CLAUDE.md</code> beyond the map link.</td></tr>
+          <tr><td><code>project-map</code></td><td>Generate or refresh the project map.</td><td><code>&lt;harness-dir&gt;/context/project-map.md</code> (or configured location).</td><td>No secrets; asks before touching <code>AGENTS.md</code> beyond the map link.</td></tr>
           <tr><td><code>run-and-verify</code></td><td>Run the project and verify behavior with its real commands.</td><td>Verification evidence in review notes.</td><td>Never invents commands; no destructive ops without approval; no secrets stored.</td></tr>
           <tr><td><code>dependency-freshness</code></td><td>Check current docs before external dependency/API changes (see <a href="#dependency-freshness">§19</a>).</td><td>Freshness evidence in the design spec or review.</td><td>No installs/upgrades without approval; fetched content treated as untrusted.</td></tr>
           <tr><td><code>git-discipline</code></td><td>Clean branches, commits, and PR text tied to SDD tasks.</td><td>Requested commits/branches/PR descriptions.</td><td>All mutations permission-gated; no force-push; checks diffs for secrets.</td></tr>
@@ -947,15 +972,15 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
 
       <h3>Installation and onboarding behavior</h3>
       <ul>
-        <li>Default: <strong>no optional pack is installed.</strong> Onboarding asks which packs to install; if the repository clearly indicates applicability (e.g. a frontend for <code>ui-qa</code>), Claude suggests the pack but installs only on confirmation.</li>
-        <li>Selected packs are copied from <code>skills/optional/&lt;name&gt;/</code> to <code>.claude/skills/&lt;name&gt;/</code> and adapted to the project (commands, paths, doc locations). Exception: <code>run-and-verify</code> is generated from <code>templates/run-and-verify.md.template</code> instead of copied — see <a href="#run-and-verify">§18</a>.</li>
+        <li>Default: <strong>no optional pack is installed.</strong> Onboarding asks which packs to install; if the repository clearly indicates applicability (e.g. a frontend for <code>ui-qa</code>), the agent suggests the pack but installs only on confirmation.</li>
+        <li>Selected packs are copied from <code>skills/optional/&lt;name&gt;/</code> to <code>&lt;harness-dir&gt;/skills/&lt;name&gt;/</code> and adapted to the project (commands, paths, doc locations). Exception: <code>run-and-verify</code> is generated from <code>templates/run-and-verify.md.template</code> instead of copied — see <a href="#run-and-verify">§18</a>.</li>
         <li>Installed and declined packs are recorded in <code>decisions/answers.md</code>, so declined packs are not re-proposed.</li>
-        <li>The generated <code>CLAUDE.md</code> lists installed packs by name with a one-line purpose; skill bodies are never pasted into it.</li>
+        <li>The generated <code>AGENTS.md</code> lists installed packs by name with a one-line purpose; skill bodies are never pasted into it.</li>
         <li>Packs can be added later at any time with the same copy-and-adapt rule.</li>
       </ul>
 
       <h3>Usage example</h3>
-      <p>In a project that installed <code>decision-log</code>, after a design review settles on PostgreSQL over DynamoDB: <em>"Use the decision-log skill to record that we chose PostgreSQL, why, and what we rejected."</em> Claude drafts the entry, proposes it, and appends it to <code>decisions/architecture-decisions.md</code> only after approval.</p>
+      <p>In a project that installed <code>decision-log</code>, after a design review settles on PostgreSQL over DynamoDB: <em>"Use the decision-log skill to record that we chose PostgreSQL, why, and what we rejected."</em> The agent drafts the entry, proposes it, and appends it to <code>decisions/architecture-decisions.md</code> only after approval.</p>
 
       <h3>Structure of every pack</h3>
       <p>Each <code>SKILL.md</code> documents: purpose; when to use; when not to use; required inputs; output artifact; safety constraints; and a short procedure. All packs are advisory or permission-gated — none mutates git state, external systems, or memory without explicit developer approval.</p>
@@ -965,11 +990,11 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
 
     <section id="run-and-verify">
       <h2>18. Run and verify skill</h2>
-      <p>Implementation quality depends on knowing how to run the project and validate behavior. Instead of rediscovering that in every session, onboarding captures it once: when the <code>run-and-verify</code> pack is selected (<a href="#skill-packs">§17</a>), Claude generates a <strong>project-specific</strong> <code>.claude/skills/run-and-verify/SKILL.md</code> from <code>templates/run-and-verify.md.template</code>. The generated skill records the project's real commands and verification steps, and the implementer and reviewer run applicable checks through it.</p>
+      <p>Implementation quality depends on knowing how to run the project and validate behavior. Instead of rediscovering that in every session, onboarding captures it once: when the <code>run-and-verify</code> pack is selected (<a href="#skill-packs">§17</a>), the agent generates a <strong>project-specific</strong> <code>&lt;harness-dir&gt;/skills/run-and-verify/SKILL.md</code> from <code>templates/run-and-verify.md.template</code>. The generated skill records the project's real commands and verification steps, and the implementer and reviewer run applicable checks through it.</p>
 
       <h3>How generation works</h3>
       <ol>
-        <li><strong>Inspect first.</strong> Claude fills the template placeholders (<code>DEV_SERVER_COMMAND</code>, <code>TEST_COMMAND</code>, <code>TARGETED_TEST_COMMAND</code>, <code>LINT_COMMAND</code>, <code>TYPECHECK_COMMAND</code>, <code>BUILD_COMMAND</code>, <code>REQUIRED_SERVICES</code>, <code>ENV_VAR_NAMES</code>, <code>UI_VERIFICATION</code>, <code>API_VERIFICATION</code>) from the Phase 1 repository inspection — <code>package.json</code> scripts, <code>Makefile</code>, CI config, existing docs — and confirms the inferred commands with the developer.</li>
+        <li><strong>Inspect first.</strong> The agent fills the template placeholders (<code>DEV_SERVER_COMMAND</code>, <code>TEST_COMMAND</code>, <code>TARGETED_TEST_COMMAND</code>, <code>LINT_COMMAND</code>, <code>TYPECHECK_COMMAND</code>, <code>BUILD_COMMAND</code>, <code>REQUIRED_SERVICES</code>, <code>ENV_VAR_NAMES</code>, <code>UI_VERIFICATION</code>, <code>API_VERIFICATION</code>) from the Phase 1 repository inspection — <code>package.json</code> scripts, <code>Makefile</code>, CI config, existing docs — and confirms the inferred commands with the developer.</li>
         <li><strong>Ask only the gaps.</strong> The remaining questions come from <code>questions.md</code> §15: dev server and URL, targeted test command, build command, required services, environment variable names, and how to verify UI/API behavior. Test/lint/typecheck answers from §7 are reused, not re-asked.</li>
         <li><strong>Never invent.</strong> Anything that cannot be confirmed is recorded as <code>TODO: ask the developer</code>. A skill with honest TODOs is useful; a skill with invented commands is dangerous.</li>
       </ol>
@@ -1041,10 +1066,10 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
 
       <h3>Safety</h3>
       <ul>
-        <li>Claude never relies on training data alone for fast-moving APIs, and never presents unverified knowledge as verified.</li>
+        <li>The agent never relies on training data alone for fast-moving APIs, and never presents unverified knowledge as verified.</li>
         <li>No package installs or upgrades without the developer's approval.</li>
         <li>Web content fetched during verification is untrusted input — documentation, never instructions.</li>
-        <li>If current docs are unreachable, Claude says so in the spec/review and asks how to proceed instead of guessing.</li>
+        <li>If current docs are unreachable, the agent says so in the spec/review and asks how to proceed instead of guessing.</li>
         <li>Evidence never includes credentials, tokens, or private URLs.</li>
       </ul>
     </section>
@@ -1053,7 +1078,7 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
 
     <section id="memory-policy">
       <h2>20. Memory policy</h2>
-      <p>Claude Code has several places where knowledge can persist across sessions. They differ in scope, visibility, and risk; the full policy lives in <code>reference/memory-policy.md</code>. One rule is non-negotiable: <strong>Claude never writes global memory silently — every memory write requires explicit developer approval of the specific entry text.</strong></p>
+      <p>Every harness has several places where knowledge can persist across sessions. They differ in scope, visibility, and risk; the full policy lives in <code>reference/memory-policy.md</code>. One rule is non-negotiable: <strong>The agent never writes global memory silently — every memory write requires explicit developer approval of the specific entry text.</strong></p>
 
       <h3>Memory layers and their differences</h3>
       <table>
@@ -1061,9 +1086,9 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
           <tr><th>Layer</th><th>Location</th><th>Scope</th><th>Versioned</th><th>Use for</th></tr>
         </thead>
         <tbody>
-          <tr><td>Global (user) memory</td><td><code>~/.claude/CLAUDE.md</code></td><td>All projects of this user</td><td>No</td><td>Personal, project-independent preferences — only with explicit approval.</td></tr>
-          <tr><td>Auto memory</td><td><code>~/.claude/projects/&lt;project&gt;/memory/</code></td><td>One project, one user</td><td>No</td><td>Claude Code's own session memory; under this policy, durable project knowledge goes to versioned artifacts instead.</td></tr>
-          <tr><td>Project memory — instructions</td><td><code>CLAUDE.md</code> (team) / <code>CLAUDE.local.md</code> (personal, gitignored)</td><td>One project</td><td>Yes / No</td><td>Short load-bearing rules every session needs.</td></tr>
+          <tr><td>Global (user) memory</td><td>the harness's user-level instruction file (<code>~/.claude/CLAUDE.md</code>, <code>~/.codex/AGENTS.md</code>, <code>~/.config/opencode/AGENTS.md</code>, …)</td><td>All projects of this user</td><td>No</td><td>Personal, project-independent preferences — only with explicit approval.</td></tr>
+          <tr><td>Auto memory</td><td><code>~/.claude/projects/&lt;project&gt;/memory/</code></td><td>One project, one user</td><td>No</td><td>Harness-managed session memory where it exists (Claude Code shown); under this policy, durable project knowledge goes to versioned artifacts instead.</td></tr>
+          <tr><td>Project memory — instructions</td><td><code>AGENTS.md</code> (team) / <code>CLAUDE.local.md</code> (personal, gitignored; Claude Code)</td><td>One project</td><td>Yes / No</td><td>Short load-bearing rules every session needs.</td></tr>
           <tr><td>Project memory — decision logs</td><td><code>decisions/</code></td><td>One project</td><td>Yes</td><td>Reusable lessons, architectural and workflow decisions (see <a href="#decision-logs">§23</a>). <strong>Preferred default.</strong></td></tr>
           <tr><td>Task history</td><td><code>history.md</code></td><td>One project</td><td>Yes</td><td>Completed-work summaries.</td></tr>
           <tr><td>Review notes</td><td><code>specs/&lt;feature-slug&gt;/review.md</code></td><td>One task</td><td>Yes</td><td>One-off findings that do not generalize.</td></tr>
@@ -1076,17 +1101,17 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
         <li>Never store secrets, credentials, tokens, or connection strings in any memory layer.</li>
         <li>Never store personal or private data unrelated to the project.</li>
         <li>Never put project-specific rules in global memory without explicit approval of exactly that.</li>
-        <li>Everything in <code>decisions/</code>, <code>history.md</code>, or <code>CLAUDE.md</code> is visible to everyone with repo access — write accordingly.</li>
+        <li>Everything in <code>decisions/</code>, <code>history.md</code>, or <code>AGENTS.md</code> is visible to everyone with repo access — write accordingly.</li>
         <li>Speculative, unconfirmed conclusions are not memorized.</li>
       </ul>
-      <p>Memory locations verified against the Claude Code docs (2026-06): user memory <code>~/.claude/CLAUDE.md</code>; project <code>CLAUDE.md</code> / <code>CLAUDE.local.md</code>; auto memory directory with <code>MEMORY.md</code> index, managed via the <code>/memory</code> command.</p>
+      <p>Claude Code memory locations verified against its docs (2026-06); other harnesses' user-level files verified 2026-09-27 (<code>reference/memory-policy.md</code>): user memory <code>~/.claude/CLAUDE.md</code>; project <code>CLAUDE.md</code> / <code>CLAUDE.local.md</code>; auto memory directory with <code>MEMORY.md</code> index, managed via the <code>/memory</code> command.</p>
     </section>
 
     <hr>
 
     <section id="failure-learning">
       <h2>21. Failure learning</h2>
-      <p>When Claude makes a meaningful implementation mistake, the lesson should survive the session — without giving Claude the power to mutate memory on its own. The optional <code>failure-learning</code> pack (<a href="#skill-packs">§17</a>) implements that: Claude drafts a structured lesson, <strong>proposes</strong> it, and writes it only where the developer chooses.</p>
+      <p>When the agent makes a meaningful implementation mistake, the lesson should survive the session — without giving it the power to mutate memory on its own. The optional <code>failure-learning</code> pack (<a href="#skill-packs">§17</a>) implements that: the agent drafts a structured lesson, <strong>proposes</strong> it, and writes it only where the developer chooses.</p>
 
       <h3>What counts as a memorable failure</h3>
       <ul>
@@ -1109,7 +1134,7 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/
       </ul>
 
       <h3>The mandatory confirmation prompt</h3>
-      <p>Before any memory write, Claude shows the exact proposed entry and asks:</p>
+      <p>Before any memory write, the agent shows the exact proposed entry and asks:</p>
       <pre><code>I found a reusable lesson from this mistake:
 
 &lt;proposed memory entry&gt;
@@ -1229,7 +1254,7 @@ Rule: always double-check everything before running tests.</code></pre>
       <ol>
         <li>The <strong>spec-author</strong> reports significant decisions and rejected alternatives when a spec is ready for approval.</li>
         <li>The <strong>reviewer</strong> flags decisions settled during implementation or review in <code>review.md</code> (or records <code>None</code> — review checklist §8).</li>
-        <li>At completion, Claude proposes the exact entry text; the developer approves, revises, or declines. <strong>Nothing is written without approval.</strong></li>
+        <li>At completion, the agent proposes the exact entry text; the developer approves, revises, or declines. <strong>Nothing is written without approval.</strong></li>
         <li>A decision that replaces an earlier one marks the old entry as superseded — entries are never silently deleted.</li>
       </ol>
 
@@ -1238,7 +1263,7 @@ Rule: always double-check everything before running tests.</code></pre>
         <li><strong>Logged:</strong> architectural choices, explicitly rejected alternatives, agreed workflow rules, answers to questions that keep being re-asked across sessions.</li>
         <li><strong>Not logged:</strong> trivial choices with no future consequence, one-off instructions for a single task, speculative conclusions the developer has not confirmed.</li>
         <li><strong>Never logged:</strong> secrets, credentials, or sensitive operational data — <code>decisions/</code> is versioned and visible to everyone with repo access.</li>
-        <li>Claude proposes but does not overproduce: when in doubt, it asks whether the decision is worth logging.</li>
+        <li>The agent proposes but does not overproduce: when in doubt, it asks whether the decision is worth logging.</li>
       </ul>
 
       <h3>One artifact per question</h3>
@@ -1272,7 +1297,7 @@ Rule: always double-check everything before running tests.</code></pre>
       <h3>Integration with the rest of the harness</h3>
       <ul>
         <li>Workflow: <code>workflow.md</code> §7 (reviewer flags decisions) and §9 (proposal at completion).</li>
-        <li>Skill: the optional <code>decision-log</code> pack (<a href="#skill-packs">§17</a>) carries the procedure, including the supersede rule and the promotion of load-bearing rules to a one-line <code>CLAUDE.md</code> entry.</li>
+        <li>Skill: the optional <code>decision-log</code> pack (<a href="#skill-packs">§17</a>) carries the procedure, including the supersede rule and the promotion of load-bearing rules to a one-line <code>AGENTS.md</code> entry.</li>
         <li>Memory policy: decision logs are the preferred project-memory layer (<a href="#memory-policy">§20</a>); the documentation phase's ADR target row points here (<a href="#documentation-phase">§22</a>).</li>
       </ul>
     </section>
@@ -1281,7 +1306,7 @@ Rule: always double-check everything before running tests.</code></pre>
 
     <section id="browser-testing">
       <h2>24. Browser/UI testing with Playwright</h2>
-      <p>Playwright gives Claude a real browser — navigation, screenshots, form interaction, visual verification. It is the right tool for verifying UI acceptance criteria and the wrong thing to load globally: a browser toolset in a backend or library project wastes context and widens the capability surface for no benefit. The kit therefore ships browser testing as an <strong>optional, scoped subagent</strong>, never as a default global MCP.</p>
+      <p>Playwright gives the agent a real browser — navigation, screenshots, form interaction, visual verification. It is the right tool for verifying UI acceptance criteria and the wrong thing to load globally: a browser toolset in a backend or library project wastes context and widens the capability surface for no benefit. The kit therefore ships browser testing as an <strong>optional, scoped subagent</strong>, never as a default global MCP.</p>
 
       <h3>Why Playwright is not enabled globally</h3>
       <ul>
@@ -1291,7 +1316,7 @@ Rule: always double-check everything before running tests.</code></pre>
       </ul>
 
       <h3>The scoped subagent design</h3>
-      <p>The optional <code>browser-tester</code> agent (<code>agents/optional/browser-tester.md</code>, installed to <code>.claude/agents/browser-tester.md</code>) declares the Playwright MCP <em>inline in its own frontmatter</em>:</p>
+      <p>The optional <code>browser-tester</code> agent (<code>agents/optional/browser-tester.md</code>, installed to <code>&lt;harness-dir&gt;/agents/</code>) declares the Playwright MCP <em>inline in its own frontmatter</em> where the harness supports per-agent MCPs (Claude Code; Codex via <code>[mcp_servers.playwright]</code> in the agent TOML):</p>
       <pre><code>---
 name: browser-tester
 description: Verify UI acceptance criteria in a real browser.
@@ -1302,7 +1327,7 @@ mcpServers:
       command: npx
       args: ["-y", "@playwright/mcp@latest"]
 ---</code></pre>
-      <p>With an inline definition the server connects when the subagent starts and disconnects when it finishes — the main conversation never gets the browser tools (verified against the Claude Code subagent docs, 2026-06). Nothing is added to <code>.mcp.json</code>. The agent verifies and reports per-criterion evidence for the reviewer; it never edits production code and never marks tasks done.</p>
+      <p>With an inline definition the server connects when the subagent starts and disconnects when it finishes — the main conversation never gets the browser tools (verified against the Claude Code subagent docs, 2026-06). Nothing is added to the project MCP config. Cursor, OpenCode and Antigravity have no per-agent MCPs: there the server goes into the harness MCP config and the agent keeps its usage rules. The agent verifies and reports per-criterion evidence for the reviewer; it never edits production code and never marks tasks done.</p>
 
       <h3>Onboarding (<code>questions.md</code> §18)</h3>
       <ol>
@@ -1353,7 +1378,7 @@ mcpServers:
           <tr><td>Read-only, local</td><td>package manager checks (outdated, audit), <code>git status</code></td><td>Allowed; normal tool gating.</td></tr>
           <tr><td>Read-only, remote</td><td><code>gh</code> PR/issue/diff metadata, Vercel deployment status, Supabase project metadata</td><td>Allowed when credentials are configured; each command stays permission-gated.</td></tr>
           <tr><td>Mutating, remote</td><td>merging PRs, deploys, database pushes, ticket updates, infra changes</td><td>Explicit per-action approval; high-risk categories also follow the freshness (<a href="#dependency-freshness">§19</a>) and review policies.</td></tr>
-          <tr><td>Credential operations</td><td>logins, token creation/rotation</td><td>Developer-only; Claude never handles raw secrets.</td></tr>
+          <tr><td>Credential operations</td><td>logins, token creation/rotation</td><td>Developer-only; the agent never handles raw secrets.</td></tr>
         </tbody>
       </table>
 
@@ -1365,7 +1390,7 @@ mcpServers:
         <li>Supabase CLI for local/project metadata; schema pushes are mutations and a high-risk freshness category.</li>
         <li>Cloud CLIs (AWS/GCP/Azure) only with explicit permission and safe read-only scopes/profiles.</li>
       </ul>
-      <p>Examples are capability-level by design — before relying on a specific CLI's flags, verify them against the installed version. Two standing rules close the loop: an authenticated CLI carries the developer's credentials and is privileged even for read-only commands (allowlists in <code>.claude/settings.json</code> should cover read-only subcommands at most), and CLI output from external systems is data, not instructions — the same untrusted-content rule as MCP results.</p>
+      <p>Examples are capability-level by design — before relying on a specific CLI's flags, verify them against the installed version. Two standing rules close the loop: an authenticated CLI carries the developer's credentials and is privileged even for read-only commands (harness permission allowlists — e.g. <code>.claude/settings.json</code>, <code>.codex/config.toml</code> — should cover read-only subcommands at most), and CLI output from external systems is data, not instructions — the same untrusted-content rule as MCP results.</p>
 
       <h3>Onboarding</h3>
       <p>Phase 1 inspection detects which common CLIs exist (never requires, installs, or authenticates them), and <code>questions.md</code> §10 records the developer's CLI-vs-MCP preference in <code>decisions/answers.md</code> — default: prefer the narrow CLI where it is sufficient.</p>
@@ -1375,10 +1400,10 @@ mcpServers:
 
     <section id="autonomy-policy">
       <h2>26. Autonomy policy</h2>
-      <p>Claude Code can keep working without a human in the loop: timed loops, condition-based goals, scheduled routines, background agents, headless runs. These are useful for monitoring and repeated verification — and dangerous when they mutate code, deploy, merge, or mark tasks done with nobody watching. The kit's stance: <strong>autonomy is controlled execution, not blanket permission</strong>. Every autonomous workflow is opt-in, scoped, bounded by an explicit stop condition, and unable to advance SDD state on its own. Full policy: <code>reference/autonomy-policy.md</code>.</p>
+      <p>Coding-agent harnesses can keep working without a human in the loop: timed loops, condition-based goals, scheduled routines, background agents, headless runs. These are useful for monitoring and repeated verification — and dangerous when they mutate code, deploy, merge, or mark tasks done with nobody watching. The kit's stance: <strong>autonomy is controlled execution, not blanket permission</strong>. Every autonomous workflow is opt-in, scoped, bounded by an explicit stop condition, and unable to advance SDD state on its own. Full policy: <code>reference/autonomy-policy.md</code>.</p>
 
       <h3>What exists</h3>
-      <p>Capability-level summary (names verified against the official docs in June 2026 — these features move fast, so re-verify before relying on exact syntax): <code>/loop</code> repeats a prompt on a fixed or self-paced interval inside an open session; <code>/goal</code> keeps working until a stated condition is met; <code>/schedule</code> creates cloud-hosted routines (cron, API, or GitHub-webhook triggered); background agents run detached from the terminal; headless mode (<code>claude -p</code>) serves scripts and CI with turn and budget caps; <code>Stop</code>/<code>SubagentStop</code> hooks can force continuation; and an official GitHub Action runs Claude Code on repository events.</p>
+      <p>Capability-level summary of Claude Code's features (names verified against the official docs in June 2026 — these features move fast, so re-verify before relying on exact syntax; Codex, Cursor, OpenCode and Antigravity offer subsets and the policy applies by capability): <code>/loop</code> repeats a prompt on a fixed or self-paced interval inside an open session; <code>/goal</code> keeps working until a stated condition is met; <code>/schedule</code> creates cloud-hosted routines (cron, API, or GitHub-webhook triggered); background agents run detached from the terminal; headless mode (<code>claude -p</code>) serves scripts and CI with turn and budget caps; <code>Stop</code>/<code>SubagentStop</code> hooks can force continuation; and an official GitHub Action runs Claude Code on repository events.</p>
 
       <h3>Allowed: read-only, bounded</h3>
       <ul>
@@ -1463,7 +1488,7 @@ mcpServers:
 
     <section id="visual-evidence">
       <h2>28. Screenshots and visual evidence</h2>
-      <p>Screenshots often communicate UI expectations or bugs better than prose, so the kit treats them as first-class spec inputs. Two rules govern everything: <strong>screenshots are evidence, not automatically complete requirements</strong> — an image shows one state of one screen at one moment, not intent, edge cases, or other viewports — and <strong>Claude asks clarifying questions when the visual intent is ambiguous</strong> instead of guessing which parts of an image are binding.</p>
+      <p>Screenshots often communicate UI expectations or bugs better than prose, so the kit treats them as first-class spec inputs. Two rules govern everything: <strong>screenshots are evidence, not automatically complete requirements</strong> — an image shows one state of one screen at one moment, not intent, edge cases, or other viewports — and <strong>the agent asks clarifying questions when the visual intent is ambiguous</strong> instead of guessing which parts of an image are binding.</p>
 
       <h3>The spec-from-screenshot pack</h3>
       <p>The optional <code>spec-from-screenshot</code> skill (installed like any pack from §14 of <code>questions.md</code>; suggested for frontend repositories) converts visual inputs into structured spec material: inventory every image with provenance (route, environment, viewport — or <code>unknown</code>, never invented), classify its intent, extract observable facts (separating visible from inferred — inferences become questions), ask about ambiguities (hover/empty/error/loading states, other viewports, accessibility), then map the results into the spec. Images that contain secrets or personal data are flagged — credentials are never transcribed into any artifact.</p>
@@ -1495,7 +1520,7 @@ mcpServers:
 
     <section id="git-discipline">
       <h2>29. Git discipline</h2>
-      <p>Understanding Git/GitHub is a prerequisite for serious Claude Code usage, and git is where an assistant can do the most accidental damage. The kit's baseline holds with or without any skill: <strong>every mutating git action is permission-gated</strong>. The optional <code>git-discipline</code> pack (§14 of <code>questions.md</code>) adds working rules and text templates on top — it supports the SDD workflow and never bypasses it: no git text or operation substitutes for spec approval, review, or the documentation phase.</p>
+      <p>Understanding Git/GitHub is a prerequisite for serious coding-agent usage, and git is where an assistant can do the most accidental damage. The kit's baseline holds with or without any skill: <strong>every mutating git action is permission-gated</strong>. The optional <code>git-discipline</code> pack (§14 of <code>questions.md</code>) adds working rules and text templates on top — it supports the SDD workflow and never bypasses it: no git text or operation substitutes for spec approval, review, or the documentation phase.</p>
 
       <h3>The rules</h3>
       <ol>
@@ -1523,7 +1548,7 @@ mcpServers:
       </table>
 
       <h3>Templates tied to SDD tasks</h3>
-      <p>The pack installs three templates (kit source <code>templates/git/</code> → project <code>.claude/skills/git-discipline/templates/</code>, adapted to the §8 answers during onboarding):</p>
+      <p>The pack installs three templates (kit source <code>templates/git/</code> → project <code>&lt;harness-dir&gt;/skills/git-discipline/templates/</code>, adapted to the §8 answers during onboarding):</p>
       <ul>
         <li><strong>Commit message</strong> — type + imperative summary, the why in the body, and the task/spec reference. Example:<br><code>feat: add per-tenant rate limiting</code><br><code></code><br><code>Protects the public API from cross-tenant exhaustion; limits are</code><br><code>read from tenant config with a global fallback.</code><br><code></code><br><code>Task: T-042 (specs/rate-limiting/)</code></li>
         <li><strong>PR description</strong> — Summary / Spec / Checks run / Review status / Safety notes. Generated from the task's <code>review.md</code> (traceability table → summary, <code>Commands run</code> → checks, <code>Decision</code> → review status, high-risk record + visual verification + freshness evidence → safety notes). A PR description must not claim more than the review supports — pending review reads "review pending", never implied approval.</li>
@@ -1531,17 +1556,17 @@ mcpServers:
       </ul>
 
       <h3>Integration</h3>
-      <p>The reviewer keeps <code>review.md</code> sections complete so PR text can be generated without re-deriving evidence (<code>agents/reviewer.md</code>). The git policy itself is recorded during onboarding (<code>questions.md</code> §8: branch naming, commit cadence, task references, whether Claude may commit/push at all) and lives in the project's <code>CLAUDE.md</code> — the skill reads it, never overrides it. Branch protection and merge gates remain the platform's job: the skill's rules are discipline on top of, not a substitute for, repository settings.</p>
+      <p>The reviewer keeps <code>review.md</code> sections complete so PR text can be generated without re-deriving evidence (<code>agents/reviewer.md</code>). The git policy itself is recorded during onboarding (<code>questions.md</code> §8: branch naming, commit cadence, task references, whether the agent may commit/push at all) and lives in the project's <code>AGENTS.md</code> — the skill reads it, never overrides it. Branch protection and merge gates remain the platform's job: the skill's rules are discipline on top of, not a substitute for, repository settings.</p>
     </section>
 
     <hr>
 
     <section id="session-recovery">
       <h2>30. Session recovery</h2>
-      <p>Sessions get interrupted, go stale, or go wrong. Claude Code ships recovery features for all three — and one rule keeps them safe in an SDD project: <strong>durable artifacts are the source of truth, never chat history.</strong> <code>tasks.json</code> holds task state, <code>specs/</code> holds requirements and design, <code>review.md</code> holds verdicts, decision logs hold settled decisions, <code>history.md</code> holds what already happened. A summary, restored checkpoint, or resumed conversation is a convenience for reorienting — anything it claims is verified against the artifacts before acting on it. Full guidance: <code>reference/session-recovery.md</code>.</p>
+      <p>Sessions get interrupted, go stale, or go wrong. Every harness ships some recovery features (Claude Code's are summarized below; equivalents in <code>reference/session-recovery.md</code>) — and one rule keeps them safe in an SDD project: <strong>durable artifacts are the source of truth, never chat history.</strong> <code>tasks.json</code> holds task state, <code>specs/</code> holds requirements and design, <code>review.md</code> holds verdicts, decision logs hold settled decisions, <code>history.md</code> holds what already happened. A summary, restored checkpoint, or resumed conversation is a convenience for reorienting — anything it claims is verified against the artifacts before acting on it. Full guidance: <code>reference/session-recovery.md</code>.</p>
 
       <h3>What exists</h3>
-      <p>Capability-level summary (names verified against the official docs in June 2026 — re-verify before relying on exact syntax): a recap command summarizes the session (and an automatic recap appears after time away); rewind/checkpoints restore the conversation, the code, or both to an earlier point — but track only Claude's direct file edits, <em>not</em> bash side effects, manual edits, or concurrent sessions (local undo, not version control — git stays authoritative); resume flags reopen the most recent session or offer a picker (sessions do not sync across machines); branching forks a conversation to try an alternative; compaction with focus instructions controls what survives summarization; Esc stops the current turn immediately; full transcripts stay on disk with limited retention.</p>
+      <p>Capability-level summary (names verified against the official docs in June 2026 — re-verify before relying on exact syntax): a recap command summarizes the session (and an automatic recap appears after time away); rewind/checkpoints restore the conversation, the code, or both to an earlier point — but track only the agent's direct file edits, <em>not</em> bash side effects, manual edits, or concurrent sessions (local undo, not version control — git stays authoritative); resume flags reopen the most recent session or offer a picker (sessions do not sync across machines); branching forks a conversation to try an alternative; compaction with focus instructions controls what survives summarization; Esc stops the current turn immediately; full transcripts stay on disk with limited retention.</p>
 
       <h3>The four practices, with examples</h3>
       <table>
@@ -1550,9 +1575,9 @@ mcpServers:
         </thead>
         <tbody>
           <tr><td><strong>Resuming after days away</strong></td><td>Read the recap to find where to look, then verify against the artifacts before doing anything: <code>tasks.json</code> for actual task status, the active spec for what is approved, the latest review for open findings, <code>history.md</code> for what was completed. If recap and artifacts disagree, the artifacts win.</td></tr>
-          <tr><td><strong>Claude went in a wrong direction for several turns</strong></td><td>Rewind to the fork — restored context is cleaner than corrected context. Then check what the rewind could <em>not</em> revert: bash side effects (deleted files, installed packages, run migrations) survive checkpoints. <code>git status</code>/<code>git diff</code> show what was actually restored; recover anything else through git.</td></tr>
+          <tr><td><strong>The agent went in a wrong direction for several turns</strong></td><td>Rewind to the fork — restored context is cleaner than corrected context. Then check what the rewind could <em>not</em> revert: bash side effects (deleted files, installed packages, run migrations) survive checkpoints. <code>git status</code>/<code>git diff</code> show what was actually restored; recover anything else through git.</td></tr>
           <tr><td><strong>Execution drifting mid-task</strong></td><td>Stop the turn early (Esc) as soon as the direction is visibly wrong — drift compounds, and every in-chat correction pollutes context further. Reprompt with a reference to the governing artifact ("follow <code>specs/&lt;slug&gt;/design.md</code> section X"), not a long correction. If the session is cluttered with failed attempts, rewind past them or compact with focus instructions.</td></tr>
-          <tr><td><strong>Compacting between tasks</strong></td><td>Compact with focus instructions naming what must survive (decisions, task status, constraints, unresolved questions). Anything durable should already be in artifacts — the pre-compact capture hook (<a href="#hooks">§8</a>) reminds about exactly this, and the <code>CLAUDE.md</code> session-recovery rule covers reorientation afterwards.</td></tr>
+          <tr><td><strong>Compacting between tasks</strong></td><td>Compact with focus instructions naming what must survive (decisions, task status, constraints, unresolved questions). Anything durable should already be in artifacts — the pre-compact capture hook (<a href="#hooks">§8</a>) reminds about exactly this, and the <code>AGENTS.md</code> session-recovery rule covers reorientation afterwards.</td></tr>
         </tbody>
       </table>
 
@@ -1564,7 +1589,7 @@ mcpServers:
         <li><code>git status</code> + current diff — actual uncommitted changes, including anything a rewind could not revert.</li>
         <li>Decision logs / <code>history.md</code> — decisions settled since the context you remember.</li>
       </ol>
-      <p>When conversation memory and any artifact disagree, trust the artifact and say so explicitly before continuing. The generated project <code>CLAUDE.md</code> carries this as a standing rule (<code>templates/CLAUDE.md.template</code>, <code>Session recovery</code> section).</p>
+      <p>When conversation memory and any artifact disagree, trust the artifact and say so explicitly before continuing. The generated project <code>AGENTS.md</code> carries this as a standing rule (<code>templates/AGENTS.md.template</code>, <code>Session recovery</code> section).</p>
 
       <h3>SDD constraints</h3>
       <p>Rewind and resume never change task state: transitions go through the normal workflow only (<a href="#task-lifecycle">§5</a>). Restored context does not revive expired approvals — if the spec changed after the restored checkpoint, the spec on disk is authoritative and approval status is whatever <code>tasks.json</code> says. Recovery features are session conveniences, not audit trails: the artifacts and git history remain the record.</p>
@@ -1616,7 +1641,7 @@ mcpServers:
 
     <section id="templates-artifacts">
       <h2>32. Templates and generated artifacts</h2>
-      <p>A harness is only effective if its rules show up in the artifacts Claude actually writes and reviews. The spec templates (kit source <code>templates/specs/</code>, installed to <code>.claude/skills/sdd-workflow/templates/</code>) therefore carry every policy as a section in the generated files. Two conventions keep simple tasks simple: <strong>every optional section accepts <code>None</code></strong> (one word, not an empty table), and the optional closing tasks ship as a commented block that is copied in only when the design says it applies.</p>
+      <p>A harness is only effective if its rules show up in the artifacts the agent actually writes and reviews. The spec templates (kit source <code>templates/specs/</code>, installed to <code>&lt;harness-dir&gt;/skills/sdd-workflow/templates/</code>) therefore carry every policy as a section in the generated files. Two conventions keep simple tasks simple: <strong>every optional section accepts <code>None</code></strong> (one word, not an empty table), and the optional closing tasks ship as a commented block that is copied in only when the design says it applies.</p>
 
       <h3>requirements.md</h3>
       <p>Always: summary, functional/non-functional requirements, edge cases, error states, acceptance criteria, requirement-to-test mapping. Optional (fill or <code>None</code>): <strong>UI acceptance criteria</strong> and <strong>Visual evidence</strong> (<a href="#visual-evidence">§28</a>) when a browser UI or images are involved; <strong>External dependencies and APIs</strong> — the requirements-level inventory of touched systems (verification evidence lives in the design); <strong>Documentation expectations</strong> — which docs the feature will likely affect (the reviewer decides finally); <strong>Memory and decision implications</strong> — expected decision-log candidates (<a href="#decision-logs">§23</a>), proposed at review time only.</p>
@@ -1647,7 +1672,8 @@ mcpServers:
           <tr><th>Feature</th><th>Default status</th><th>Where configured</th><th>Safety level</th><th>Related files</th></tr>
         </thead>
         <tbody>
-          <tr><td>SDD core workflow (spec → approval → implement → review → docs → done)</td><td>Always installed</td><td><code>questions.md</code> §1–§6</td><td>Gated (human approval; state machine)</td><td><code>skills/sdd-workflow/</code>, <code>templates/CLAUDE.md.template</code>, <code>templates/tasks.json.template</code></td></tr>
+          <tr><td>SDD core workflow (spec → approval → implement → review → docs → done)</td><td>Always installed</td><td><code>questions.md</code> §1–§6</td><td>Gated (human approval; state machine)</td><td><code>skills/sdd-workflow/</code>, <code>templates/AGENTS.md.template</code>, <code>templates/tasks.json.template</code></td></tr>
+          <tr><td>Harness support (Claude Code, Codex CLI, Cursor, OpenCode, Antigravity; fallbacks for others)</td><td>Always (harness chosen at onboarding)</td><td><code>questions.md</code> §0</td><td>—</td><td><code>reference/harness-primitives.md</code>, <code>templates/AGENTS.md.template</code> (<a href="#harness-support">§2b</a>)</td></tr>
           <tr><td>Subagents (leader, spec-author, implementer, reviewer, documenter)</td><td>Always installed</td><td>—</td><td>Gated (each respects state machine)</td><td><code>agents/*.md</code></td></tr>
           <tr><td>Spec/review/history templates with policy sections</td><td>Always installed</td><td>—</td><td>Advisory (<code>None</code> convention)</td><td><code>templates/specs/</code>, <code>templates/history.md.template</code> (<a href="#templates-artifacts">§32</a>)</td></tr>
           <tr><td>Project map</td><td>Generated at onboarding</td><td><code>questions.md</code> §12</td><td>Advisory</td><td><code>templates/project-map.md.template</code>, <code>skills/optional/project-map/</code></td></tr>
@@ -1656,7 +1682,7 @@ mcpServers:
           <tr><td>Optional skill packs (10)</td><td>None installed</td><td><code>questions.md</code> §14</td><td>Advisory or gated (per pack)</td><td><code>skills/optional/</code> (<a href="#skill-packs">§17</a>)</td></tr>
           <tr><td>Failure learning + memory proposals</td><td>Proposals on; writes never automatic</td><td><code>questions.md</code> §19</td><td>Gated (exact entry text approved)</td><td><code>reference/memory-policy.md</code>, <code>skills/optional/failure-learning/</code> (<a href="#memory-policy">§20</a>, <a href="#failure-learning">§21</a>)</td></tr>
           <tr><td>Decision logs / ADRs</td><td>Pack not installed; propose-only when it is</td><td><code>questions.md</code> §17</td><td>Gated</td><td><code>decisions/*.template.md</code>, <code>skills/optional/decision-log/</code> (<a href="#decision-logs">§23</a>)</td></tr>
-          <tr><td>Hooks (9 examples)</td><td>All disabled</td><td><code>questions.md</code> §9; <code>.claude/settings.json</code></td><td>Advisory or blocking; none mutating/dangerous</td><td><code>hooks/hooks-policy.md</code>, <code>hooks/examples/</code> (<a href="#hooks">§8</a>)</td></tr>
+          <tr><td>Hooks (9 examples)</td><td>All disabled</td><td><code>questions.md</code> §9; the harness's hook wiring file</td><td>Advisory or blocking; none mutating/dangerous</td><td><code>hooks/hooks-policy.md</code>, <code>hooks/examples/</code> (<a href="#hooks">§8</a>)</td></tr>
           <tr><td>MCPs</td><td>None configured</td><td><code>questions.md</code> §10</td><td>Gated (explicit approval; untrusted output)</td><td><code>mcps/mcp-policy.md</code> (<a href="#mcp-integrations">§9</a>)</td></tr>
           <tr><td>Browser testing (Playwright)</td><td>Not installed</td><td><code>questions.md</code> §18</td><td>Gated (MCP scoped to one subagent; no credentials stored)</td><td><code>agents/optional/browser-tester.md</code>, <code>mcps/playwright-policy.md</code> (<a href="#browser-testing">§24</a>)</td></tr>
           <tr><td>Screenshots as spec inputs</td><td>Pack not installed</td><td><code>questions.md</code> §14</td><td>Advisory (evidence-not-requirements rule)</td><td><code>skills/optional/spec-from-screenshot/</code> (<a href="#visual-evidence">§28</a>)</td></tr>
@@ -1664,7 +1690,7 @@ mcpServers:
           <tr><td>Autonomy (loops/goals/schedules)</td><td>Disabled except documented read-only monitoring</td><td><code>questions.md</code> §22</td><td>Gated (stop conditions; cannot advance SDD state)</td><td><code>reference/autonomy-policy.md</code> (<a href="#autonomy-policy">§26</a>)</td></tr>
           <tr><td>Deep review</td><td>Recommended for high-risk; paid modes per-invocation</td><td><code>questions.md</code> §21</td><td>Advisory → gated (rung 3)</td><td><code>reference/deep-review-policy.md</code> (<a href="#deep-review-policy">§27</a>)</td></tr>
           <tr><td>Git discipline + text templates</td><td>Pack not installed; mutations always ask-first</td><td><code>questions.md</code> §8, §14</td><td>Gated</td><td><code>skills/optional/git-discipline/</code>, <code>templates/git/</code> (<a href="#git-discipline">§29</a>)</td></tr>
-          <tr><td>Session recovery rule</td><td>Enabled in generated <code>CLAUDE.md</code></td><td><code>questions.md</code> §23</td><td>Advisory</td><td><code>reference/session-recovery.md</code> (<a href="#session-recovery">§30</a>)</td></tr>
+          <tr><td>Session recovery rule</td><td>Enabled in generated <code>AGENTS.md</code></td><td><code>questions.md</code> §23</td><td>Advisory</td><td><code>reference/session-recovery.md</code> (<a href="#session-recovery">§30</a>)</td></tr>
           <tr><td>Run-and-verify recipe</td><td>Pack not installed; generated when selected</td><td><code>questions.md</code> §15</td><td>Advisory (never invents commands)</td><td><code>templates/run-and-verify.md.template</code> (<a href="#run-and-verify">§18</a>)</td></tr>
         </tbody>
       </table>
@@ -1692,12 +1718,12 @@ mcpServers:
 
       <h3>Maintainer checklist</h3>
       <ol>
-        <li><strong>One canonical home per rule.</strong> Deep policy goes in <code>reference/</code> or the relevant skill; <code>README</code>/<code>CLAUDE.md.template</code> carry a summary plus a link. If you are pasting the same paragraph into a third file, restructure instead.</li>
+        <li><strong>One canonical home per rule.</strong> Deep policy goes in <code>reference/</code> or the relevant skill; <code>README</code>/<code>AGENTS.md.template</code> carry a summary plus a link. If you are pasting the same paragraph into a third file, restructure instead.</li>
         <li><strong>Keep the mirrors in sync:</strong> <code>README.md</code> ↔ <code>README.html</code> section for section; templates ↔ reviewer checklist ↔ reviewer agent output list; <code>questions.md</code> defaults ↔ <code>instructions.md</code> Safe default profile YAML; and the two structure validators (<code>validate-sdd-structure.sh</code> ↔ <code>validate-sdd-structure.ps1</code>) — a change to the required-file list, placeholder exemptions, or the <code>tasks.json</code> state-machine checks must land in both.</li>
         <li><strong>Append, don't renumber.</strong> New <code>questions.md</code> sections and <code>DOCUMENTATION.html</code> sections go at the end — section numbers are cited across the kit and in recorded answers.</li>
         <li><strong>New optional feature?</strong> It needs all of: a <code>questions.md</code> entry with a safe default, an <code>instructions.md</code> install step, a row in the feature matrix (<a href="#feature-matrix">§33</a>), optionality stated in its own file, both READMEs, and a <code>DOCUMENTATION.html</code> section.</li>
         <li><strong>New hook?</strong> Classify it in <code>hooks/hooks-policy.md</code> (advisory/blocking/mutating/dangerous), ship it disabled, add a settings snippet, fail open on missing <code>jq</code>, pipe every <code>jq -r</code> capture through <code>tr -d '\r'</code> (Windows CRLF), and shellcheck it.</li>
-        <li><strong>Verify before documenting Claude Code behavior.</strong> Hook APIs, command names, MCP scoping syntax — check against the current official docs; record names capability-level with a re-verify note. Do not document undocumented features.</li>
+        <li><strong>Verify before documenting harness behavior.</strong> Hook APIs, command names, MCP scoping syntax, directory names — check against each harness's current official docs (Claude Code, Codex, Cursor, OpenCode, Antigravity); record names capability-level with a re-verify note. Do not document undocumented features.</li>
         <li><strong>After adding/renaming/deleting kit files:</strong> <code>git add</code> first, then <code>scripts/update-manifest.sh</code> (it reads <code>git ls-files</code>), then commit the regenerated <code>manifest.md</code>.</li>
         <li><strong>Run the CI checks locally</strong> before pushing: stale spec-artifact <code>.md</code> references, <code>&#123;&#123;PLACEHOLDER&#125;&#125;</code> allowlist (templates/ and a short list only — <code>&lt;angle&gt;</code> tokens elsewhere), manifest diff, shellcheck on hook/kit scripts.</li>
         <li><strong>Safety gates are not refactorable.</strong> Any change that would let a feature write memory, mutate git/remote state, or advance SDD state without explicit approval is a design regression, not a simplification — see the matrix corollary (<a href="#feature-matrix">§33</a>).</li>

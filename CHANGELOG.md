@@ -2,6 +2,29 @@
 
 Kit versions are tracked in `VERSION` and tagged in git (`v<version>`). Each entry lists **Changes** (what is different in the kit) and **Migration** (what `/sdd-update` must do to bring an existing install up to date). The `sdd-update` skill reads the entries between the installed version and the latest, and executes the migration steps with developer approval.
 
+## 2.1.0 — 2026-09-27
+
+### Changes
+
+- **Multi-harness support.** The kit installs the same SDD harness under Claude Code, OpenAI Codex CLI, Cursor, OpenCode and Google Antigravity (and, with documented fallbacks, any other coding-agent harness). The Claude Code layout (`.claude/`) stays the kit's *reference layout*; `reference/harness-primitives.md` (renamed from `claude-code-primitives.md`) maps every concept — instruction file, skills, subagents, hooks, MCP config, invocation, compaction — to each harness, with fallbacks when a harness lacks one (roles played by the main conversation, skills read on demand, hooks instruction-only). `questions.md` §0 records the harness(es); `instructions.md`, `output-project-structure.md` and the validators speak in terms of `<harness-dir>`.
+- **`AGENTS.md` is the canonical project instruction file.** `templates/CLAUDE.md.template` became `templates/AGENTS.md.template` (harness-neutral wording, new placeholders `{{HARNESS_DIR}}`, `{{SKILL_INVOCATION}}`, `{{CONTEXT_COMMANDS}}`, `{{HARNESS_NOTES}}`); a new two-line `templates/CLAUDE.md.template` (`@AGENTS.md` import) is generated only when Claude Code is one of the harnesses. The kit's own root has the same pair.
+- **Harness-neutral hook scripts.** Every example hook starts with an identical adapter block that reads the payloads of Claude Code, Codex, Cursor and Antigravity (or explicit `SDD_HOOK_*` variables / a path argument) and emits block/advisory output per `SDD_HOOK_OUTPUT` (`exit`, `cursor`, `antigravity`, `plain`). `hooks/hooks-policy.md` documents the contract; `hooks/settings-snippets.md` carries wiring for `.claude/settings.json`, `.codex/hooks.json`, `.cursor/hooks.json`, `.agents/hooks.json` and an OpenCode plugin. Spec/harness allowlists in the guards now cover every harness directory and `AGENTS.md`.
+- **Validators and scripts.** `validate-sdd-structure.sh`/`.ps1` and `init.sh` take `SDD_HARNESS_DIR` (default `.claude`), `SDD_SKILLS_DIR` (Codex: `.agents/skills`) and `SDD_PROJECT_DIR`; they accept `AGENTS.md` (or a legacy `CLAUDE.md`), require `CLAUDE.md` to be the import stub when both exist, and accept Codex `.toml` agents.
+- **Manifest and update skill.** `sdd-kit-manifest.json` gains a `harness` block (primary harness, directory, instruction files, additional harness directories); `sdd-update` refreshes every harness directory listed there and treats a manifest without the block as a Claude Code install.
+- **Wording pass.** Agents, skills, templates, policies and MCP notes no longer assume Claude Code: "Claude" → "the agent", `CLAUDE.md` → `AGENTS.md`, `.claude/...` paths → the harness directory or "this skill's folder"; harness-specific commands appear only in per-harness tables (`reference/context-economy.md`, `reference/memory-policy.md`, `reference/session-recovery.md`, `reference/autonomy-policy.md`).
+
+### Migration (for installs made before 2.1.0)
+
+Run with developer approval, per step. Existing Claude Code installs keep working unchanged; these steps are what make the install shareable with other harnesses.
+
+1. **Create `AGENTS.md` from `CLAUDE.md`**: move the whole content of the project `CLAUDE.md` into `AGENTS.md`, apply the template's wording changes (`templates/AGENTS.md.template`: "Roles (subagents)" section, harness-neutral skill invocation, "Harness updates" pointing at the `sdd-update` skill), then replace `CLAUDE.md` with the two-line stub from `templates/CLAUDE.md.template` (`@AGENTS.md`). Claude Code deduplicates the import, so nothing loads twice.
+2. **Refresh the hook scripts** installed by onboarding from `hooks/examples/` (the adapter block is new; project logic below it is unchanged apart from the harness-directory allowlists). Existing `.claude/settings.json` wiring keeps working: the default output mode is Claude Code's.
+3. **Refresh the validators**: overwrite `scripts/validate-sdd-structure.sh` / `.ps1` and `scripts/init.sh` from the kit.
+4. **Refresh the skills and agents** (wording only): update `<harness-dir>/skills/sdd-workflow/*`, installed optional packs, `sdd-update`, and the agents from the kit, preserving project adaptations; rewrite any `.claude/skills/...` path inside them to the harness-relative form the kit now uses.
+5. **Vendored policies**: if `context-economy.md`, `memory-policy.md`, `autonomy-policy.md` or `deep-review-policy.md` were vendored under `<harness-dir>/reference/`, refresh them from the kit.
+6. **Add the `harness` block to the manifest**: `{"primary": "claude-code", "dir": ".claude", "instruction_files": ["AGENTS.md", "CLAUDE.md"], "additional": []}` for an existing Claude Code install; record the answer to `questions.md` §0 in `decisions/answers.md` (new "Harness" section from `decisions/answers.template.md`).
+7. **Optional — add another harness**: run the onboarding's Phase 4 for that harness only (skills and agents copied into its directory in its format, hook wiring, MCP config), add it to the manifest's `harness.additional`, and note it in `decisions/answers.md`. `AGENTS.md`, specs, tasks, history, decisions and scripts are shared as-is.
+
 ## 2.0.1 — 2026-07-22
 
 ### Changes

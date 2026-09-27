@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Use this procedure when the developer provides a functional document, product brief, ticket, user story, or informal feature description and asks Claude Code to generate SDD specs from it.
+Use this procedure when the developer provides a functional document, product brief, ticket, user story, or informal feature description and asks the agent to generate SDD specs from it.
 
 A functional document is source material. It is not an approved implementation spec.
 
-Claude Code must convert the functional document into structured SDD files before any implementation work begins.
+The agent must convert the functional document into structured SDD files before any implementation work begins.
 
 ---
 
@@ -29,7 +29,7 @@ Expected input sources may include:
 
 ## Required output
 
-For each functional document, Claude Code must create or update:
+For each functional document, the agent must create or update:
 
 ```text
 specs/<feature-slug>/
@@ -134,7 +134,7 @@ Do not invent external task IDs.
 
 Before writing specs, inspect relevant project context:
 
-- `CLAUDE.md`
+- `AGENTS.md` (the project instruction file)
 - `docs/architecture.md`
 - `docs/conventions.md`
 - `docs/adr/`
@@ -300,7 +300,7 @@ Tasks should include validation tasks:
 
 ## Step 8 — Generate `assumptions.md`
 
-Use `assumptions.md` for decisions Claude Code had to make because the functional document was incomplete.
+Use `assumptions.md` for decisions the agent had to make because the functional document was incomplete.
 
 Assumptions must be explicit and reviewable.
 
@@ -375,7 +375,7 @@ Only the developer may approve the spec.
 
 ## Step 12 — Stop before implementation
 
-After generating or updating the spec, Claude Code must stop.
+After generating or updating the spec, the agent must stop.
 
 Do not invoke the implementer.
 
@@ -444,4 +444,4 @@ Before marking intake complete, verify:
 - [ ] Open questions are categorized as blocking or non-blocking.
 - [ ] Acceptance tests map to requirements.
 - [ ] Task status is correct.
-- [ ] Claude stopped before implementation.
+- [ ] The agent stopped before implementation.

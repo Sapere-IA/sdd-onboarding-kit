@@ -71,7 +71,7 @@ None.
 
 ## Security and permissions
 
-<!-- Trust boundaries, auth/authz, secrets handling, validation of external input, gated operations — how each is gated, or "None." High-risk categories trigger the escalation ladder in .claude/reference/deep-review-policy.md. -->
+<!-- Trust boundaries, auth/authz, secrets handling, validation of external input, gated operations — how each is gated, or "None." High-risk categories trigger the escalation ladder in reference/deep-review-policy.md (vendored in the harness directory). -->
 
 None.
 

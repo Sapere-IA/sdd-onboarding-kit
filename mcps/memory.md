@@ -24,7 +24,7 @@ Bad candidates:
 1. Is memory project-scoped or user-scoped?
 2. Who can read stored memories?
 3. What categories of information may be stored?
-4. Should Claude ask before writing memory?
+4. Should the agent ask before writing memory?
 5. Should memory entries link back to specs or ADRs?
 
 ## Safe default

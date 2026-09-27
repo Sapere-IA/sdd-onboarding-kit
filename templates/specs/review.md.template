@@ -51,7 +51,7 @@ None.
 
 ## High-risk and deep review
 
-<!-- High-risk categories touched, escalation rungs run, and their outputs — or "None." A high-risk change reviewed only at the standard level needs the reason recorded here (.claude/reference/deep-review-policy.md). -->
+<!-- High-risk categories touched, escalation rungs run, and their outputs — or "None." A high-risk change reviewed only at the standard level needs the reason recorded here (reference/deep-review-policy.md, vendored in the harness directory). -->
 
 None.
 

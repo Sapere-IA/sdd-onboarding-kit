@@ -30,7 +30,7 @@ for spec approval, review, or the documentation phase.
    autonomous).
 7. **When commits are requested, reference the task/spec** (task ID,
    spec slug) in the message, following the project's convention from
-   `CLAUDE.md` / `questions.md` §8 answers.
+   `AGENTS.md` / `questions.md` §8 answers.
 
 A project may pre-authorize specific operations in its git policy
 (e.g. "commit after each task"); everything not pre-authorized stays
@@ -52,8 +52,8 @@ ask-first.
 ## Required inputs
 
 - The task/spec reference the change traces to.
-- The project's git policy from `CLAUDE.md` (branch naming, commit
-  conventions, whether Claude may commit/push at all).
+- The project's git policy from `AGENTS.md` (branch naming, commit
+  conventions, whether the agent may commit/push at all).
 - For PR descriptions: the task's `review.md`, when it exists.
 
 ## Procedure

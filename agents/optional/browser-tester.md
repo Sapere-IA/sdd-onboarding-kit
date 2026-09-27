@@ -29,7 +29,7 @@ specs, and never mark tasks done.
   `UI acceptance criteria` section) or the developer described what to
   verify.
 - The way to run the UI locally is known (run-and-verify skill, project
-  map, or `CLAUDE.md`). Never invent a dev-server command.
+  map, or `AGENTS.md`). Never invent a dev-server command.
 
 ## Inputs
 
@@ -40,7 +40,7 @@ Read:
   accessibility checks, responsive states, login/auth constraints;
 - `specs/<feature-slug>/design.md` — UI verification plan;
 - screenshots/mockups referenced by the spec, if any;
-- `.claude/skills/run-and-verify/SKILL.md` or the project map — how to
+- the `run-and-verify` skill or the project map — how to
   start the app and at what URL it responds.
 
 ## Procedure
@@ -85,7 +85,11 @@ Return a UI QA checklist the reviewer can paste into `review.md`:
 
 ## Version note
 
-The `mcpServers` frontmatter syntax and the Playwright MCP launch command
-(`npx -y @playwright/mcp@latest`) were verified against the Claude Code
-and Playwright MCP docs (2026-06). Re-verify against the installed
-version during onboarding before finalizing this file.
+The `mcpServers` frontmatter syntax is Claude Code's (verified 2026-06); Codex
+agents declare the same server as `[mcp_servers.playwright]` in the agent TOML;
+Cursor, OpenCode and Antigravity have no per-agent MCPs — declare it in the
+harness MCP config instead and keep this agent's rules (see
+`reference/harness-primitives.md`). The Playwright MCP launch command
+(`npx -y @playwright/mcp@latest`) was verified against the Playwright MCP docs
+(2026-06). Re-verify against the installed version during onboarding before
+finalizing this file.

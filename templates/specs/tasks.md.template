@@ -13,7 +13,7 @@ status: spec_draft
 1. [ ] T1: Add failing tests for REQ-001 — Write or update automated tests before implementing.
 2. [ ] T2: Implement the smallest change for REQ-001 — Do not expand scope beyond the approved spec.
 3. [ ] T3: Handle edge cases — Cover the EDGE-NNN cases from requirements.md.
-4. [ ] T4: Run validation — Tests, lint and typecheck as configured in CLAUDE.md.
+4. [ ] T4: Run validation — Tests, lint and typecheck as configured in AGENTS.md.
 
 <!-- Optional closing tasks — append only those that apply to this feature (the design's Documentation targets, Project map references, Security and UI sections say which):
 - Update affected documentation (targets from the design; reviewer confirms).

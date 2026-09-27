@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SDD Onboarding Kit — Spec Driven Development for Claude Code</title>
+<title>SDD Onboarding Kit — Spec Driven Development for coding agents</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800&display=swap" rel="stylesheet">
@@ -309,8 +309,8 @@
 <header class="hero">
   <div class="wrap">
     <span class="badge">Spec Driven Development</span>
-    <h1>Structure how Claude Code<br>builds your software, <span class="accent">every time</span></h1>
-    <p class="sub">The SDD Onboarding Kit installs a spec-before-code harness in any repository — so Claude creates an approved specification before touching production code.</p>
+    <h1>Structure how your coding agent<br>builds your software, <span class="accent">every time</span></h1>
+    <p class="sub">The SDD Onboarding Kit installs a spec-before-code harness in any repository — so the agent creates an approved specification before touching production code. Works with Claude Code, Codex CLI, Cursor, OpenCode and Antigravity.</p>
 
     <div class="factgrid">
       <div class="fact"><div class="k">Works with</div><div class="v">Any repository <small>Language and framework agnostic</small></div></div>
@@ -326,14 +326,14 @@
   <div class="wrap">
     <span class="eyebrow">The workflow</span>
     <h2>Spec first. Code <em>second. Always.</em></h2>
-    <p class="lead">When the harness is installed, Claude Code follows a structured loop — creating and getting approval for a specification before a single line of production code is written.</p>
+    <p class="lead">When the harness is installed, the agent follows a structured loop — creating and getting approval for a specification before a single line of production code is written.</p>
 
     <div style="margin-top:40px;">
       <ol class="steps">
         <li><strong>Select a task.</strong> The developer picks or describes what to build.</li>
-        <li><strong>Spec is created.</strong> Claude writes requirements, design, and implementation tasks — no code yet.</li>
+        <li><strong>Spec is created.</strong> The agent writes requirements, design, and implementation tasks — no code yet.</li>
         <li><strong>You review and approve</strong> the spec before anything is implemented.</li>
-        <li><strong>Claude implements</strong> strictly against the approved spec — no scope creep.</li>
+        <li><strong>The agent implements</strong> strictly against the approved spec — no scope creep.</li>
         <li><strong>Tests and validation</strong> run automatically.</li>
         <li><strong>Traceability review</strong> verifies requirements, design, tasks, code and tests are aligned.</li>
         <li><strong>Documentation is updated</strong> when the change affects docs — task stays open until docs are current.</li>
@@ -348,11 +348,11 @@
   <div class="wrap">
     <span class="eyebrow">Installation</span>
     <h2>Up and running in <em>one prompt</em></h2>
-    <p class="lead">Copy this kit into your project folder, then open Claude Code and run:</p>
+    <p class="lead">Copy this kit into your project folder, then open your harness — Claude Code, Codex, Cursor, OpenCode or Antigravity — and run:</p>
 
-    <div class="prompt-box">Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development. Ask me all necessary questions before making project-specific decisions.</div>
+    <div class="prompt-box">Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development with this harness. Ask me all necessary questions before making project-specific decisions.</div>
 
-    <p class="lead">Claude Code will inspect the repository, ask you the configuration questions from <code>questions.md</code>, and generate a complete project-specific SDD harness — adapted to your commands, stack, and preferences.</p>
+    <p class="lead">The agent will confirm which harness(es) you use, inspect the repository, ask you the configuration questions from <code>questions.md</code>, and generate a complete project-specific SDD harness in your harness's own layout — adapted to your commands, stack, and preferences.</p>
 
     <div class="note orange" style="margin-top:32px;">
       <strong>Recommended defaults available.</strong> Accept the default profile to skip twenty configuration questions and get started immediately. You can always customise later.
@@ -369,18 +369,18 @@
     <div class="cards" style="margin-top:36px;">
       <div class="card">
         <div class="icon">📋</div>
-        <h3>Project CLAUDE.md</h3>
-        <p>A short, project-specific file generated from the kit's template — links out, never duplicates skill bodies.</p>
+        <h3>Project AGENTS.md</h3>
+        <p>A short, project-specific file read by every harness (Claude Code imports it from a two-line <code>CLAUDE.md</code>) — links out, never duplicates skill bodies.</p>
       </div>
       <div class="card">
         <div class="icon">🤖</div>
         <h3>Five subagents</h3>
-        <p>Leader, spec-author, implementer, reviewer, and documenter — installed as <code>.claude/agents/</code>.</p>
+        <p>Leader, spec-author, implementer, reviewer, and documenter — installed into your harness's agents directory, in its format.</p>
       </div>
       <div class="card">
         <div class="icon">⚙️</div>
         <h3>SDD workflow skill</h3>
-        <p>The core skill with full workflow, state machine, review checklist, and spec templates at <code>.claude/skills/sdd-workflow/</code>.</p>
+        <p>The core skill with full workflow, state machine, review checklist, and spec templates in your harness's skills directory (same <code>SKILL.md</code> format everywhere).</p>
       </div>
       <div class="card">
         <div class="icon">📁</div>
@@ -417,16 +417,16 @@
           <tr><th>File / folder</th><th>Purpose</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>instructions.md</code></td><td>Step-by-step procedure Claude Code follows to install the harness</td></tr>
-          <tr><td><code>questions.md</code></td><td>Project-specific decisions Claude must ask before writing files</td></tr>
+          <tr><td><code>instructions.md</code></td><td>Step-by-step procedure the onboarding agent follows to install the harness (any harness)</td></tr>
+          <tr><td><code>questions.md</code></td><td>Project-specific decisions the agent must ask before writing files</td></tr>
           <tr><td><code>agents/</code></td><td>Subagent templates: leader, spec-author, implementer, reviewer, documenter</td></tr>
-          <tr><td><code>skills/sdd-workflow/</code></td><td>Full SDD workflow skill — copied to <code>.claude/skills/</code></td></tr>
+          <tr><td><code>skills/sdd-workflow/</code></td><td>Full SDD workflow skill — copied to the harness's skills directory</td></tr>
           <tr><td><code>skills/optional/</code></td><td>Optional skill packs — installed only when selected</td></tr>
           <tr><td><code>hooks/</code></td><td>Hook policies, settings snippets and example hook scripts</td></tr>
           <tr><td><code>mcps/</code></td><td>Criteria for deciding which MCPs to configure</td></tr>
-          <tr><td><code>templates/</code></td><td>File templates Claude adapts to the target project</td></tr>
+          <tr><td><code>templates/</code></td><td>File templates the agent adapts to the target project</td></tr>
           <tr><td><code>scripts/</code></td><td>Base validation scripts for structure, environment, and tests (bash, plus a <code>jq</code>-free PowerShell port for Windows)</td></tr>
-          <tr><td><code>reference/</code></td><td>SDD theory, harness engineering, Claude Code primitives</td></tr>
+          <tr><td><code>reference/</code></td><td>SDD theory, harness engineering, the harness primitives mapping (Claude Code, Codex, Cursor, OpenCode, Antigravity)</td></tr>
           <tr><td><code>DOCUMENTATION.html</code></td><td>Full documentation: installation, daily workflow, features</td></tr>
         </tbody>
       </table>
@@ -445,7 +445,7 @@
       <div class="card">
         <div class="icon">🗺️</div>
         <h3>context-audit + project-map</h3>
-        <p>Keep Claude's context window lean. Audit what's loaded and maintain an accurate project map.</p>
+        <p>Keep the agent's context window lean. Audit what's loaded and maintain an accurate project map.</p>
       </div>
       <div class="card">
         <div class="icon">🚀</div>
@@ -517,7 +517,7 @@
 
 <footer>
   <div class="wrap">
-    <p>SDD Onboarding Kit for Claude Code · <a href="DOCUMENTATION.html">Full documentation</a> · <a href="LICENSE">MIT License</a></p>
+    <p>SDD Onboarding Kit for Claude Code, Codex, Cursor, OpenCode and Antigravity · <a href="DOCUMENTATION.html">Full documentation</a> · <a href="LICENSE">MIT License</a></p>
     <p class="names">Spec Driven Development — spec before code, every time</p>
   </div>
 </footer>

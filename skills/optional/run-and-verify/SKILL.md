@@ -19,7 +19,7 @@ behavior instead of assumptions.
 > the Phase 1 repository inspection first, then the questions in
 > `questions.md` §15 for whatever could not be inferred. Unknown commands
 > stay as `TODO: ask the developer`. This file documents the pack and the
-> generic procedure; the generated file is the one Claude uses in the
+> generic procedure; the generated file is the one the agent uses in the
 > target project.
 
 ## When to use
@@ -37,7 +37,7 @@ behavior instead of assumptions.
 
 ## Required inputs
 
-- Project commands (from `CLAUDE.md` / the project map): dev server, test,
+- Project commands (from `AGENTS.md` / the project map): dev server, test,
   lint, typecheck, build.
 - Required services and environment variables (names only — values come
   from the developer's environment, never from this file).

@@ -19,7 +19,7 @@ If the developer describes a new feature informally, create a task entry before 
 
 ## 2. Decide if SDD applies
 
-Use project policy from `CLAUDE.md`.
+Use project policy from `AGENTS.md` (the project instruction file).
 
 If SDD does not apply, state why and follow the non-SDD workflow.
 

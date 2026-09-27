@@ -2,11 +2,11 @@
 
 ## Purpose
 
-This policy defines how Claude Code should handle missing or ambiguous information during Spec Driven Development.
+This policy defines how the agent should handle missing or ambiguous information during Spec Driven Development.
 
 The goal is to avoid hidden decisions.
 
-Claude Code may make assumptions only when they are explicit, reviewable, and safe.
+The agent may make assumptions only when they are explicit, reviewable, and safe.
 
 ---
 
@@ -14,7 +14,7 @@ Claude Code may make assumptions only when they are explicit, reviewable, and sa
 
 Never make silent assumptions.
 
-If Claude Code needs to infer something that affects product behavior, architecture, data, security, compatibility, or developer workflow, it must either:
+If the agent needs to infer something that affects product behavior, architecture, data, security, compatibility, or developer workflow, it must either:
 
 1. ask the developer; or
 2. record the assumption explicitly in `assumptions.md`.
@@ -184,7 +184,7 @@ Each assumption in `assumptions.md` is a card under the `## Pending` section, fo
 ::: card risk-medium
 #### A1 — Short title [!pending Pending]
 
-- **Assumption:** What Claude Code is assuming.
+- **Assumption:** What the agent is assuming.
 - **Reason:** Why this assumption was made.
 - **Risk / impact if wrong:** Low | Medium | High — what breaks if incorrect.
 - **Blocks implementation:** Yes | No
@@ -219,7 +219,7 @@ Ask the developer instead of assuming when the answer affects:
 
 ## When assumptions are acceptable
 
-Claude Code may make an assumption when:
+The agent may make an assumption when:
 
 - the assumption is low or medium risk;
 - the assumption is consistent with existing project conventions;
@@ -231,9 +231,9 @@ Claude Code may make an assumption when:
 
 ## Relationship between assumptions and open questions
 
-Use `assumptions.md` when Claude Code can proceed with a reasonable draft.
+Use `assumptions.md` when the agent can proceed with a reasonable draft.
 
-Use `open-questions.md` when Claude Code cannot safely proceed.
+Use `open-questions.md` when the agent cannot safely proceed.
 
 Example:
 

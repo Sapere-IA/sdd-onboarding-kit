@@ -11,7 +11,7 @@ status: spec_draft
 1. [ ] T1: Add failing tests for REQ-001–REQ-003 — Unit tests for `recent()` and a parser test for the invalid limit.
 2. [ ] T2: Implement `recent()` and register the subcommand — Smallest change; no store API changes.
 3. [ ] T3: Cover EDGE-001 and EDGE-002 — Empty store and short store paths.
-4. [ ] T4: Run validation — Tests, lint and typecheck as configured in CLAUDE.md.
+4. [ ] T4: Run validation — Tests, lint and typecheck as configured in AGENTS.md.
 5. [ ] T5: Update the README command table — Target from the design's Documentation targets.
 
 ## Validation checklist

@@ -38,7 +38,7 @@ breadth that the workflow does not use.
 | Read-only, local | package manager checks (outdated, audit), `git status`, local build info | Allowed; no special permission beyond normal tool gating. |
 | Read-only, remote | `gh` PR/issue/diff metadata, Vercel deployment status, Supabase project metadata | Allowed when credentials are already configured; each command stays permission-gated. |
 | Mutating, remote | merging PRs, deploys, database pushes, ticket updates, infra changes | Explicit per-action approval. High-risk categories additionally follow the dependency-freshness and review policies. |
-| Credential operations | logins, token creation/rotation | Developer-only. Claude never runs interactive logins or handles raw secrets. |
+| Credential operations | logins, token creation/rotation | Developer-only. The agent never runs interactive logins or handles raw secrets. |
 
 ## Examples
 
@@ -65,7 +65,7 @@ external tools applies.
 - An authenticated CLI carries the developer's credentials: treat every
   such CLI as privileged, whether or not the current command is
   read-only.
-- Permission allowlists (`.claude/settings.json`) should at most allow
+- Harness permission allowlists (e.g. `.claude/settings.json`, `.codex/config.toml`, `opencode.json`) should at most allow
   read-only subcommands; mutating subcommands stay prompt-gated even
   when the read-only ones are allowed.
 - Never echo, log, or store tokens; never paste CLI auth output into
@@ -75,7 +75,7 @@ external tools applies.
 
 ## Onboarding
 
-During Phase 1 inspection, Claude detects which common CLIs are
+During Phase 1 inspection, the agent detects which common CLIs are
 available (`gh`, `vercel`, `supabase`, cloud CLIs) so it can use them
 when the policy prefers a CLI — but never requires or installs them, and
 records nothing about credentials beyond "authenticated: yes/no".

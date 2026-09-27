@@ -1,6 +1,6 @@
 # GitHub MCP notes
 
-Use a GitHub MCP or GitHub CLI integration when the project wants Claude Code to work with:
+Use a GitHub MCP or GitHub CLI integration when the project wants the agent to work with:
 
 - GitHub Issues;
 - Pull Requests;
@@ -22,10 +22,10 @@ Use a GitHub MCP or GitHub CLI integration when the project wants Claude Code to
 ## Questions before configuring
 
 1. Should tasks live primarily in GitHub Issues or local `tasks.json`?
-2. Should Claude create branches?
-3. Should Claude open PRs?
-4. Should Claude update issue labels automatically?
-5. Should Claude post spec summaries as issue comments?
+2. Should the agent create branches?
+3. Should the agent open PRs?
+4. Should the agent update issue labels automatically?
+5. Should the agent post spec summaries as issue comments?
 
 ## Safe default
 

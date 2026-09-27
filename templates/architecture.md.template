@@ -3,7 +3,7 @@ doc: architecture
 title: Architecture — {{PROJECT_NAME}}
 ---
 
-<!-- Claude Code reads this before creating or reviewing specs. Keep it terse: tables and one-liners, no narrative. -->
+<!-- The agent reads this before creating or reviewing specs. Keep it terse: tables and one-liners, no narrative. -->
 
 ## System overview
 

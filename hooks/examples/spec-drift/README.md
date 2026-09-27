@@ -22,7 +22,8 @@ The spec-author records these globs from the design's files-to-change
 list when the spec is approved (see `agents/spec-author.md`). No scope
 recorded means nothing to enforce — the hook stays silent. Spec and
 harness files (`specs/`, `tasks.json`, `history.md`, `decisions/`,
-`.claude/`) are always in scope.
+`AGENTS.md`, and the harness directories `.claude/`, `.codex/`, `.cursor/`,
+`.opencode/`, `.agents/`) are always in scope.
 
 ## Strictness
 
@@ -46,8 +47,7 @@ silently absorbed.
 
 ## Installation (after explicit developer approval)
 
-Copy `spec-drift.sh` into the target project (e.g. `.claude/hooks/`),
-make it executable, and add to `.claude/settings.json`:
+Copy the script into the target project's hook directory (`<harness-dir>/hooks/`, e.g. `.claude/hooks/`), make it executable, and wire it in the harness's hook file using the matching snippet in `hooks/settings-snippets.md` (Claude Code `.claude/settings.json`, Codex `.codex/hooks.json`, Cursor `.cursor/hooks.json`, Antigravity `.agents/hooks.json`, OpenCode plugin). The script is harness-neutral (`hooks/hooks-policy.md`, "Hook contract"); set `SDD_HOOK_OUTPUT` in the wiring where the snippet says so. Claude Code example:
 
 ```json
 {
@@ -72,8 +72,8 @@ default at the top of the script.
 
 ## Version note
 
-The `permissionDecision` output format and `tool_input` field names can
-evolve between Claude Code versions. Verify against the installed
+The deny output format and the payload field names can evolve between
+harness versions (the adapter block selects them via `SDD_HOOK_OUTPUT`). Verify against the installed
 version's hook documentation before enabling — the kit-wide rule in
 `hooks/settings-snippets.md` applies.
 

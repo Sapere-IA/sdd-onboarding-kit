@@ -65,7 +65,8 @@ Do not memorize:
 
 3. Write only where the developer chose:
    - **Global memory** (option 1): append to the user memory file
-     `~/.claude/CLAUDE.md`. Only after this explicit choice; verify the
+     the harness's user-level instruction file (Claude Code `~/.claude/CLAUDE.md`, Codex `~/.codex/AGENTS.md`,
+     others per `reference/memory-policy.md`). Only after this explicit choice; verify the
      entry is project-independent and contains no project internals.
    - **Project memory** (option 2, the default recommendation): append to
      the project's decision log (e.g. `decisions/failure-learnings.md`).
@@ -74,7 +75,7 @@ Do not memorize:
    - **Revise** (option 4): rewrite and ask again.
    If the developer does not answer, write nothing.
 4. If the same lesson is proposed twice, that is a signal it belongs in a
-   more visible place (e.g. a `CLAUDE.md` rule) — suggest that explicitly,
+   more visible place (e.g. an `AGENTS.md` rule) — suggest that explicitly,
    still requiring approval.
 
 ## Output artifact

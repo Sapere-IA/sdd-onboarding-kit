@@ -1,6 +1,8 @@
-# SDD onboarding instructions for Claude Code
+# SDD onboarding instructions
 
-You are configuring the current target repository to use **Spec Driven Development (SDD)** with Claude Code.
+You are configuring the current target repository to use **Spec Driven Development (SDD)** with the coding-agent harness you are running in (Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Google Antigravity, or another harness).
+
+The kit's files use the Claude Code layout (`.claude/`, `CLAUDE.md`) as the **reference layout**. Wherever this document or a kit file says `.claude/`, read `<harness-dir>/` for your harness; the mapping, per-harness formats and fallbacks are in `reference/harness-primitives.md`. The SDD workflow, artifacts and rules are identical in every harness — only the packaging (directories, frontmatter, hook wiring, MCP config file) changes.
 
 Your job is to install a project-specific SDD harness. Do not implement product features during onboarding unless the developer explicitly asks for a separate implementation task after the harness is installed.
 
@@ -12,10 +14,10 @@ The reading is tiered so you can start the interview quickly without losing rigo
 
 1. `reference/sdd-theory.md`
 2. `reference/harness-engineering.md`
-3. `reference/claude-code-primitives.md`
+3. `reference/harness-primitives.md`
 4. `questions.md`
 5. `output-project-structure.md`
-6. `templates/CLAUDE.md.template`
+6. `templates/AGENTS.md.template`
 
 ### On-demand — read when you reach the relevant step
 
@@ -34,7 +36,9 @@ If any file you need at its tier is missing, stop and tell the developer which f
 
 Inspect the current repository before asking configuration questions.
 
-Identify:
+First, identify the **harness**: which coding agent is running this onboarding, and which other harnesses the team uses on this repository (existing `.claude/`, `.codex/`, `.cursor/`, `.opencode/`, `.agents/` directories and `AGENTS.md`/`CLAUDE.md` files are strong hints). Confirm with the developer (`questions.md` §0) and resolve `<harness-dir>` from `reference/harness-primitives.md` before generating anything.
+
+Then identify:
 
 - language or languages;
 - framework;
@@ -42,7 +46,7 @@ Identify:
 - test framework;
 - lint/typecheck/format commands;
 - existing `README`, `docs`, `Makefile`, `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `pom.xml`, `build.gradle`, or equivalent;
-- existing `CLAUDE.md`, `.claude/`, `.mcp.json`, task files, issue references, CI config;
+- existing instruction files (`AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`, `.agents/rules/`), harness directories (`.claude/`, `.codex/`, `.cursor/`, `.opencode/`, `.agents/`), MCP config files (`.mcp.json`, `.cursor/mcp.json`, `opencode.json`, `.agents/mcp_config.json`, `.codex/config.toml`), task files, issue references, CI config;
 - existing architecture/conventions documentation;
 - existing git branch and cleanliness status;
 - available external CLIs (`gh`, `vercel`, `supabase`, cloud CLIs): detect which exist so narrow CLI calls can be preferred over broad MCP loading (`reference/cli-vs-mcp-policy.md`) — do not require, install, or authenticate any of them, and record nothing about credentials beyond authenticated yes/no;
@@ -106,7 +110,7 @@ memory_scope: project_default_global_only_with_explicit_approval
 browser_testing: disabled_unless_frontend_detected_and_opted_in
 autonomy: disabled_except_documented_readonly_monitoring
 deep_review: recommended_for_high_risk_paid_modes_per_invocation_approval
-session_recovery_rule: enabled_in_claude_md
+session_recovery_rule: enabled_in_agents_md
 ```
 
 ## Greenfield and plan-only repositories
@@ -120,12 +124,13 @@ Phase 1 assumes an existing codebase to inspect. Some repositories have no code 
 
 ## Phase 3 — Generate the project SDD harness
 
-After the developer answers, create or update the following in the target repository:
+After the developer answers, create or update the following in the target repository. `<harness-dir>` is the primary harness directory chosen in Phase 1 (`.claude/` for Claude Code, `.cursor/` for Cursor, `.opencode/` for OpenCode, `.agents/` for Antigravity; Codex uses `.codex/` for agents/hooks/config and `.agents/` for skills — see `reference/harness-primitives.md`):
 
 ```text
 <project>/
-├── CLAUDE.md
-├── .claude/
+├── AGENTS.md                        # project instructions, shared by every harness
+├── CLAUDE.md                        # 2-line import stub — only when Claude Code is one of the harnesses
+├── <harness-dir>/
 │   ├── agents/
 │   │   ├── leader.md
 │   │   ├── spec-author.md
@@ -164,8 +169,9 @@ After the developer answers, create or update the following in the target reposi
 │   │   └── <policy files vendored from the kit — see "Referenced policy files">
 │   ├── hooks/
 │   │   └── README.md
-│   ├── settings.json
+│   ├── <hook wiring file, if hooks are enabled — settings.json / hooks.json / plugins/, per harness>
 │   └── sdd-kit-manifest.json
+├── <MCP config file, if MCPs are configured — .mcp.json / .cursor/mcp.json / opencode.json / .agents/mcp_config.json / .codex/config.toml>
 ├── specs/
 ├── decisions/
 │   ├── answers.md
@@ -181,15 +187,19 @@ After the developer answers, create or update the following in the target reposi
     └── validate-sdd-structure.ps1   # PowerShell port — install for Windows-primary teams
 ```
 
+Subagent files take the harness's format (markdown frontmatter fields or Codex TOML — see `reference/harness-primitives.md`, "Subagents"). Everything else under `<harness-dir>/` is copied as-is from the kit's `.claude/` reference layout.
+
 Adapt every file to the target project. Do not leave unresolved placeholders such as `{{TEST_COMMAND}}` in final project files unless the developer explicitly says that the command is unknown and should remain as a TODO.
 
 ## Phase 4 — File generation rules
 
-### `CLAUDE.md`
+### Instruction file (`AGENTS.md`, plus the `CLAUDE.md` stub)
 
-Create the project `CLAUDE.md` from `templates/CLAUDE.md.template`.
+Create the project `AGENTS.md` from `templates/AGENTS.md.template`. Every supported harness reads `AGENTS.md`, so it is the single source of truth for project instructions — never generate per-harness copies of its content.
 
-It must be concise and project-specific. It should contain:
+If Claude Code is one of the project's harnesses (primary or additional), also create `CLAUDE.md` from `templates/CLAUDE.md.template`: a two-line stub whose first line is `@AGENTS.md`. Claude Code expands the import at launch and never loads `AGENTS.md` twice. If the project already has a `CLAUDE.md` with content, move its project-specific content into `AGENTS.md` (ask before dropping anything) and leave only the stub.
+
+`AGENTS.md` must be concise and project-specific. It should contain:
 
 - project summary;
 - build/test/lint commands;
@@ -197,69 +207,90 @@ It must be concise and project-specific. It should contain:
 - status transitions;
 - human approval policy;
 - where specs, tasks and history live;
-- how to invoke the SDD skill;
+- how to invoke the SDD skill in this harness;
 - when not to use SDD;
 - protected files or risky areas;
-- the spec render command (`{{RENDER_COMMAND}}` → the installed renderer, e.g. `node scripts/render-spec.mjs` or `python scripts/render_spec.py`) and a pointer to `/sdd-update`.
+- the spec render command (`{{RENDER_COMMAND}}` → the installed renderer, e.g. `node scripts/render-spec.mjs` or `python scripts/render_spec.py`) and a pointer to the `sdd-update` skill.
 
-Do not put the full theory of SDD into `CLAUDE.md`. Put long procedures in the project skill.
+Harness placeholders in the template:
 
-Do not embed a directory tree in `CLAUDE.md`; link the project map instead (replace `{{PROJECT_MAP_PATH}}` with the configured location).
+- `{{HARNESS_DIR}}` → the primary harness directory (e.g. `.claude`, `.cursor`, `.opencode`, `.agents`; for Codex use `.agents` for skill paths and `.codex` for agent paths).
+- `{{SKILL_INVOCATION}}` → the harness's skill invocation from the mapping table (e.g. `/sdd-workflow` in Claude Code and Antigravity, `$sdd-workflow` in Codex, `/` then the skill name in Cursor, the `skill` tool in OpenCode). List every harness the project uses, e.g. "`/sdd-workflow` in Claude Code, `$sdd-workflow` in Codex".
+- `{{CONTEXT_COMMANDS}}` → the harness's context inspection/compaction commands (e.g. `/context` and `/compact` in Claude Code, `/compact` in Codex and OpenCode), or "start a new conversation" where none exists.
+- `{{HARNESS_NOTES}}` → one short paragraph per harness in use that states anything that deviates from the reference layout: the role fallback line when the harness has no subagents ("read the role file and act as that role in the main conversation"), the skill-loading line when it has no skill support, or `None.` when nothing deviates.
+
+Do not put the full theory of SDD into `AGENTS.md`. Put long procedures in the project skill.
+
+Do not embed a directory tree in `AGENTS.md`; link the project map instead (replace `{{PROJECT_MAP_PATH}}` with the configured location).
 
 ### Project map
 
 Generate a project map from `templates/project-map.md.template`, filled with the Phase 1 inspection results.
 
-- Default location: `.claude/context/project-map.md`. Use `docs/project-map.md` if the developer prefers it visible in docs (see `questions.md` §12).
+- Default location: `<harness-dir>/context/project-map.md`. Use `docs/project-map.md` if the developer prefers it visible in docs (see `questions.md` §12).
 - Keep it concise: shallow annotated tree (2–3 levels), no exhaustive file listing, no generated/vendored directories.
 - Record unknown commands as `TODO: ask the developer` — do not invent them.
 - Never record secrets, credentials, or tokens.
 - If the developer defers generation, record a clear TODO (in `decisions/answers.md` and the onboarding summary) instead of creating an empty file.
 - The map carries its own maintenance rule: it must be updated when the repository structure changes significantly.
 
-### Subagents
+### Subagents (roles)
 
-Copy and adapt:
+Copy and adapt the five role files into the harness's agents directory (`<harness-dir>/agents/`; `.codex/agents/` for Codex):
 
-- `agents/leader.md` to `.claude/agents/leader.md`
-- `agents/spec-author.md` to `.claude/agents/spec-author.md`
-- `agents/implementer.md` to `.claude/agents/implementer.md`
-- `agents/reviewer.md` to `.claude/agents/reviewer.md`
-- `agents/documenter.md` to `.claude/agents/documenter.md`
+- `agents/leader.md` → `leader`
+- `agents/spec-author.md` → `spec-author`
+- `agents/implementer.md` → `implementer`
+- `agents/reviewer.md` → `reviewer`
+- `agents/documenter.md` → `documenter`
+
+The **body** of each file is the role and is copied unchanged apart from project adaptations (commands, paths, policies). The **frontmatter** is packaging and takes the harness's format (`reference/harness-primitives.md`, "Subagents"):
+
+- Claude Code: keep `name`, `description`, `tools` as shipped.
+- Cursor: `name`, `description`; replace `tools:` with `readonly: true` for `leader` and `reviewer`.
+- OpenCode: `description`, `mode: subagent`; express the tool restriction as `permission:` (`edit: deny`, `bash: deny` for `leader`; `edit: deny` for `reviewer`).
+- Antigravity: `name`, `description`, `subagent: true`; map `tools:` to the harness's tool names or omit it.
+- Codex CLI: one `.toml` per role with `name`, `description`, `developer_instructions = """<the markdown body>"""`, and `sandbox_mode = "read-only"` for `leader` and `reviewer`.
+- A harness without subagents: keep the markdown files as role definitions under `<harness-dir>/agents/` and add the role-fallback line to `{{HARNESS_NOTES}}` in `AGENTS.md`.
+
+Verify the frontmatter fields against the installed harness version before finalizing; if the harness ignores unknown keys, keeping the kit's fields is acceptable.
 
 If the project already has agents with these names, merge carefully or ask before overwriting.
 
-`reviewer.md` and `spec-author.md` link the deep-review policy. Vendor it to `.claude/reference/deep-review-policy.md` and rewrite both links per "Referenced policy files" below (the same policy is also linked from the always-installed `review-checklist.md` and the spec templates).
+`reviewer.md` and `spec-author.md` link the deep-review policy. Vendor it to `<harness-dir>/reference/deep-review-policy.md` and rewrite both links per "Referenced policy files" below (the same policy is also linked from the always-installed `review-checklist.md` and the spec templates).
 
 ### Optional browser tester
 
-Only if the developer chose option 2 in `questions.md` §18, copy and adapt `agents/optional/browser-tester.md` to `.claude/agents/browser-tester.md`. The Playwright MCP stays declared inline in the agent's frontmatter — do not add it to `.mcp.json` (see `mcps/playwright-policy.md`). Vendor that policy to `.claude/reference/playwright-policy.md` and rewrite the agent's link to it per "Referenced policy files" below. Verify the frontmatter `mcpServers` syntax and the Playwright launch command against the installed Claude Code version before finalizing the file. For option 3, record the setup reference in the project's docs without configuring anything.
+Only if the developer chose option 2 in `questions.md` §18, copy and adapt `agents/optional/browser-tester.md` to `<harness-dir>/agents/browser-tester` in the harness's agent format. Where the harness supports per-agent MCP declarations (Claude Code `mcpServers` frontmatter, Codex `[mcp_servers.<name>]` in the agent TOML), the Playwright MCP stays declared inline in the agent — do not add it to the project MCP config (see `mcps/playwright-policy.md`). Where it does not (Cursor, OpenCode, Antigravity), declare it in the harness's MCP config file and keep the agent's rules about when it may be used. Vendor that policy to `<harness-dir>/reference/playwright-policy.md` and rewrite the agent's link to it per "Referenced policy files" below. Verify the MCP declaration syntax and the Playwright launch command against the installed harness version before finalizing the file. For option 3, record the setup reference in the project's docs without configuring anything.
 
 ### Skill
 
-Copy and adapt the full `skills/sdd-workflow/` directory into:
+Copy and adapt the full `skills/sdd-workflow/` directory into the harness's skills directory:
 
 ```text
-.claude/skills/sdd-workflow/
+<harness-dir>/skills/sdd-workflow/        # .claude/skills/ for Claude Code, .agents/skills/ for Codex and Antigravity,
+                                          # .cursor/skills/ for Cursor, .opencode/skills/ for OpenCode
 ```
 
-This skill contains the full multi-step SDD procedure. Keep `CLAUDE.md` short and use the skill for operational detail.
+The `SKILL.md` format is the same in every supported harness; copy it unchanged apart from project adaptations. Cursor, OpenCode and Codex also read `.agents/skills/`, so a project used with several of them can hold one copy there; Claude Code reads only `.claude/skills/`. If the harness has no skill support, install the folder anyway and add the skill-loading line to `{{HARNESS_NOTES}}` in `AGENTS.md`.
+
+This skill contains the full multi-step SDD procedure. Keep `AGENTS.md` short and use the skill for operational detail.
 
 ### Optional skill packs
 
 The core `sdd-workflow` skill is always installed. The packs under `skills/optional/` are installed only when the developer selects them (see `questions.md` §14).
 
-- For each selected pack, copy `skills/optional/<name>/` to `.claude/skills/<name>/` and adapt placeholders and project-specific details (commands, paths, doc locations). If the pack links a kit policy (`reference/*.md` or `mcps/playwright-policy.md`), vendor it and rewrite the link per "Referenced policy files" below. Exception: `run-and-verify` is generated from a template, not copied — see "Run and verify skill" below.
-- If `failure-learning` is selected, also copy `templates/memory/failure-learning-entry.md` to `.claude/skills/failure-learning/entry-template.md` (the skill references it), keeping its placeholder tokens — entries are instantiated per lesson, not during onboarding. Memory scope rules come from `reference/memory-policy.md`: project memory by default, never a global write without explicit approval.
-- If `git-discipline` is selected, also copy `templates/git/` (commit-message, PR-description, and release-note templates) to `.claude/skills/git-discipline/templates/`, adapt them to the `questions.md` §8 git-policy answers (commit convention, task-reference format, changelog categories), and delete the generator-notes comments from the adapted copies.
+- For each selected pack, copy `skills/optional/<name>/` to `<harness-dir>/skills/<name>/` and adapt placeholders and project-specific details (commands, paths, doc locations). If the pack links a kit policy (`reference/*.md` or `mcps/playwright-policy.md`), vendor it and rewrite the link per "Referenced policy files" below. Exception: `run-and-verify` is generated from a template, not copied — see "Run and verify skill" below.
+- If `failure-learning` is selected, also copy `templates/memory/failure-learning-entry.md` to `<harness-dir>/skills/failure-learning/entry-template.md` (the skill references it), keeping its placeholder tokens — entries are instantiated per lesson, not during onboarding. Memory scope rules come from `reference/memory-policy.md`: project memory by default, never a global write without explicit approval.
+- If `git-discipline` is selected, also copy `templates/git/` (commit-message, PR-description, and release-note templates) to `<harness-dir>/skills/git-discipline/templates/`, adapt them to the `questions.md` §8 git-policy answers (commit convention, task-reference format, changelog categories), and delete the generator-notes comments from the adapted copies.
 - If `decision-log` is selected, also create the decision files the developer chose in `questions.md` §17 from the kit's templates: `decisions/architecture-decisions.template.md`, `decisions/rejected-options.template.md`, `decisions/workflow-decisions.template.md` → `decisions/<name>.md`. If the project already uses `docs/adr/`, architecture decisions stay there in the project's existing format — do not create a competing file. Record the chosen locations in `decisions/answers.md` and adapt the installed skill to them.
 - If the repository clearly indicates applicability (e.g. a frontend for `ui-qa` and `spec-from-screenshot`), suggest the pack — but install only on confirmation.
 - Record installed and declined packs in `decisions/answers.md`.
-- In `CLAUDE.md`, list installed optional skills by name with a one-line purpose at most. Never paste skill bodies into `CLAUDE.md`: skill content loads only when invoked, which is what keeps it cheap.
+- In `AGENTS.md`, list installed optional skills by name with a one-line purpose at most. Never paste skill bodies into `AGENTS.md`: skill content loads only when invoked, which is what keeps it cheap.
 
 ### Run and verify skill
 
-If the developer selected the `run-and-verify` pack (`questions.md` §14), generate `.claude/skills/run-and-verify/SKILL.md` from `templates/run-and-verify.md.template` instead of copying the pack file verbatim.
+If the developer selected the `run-and-verify` pack (`questions.md` §14), generate `<harness-dir>/skills/run-and-verify/SKILL.md` from `templates/run-and-verify.md.template` instead of copying the pack file verbatim.
 
 - Fill the placeholders from the Phase 1 inspection first (`package.json` scripts, `Makefile`, CI config, existing docs), confirm inferred commands with the developer, and ask the `questions.md` §15 questions only for what remains unknown.
 - Reuse the §7 answers for test/lint/typecheck commands — do not re-ask.
@@ -272,16 +303,16 @@ If the developer selected the `run-and-verify` pack (`questions.md` §14), gener
 Copy the markdown spec templates and rendering assets into the target project so the spec-author has a source when creating new feature specs after the kit is removed:
 
 ```text
-templates/specs/requirements.md.template      → .claude/skills/sdd-workflow/templates/requirements.md.template
-templates/specs/design.md.template            → .claude/skills/sdd-workflow/templates/design.md.template
-templates/specs/tasks.md.template             → .claude/skills/sdd-workflow/templates/tasks.md.template
-templates/specs/review.md.template            → .claude/skills/sdd-workflow/templates/review.md.template
-templates/specs/acceptance-tests.md.template  → .claude/skills/sdd-workflow/templates/acceptance-tests.md.template
-templates/specs/assumptions.md.template       → .claude/skills/sdd-workflow/templates/assumptions.md.template
-templates/specs/open-questions.md.template    → .claude/skills/sdd-workflow/templates/open-questions.md.template
-templates/specs/spec-shell.html.template      → .claude/skills/sdd-workflow/templates/spec-shell.html.template
-templates/specs/spec.css                      → .claude/skills/sdd-workflow/templates/spec.css
-templates/specs/spec.js                       → .claude/skills/sdd-workflow/templates/spec.js
+templates/specs/requirements.md.template      → <harness-dir>/skills/sdd-workflow/templates/requirements.md.template
+templates/specs/design.md.template            → <harness-dir>/skills/sdd-workflow/templates/design.md.template
+templates/specs/tasks.md.template             → <harness-dir>/skills/sdd-workflow/templates/tasks.md.template
+templates/specs/review.md.template            → <harness-dir>/skills/sdd-workflow/templates/review.md.template
+templates/specs/acceptance-tests.md.template  → <harness-dir>/skills/sdd-workflow/templates/acceptance-tests.md.template
+templates/specs/assumptions.md.template       → <harness-dir>/skills/sdd-workflow/templates/assumptions.md.template
+templates/specs/open-questions.md.template    → <harness-dir>/skills/sdd-workflow/templates/open-questions.md.template
+templates/specs/spec-shell.html.template      → <harness-dir>/skills/sdd-workflow/templates/spec-shell.html.template
+templates/specs/spec.css                      → <harness-dir>/skills/sdd-workflow/templates/spec.css
+templates/specs/spec.js                       → <harness-dir>/skills/sdd-workflow/templates/spec.js
 ```
 
 Copy these verbatim, including the `{{PLACEHOLDER}}` tokens. The `.md.template` files are instantiated per feature, not during onboarding; `spec-shell.html.template`, `spec.css`, and `spec.js` are consumed by the renderer.
@@ -309,9 +340,9 @@ Do NOT copy the kit's `specs/example-feature/` directory into the target project
 
 Several installed agents, skills, and templates link to policy files that live in the kit (`reference/*.md`, `mcps/playwright-policy.md`). Those paths resolve only while the kit is present — once `sdd-onboarding-kit/` is removed, every such link dangles and the installed harness is no longer self-contained.
 
-Make the harness self-contained: for each policy referenced by a component you actually install, copy the policy file into `.claude/reference/`, then rewrite the reference in the installed component to point at `.claude/reference/<file>` (dropping any "in the kit" phrasing). Vendor only the policies whose referencing component is installed — do not copy the whole `reference/` directory.
+Make the harness self-contained: for each policy referenced by a component you actually install, copy the policy file into `<harness-dir>/reference/`, then rewrite the reference in the installed component to point at `<harness-dir>/reference/<file>` (dropping any "in the kit" phrasing). Vendor only the policies whose referencing component is installed — do not copy the whole `reference/` directory.
 
-| Vendor to `.claude/reference/` | Source | Required when you install |
+| Vendor to `<harness-dir>/reference/` | Source | Required when you install |
 | --- | --- | --- |
 | `deep-review-policy.md` | `reference/deep-review-policy.md` | always (referenced by `reviewer.md`, `spec-author.md`, `review-checklist.md`, and the `design`/`review` spec templates) |
 | `context-economy.md` | `reference/context-economy.md` | the `context-audit` pack |
@@ -320,16 +351,16 @@ Make the harness self-contained: for each policy referenced by a component you a
 | `autonomy-policy.md` | `reference/autonomy-policy.md` | the `git-discipline` pack |
 | `playwright-policy.md` | `mcps/playwright-policy.md` | the `ui-qa` pack or the `browser-tester` agent |
 
-The `design`/`review` spec templates already carry the rewritten `.claude/reference/deep-review-policy.md` path, so copying them verbatim (per "Spec templates" above) is correct — you only need to ensure `deep-review-policy.md` is vendored. For agents and skills, rewrite the link as part of the "copy and adapt" step.
+The `design`/`review` spec templates refer to the vendored `reference/deep-review-policy.md` inside the harness directory, so copying them verbatim (per "Spec templates" above) is correct — you only need to ensure `deep-review-policy.md` is vendored. For agents and skills, rewrite the link as part of the "copy and adapt" step.
 
-The onboarding-time reading material (`reference/sdd-theory.md`, `harness-engineering.md`, `claude-code-primitives.md`, `cli-vs-mcp-policy.md`, `session-recovery.md`) is not linked by any installed component and does not need vendoring; it is read during onboarding only.
+The onboarding-time reading material (`reference/sdd-theory.md`, `harness-engineering.md`, `harness-primitives.md`, `cli-vs-mcp-policy.md`, `session-recovery.md`) is not linked by any installed component and does not need vendoring; it is read during onboarding only.
 
 ### Update mechanism (always installed)
 
 The kit is versioned (`VERSION`, `CHANGELOG.md`, git tags). Every install gets the self-update skill and an install manifest so the harness can be updated when the kit publishes a new version:
 
-1. Copy `skills/sdd-update/SKILL.md` to `.claude/skills/sdd-update/SKILL.md`, filling its `{{KIT_REPO_URL}}` placeholder with the kit's git URL (ask the developer if unknown; recording a local path instead is acceptable).
-2. As the **last** generation step (after every other file is written), create `.claude/sdd-kit-manifest.json` following `templates/sdd-kit-manifest.schema.md`: kit version, install date, and one record per installed file with its kit source path, the SHA-256 of the kit source, the installed path, the SHA-256 of the installed copy, and `adapted: true|false` (`false` only for files copied byte-for-byte). This manifest is what lets `/sdd-update` distinguish verbatim assets from adapted files and detect local edits.
+1. Copy `skills/sdd-update/SKILL.md` to `<harness-dir>/skills/sdd-update/SKILL.md`, filling its `{{KIT_REPO_URL}}` placeholder with the kit's git URL (ask the developer if unknown; recording a local path instead is acceptable).
+2. As the **last** generation step (after every other file is written), create `<harness-dir>/sdd-kit-manifest.json` following `templates/sdd-kit-manifest.schema.md`: kit version, install date, the `harness` block (primary harness, its directory, instruction file, additional harness directories), and one record per installed file with its kit source path, the SHA-256 of the kit source, the installed path, the SHA-256 of the installed copy, and `adapted: true|false` (`false` only for files copied byte-for-byte). This manifest is what lets the `sdd-update` skill distinguish verbatim assets from adapted files, detect local edits, and find every harness directory to refresh.
 
 ### Onboarding decisions record
 
@@ -349,13 +380,22 @@ Generate `scripts/run-tests.sh` and `scripts/run-lint.sh` from `scripts/run-test
 
 Do not enable hooks silently.
 
+The example hook scripts are harness-neutral: each one starts with the same adapter block that reads the payload of Claude Code, Codex, Cursor and Antigravity (or explicit `SDD_HOOK_*` variables and arguments), and emits its block/advisory output in the format selected by `SDD_HOOK_OUTPUT` (`hooks/hooks-policy.md`, "Hook contract"). The wiring differs per harness (`hooks/settings-snippets.md`):
+
+- Claude Code: `.claude/settings.json` (`PreToolUse`/`PostToolUse`, matcher `Edit|Write`).
+- Codex CLI: `.codex/hooks.json` or `[hooks]` in `.codex/config.toml` — same events, payload and exit codes as Claude Code; project hooks load only once the project is trusted.
+- Cursor: `.cursor/hooks.json` (`preToolUse`, `afterFileEdit`, `beforeShellExecution`); set `SDD_HOOK_OUTPUT=cursor` in the wiring when a hook must deny through JSON.
+- Antigravity: `.agents/hooks.json` (`PreToolUse`/`PostToolUse`, matchers `write_to_file|replace_file_content|multi_replace_file_content`); set `SDD_HOOK_OUTPUT=antigravity`.
+- OpenCode: no shell hooks — a small `.opencode/plugins/sdd-hooks.js` plugin shells out to the same scripts (snippet provided).
+- A harness with no hook support: install nothing; record "hooks: not available in <harness>" in `decisions/answers.md`. The rules stay instruction-level, which is the kit's default posture anyway.
+
 Hook scripts and the scripts under `scripts/` are bash and most rely on `jq`. On Windows they require Git Bash (or WSL) plus `jq` on `PATH`; the example hooks fail open (warn and allow) when `jq` is missing. Confirm with the developer that the team's environment provides bash and `jq` before enabling any hook (see `questions.md` §9).
 
 For structure validation specifically, a PowerShell port (`scripts/validate-sdd-structure.ps1`) needs neither bash nor `jq` and runs the full check — including `tasks.json` state-machine validation, which the bash version skips when `jq` is absent. Install it for Windows-primary teams (it can sit alongside the `.sh`) so validation is not quietly weakened. It is structure validation only; it does not replace the bash hook scripts.
 
 Do not enable tool-running hooks (such as `run-tests-after-edit`) before the toolchain and sources exist. On a greenfield or plan-only repo they fire on every edit with nothing meaningful to run — install them disabled and tell the developer to enable them once there is code and a confirmed command.
 
-If the developer approves hooks, create `.claude/settings.json` entries from `hooks/settings-snippets.md` and copy any required hook scripts into `scripts/` or `.claude/hooks/`.
+If the developer approves hooks, copy the required hook scripts into `scripts/` or `<harness-dir>/hooks/` (unchanged — the adapter block is part of the script), create the harness's wiring from `hooks/settings-snippets.md`, verify event names and payload fields against the installed harness version, and document the enabled hooks in `<harness-dir>/hooks/README.md` (from `templates/.claude/hooks/README.md.template`, filling `{{HARNESS_NAME}}` and `{{HOOK_WIRING_FILE}}`).
 
 Prefer hooks for deterministic constraints such as:
 
@@ -368,7 +408,7 @@ Prefer hooks for deterministic constraints such as:
 
 Do not configure MCPs silently.
 
-If the developer chooses MCPs, use `mcps/mcp-policy.md` and the relevant integration notes.
+If the developer chooses MCPs, use `mcps/mcp-policy.md` and the relevant integration notes. The server definitions are the same in every harness; write them into the harness's config file (`.mcp.json` for Claude Code, `[mcp_servers.<name>]` in `.codex/config.toml` for Codex, `.cursor/mcp.json` for Cursor, the `mcp` block of `opencode.json` for OpenCode, `.agents/mcp_config.json` for Antigravity — see `reference/harness-primitives.md`). Never store credentials in any of them.
 
 If no MCPs are selected, use local markdown/JSON storage:
 
@@ -380,17 +420,18 @@ If no MCPs are selected, use local markdown/JSON storage:
 
 After writing files:
 
-1. Run `scripts/validate-sdd-structure.sh` if safe (or `scripts/validate-sdd-structure.ps1` on Windows-primary teams without bash/`jq`).
+1. Run `scripts/validate-sdd-structure.sh` if safe (or `scripts/validate-sdd-structure.ps1` on Windows-primary teams without bash/`jq`), with `SDD_HARNESS_DIR` set to the primary harness directory when it is not `.claude`.
 2. Run `scripts/init.sh` if safe.
 3. Run the configured test command if the developer approved running tests.
-4. Verify all generated files have no unresolved placeholders (Markdown and HTML). Exceptions: (a) per-instance template files (`*.template` under any `templates/` directory) keep their `{{PLACEHOLDER}}` tokens by design — this covers the spec templates under `.claude/skills/sdd-workflow/templates/` and the git templates under `.claude/skills/git-discipline/templates/` (`validate-sdd-structure.sh` applies the same exemption); (b) `scripts/run-tests.sh`/`run-lint.sh` may keep an unresolved `{{TEST_COMMAND}}`/`{{LINT_COMMAND}}` on a greenfield repo where the command is intentionally unknown — the no-op guard treats that as "skip cleanly" (see "Test and lint scripts").
-5. Verify the project `CLAUDE.md` points to `.claude/skills/sdd-workflow/SKILL.md`.
+4. Verify all generated files have no unresolved placeholders (Markdown and HTML). Exceptions: (a) per-instance template files (`*.template` under any `templates/` directory) keep their `{{PLACEHOLDER}}` tokens by design — this covers the spec templates under `<harness-dir>/skills/sdd-workflow/templates/` and the git templates under `<harness-dir>/skills/git-discipline/templates/` (`validate-sdd-structure.sh` applies the same exemption); (b) `scripts/run-tests.sh`/`run-lint.sh` may keep an unresolved `{{TEST_COMMAND}}`/`{{LINT_COMMAND}}` on a greenfield repo where the command is intentionally unknown — the no-op guard treats that as "skip cleanly" (see "Test and lint scripts").
+5. Verify the project `AGENTS.md` points to `<harness-dir>/skills/sdd-workflow/SKILL.md`, names the harness's skill invocation, and — when Claude Code is one of the harnesses — that `CLAUDE.md` is the import stub whose first line is `@AGENTS.md`.
 6. Verify that task statuses in `tasks.json` match the configured state machine.
-7. Verify the project map exists at the configured location and is linked from `CLAUDE.md`, or that a TODO records that generation was deferred.
-8. If the `run-and-verify` pack was selected, verify `.claude/skills/run-and-verify/SKILL.md` has no unresolved placeholders (unknown commands appear as explicit `TODO: ask the developer` entries), no invented commands, and no secret values — environment variables by name only.
-9. Verify the installed harness is self-contained: no installed file links a kit-relative policy path. Grep `CLAUDE.md`, `.claude/`, and `specs/` for `reference/` or `mcps/playwright-policy.md` references that are not prefixed with `.claude/` — every such link must resolve to a file vendored under `.claude/reference/` (see "Referenced policy files"). The harness must not depend on `sdd-onboarding-kit/` remaining in the repository.
+7. Verify the project map exists at the configured location and is linked from `AGENTS.md`, or that a TODO records that generation was deferred.
+8. If the `run-and-verify` pack was selected, verify `<harness-dir>/skills/run-and-verify/SKILL.md` has no unresolved placeholders (unknown commands appear as explicit `TODO: ask the developer` entries), no invented commands, and no secret values — environment variables by name only.
+9. Verify the installed harness is self-contained: no installed file links a kit-relative policy path. Grep `AGENTS.md`, `<harness-dir>/`, and `specs/` for `reference/` or `mcps/playwright-policy.md` references that are not prefixed with `<harness-dir>/` — every such link must resolve to a file vendored under `<harness-dir>/reference/` (see "Referenced policy files"). The harness must not depend on `sdd-onboarding-kit/` remaining in the repository.
 10. Verify the renderer works: run the installed renderer against a template-instantiated sample (or the first real spec) and confirm it produces HTML without errors; confirm the rendered-artifact `.gitignore` entries exist (unless the developer chose to commit rendered HTML).
-11. Verify `.claude/sdd-kit-manifest.json` exists, parses as JSON, records the kit version, and covers the installed files; verify `.claude/skills/sdd-update/SKILL.md` exists with no unresolved placeholders.
+11. Verify `<harness-dir>/sdd-kit-manifest.json` exists, parses as JSON, records the kit version and the `harness` block, and covers the installed files (including copies in additional harness directories); verify `<harness-dir>/skills/sdd-update/SKILL.md` exists with no unresolved placeholders.
+12. Run the structure validator with the harness directory set when it is not `.claude`: `SDD_HARNESS_DIR=<harness-dir> scripts/validate-sdd-structure.sh` (the PowerShell port takes the same variable). Verify that no installed file names a harness the project does not use, and that no installed file (other than per-harness tables) assumes one harness's commands.
 
 ## Phase 6 — Final onboarding summary
 
@@ -398,6 +439,7 @@ At the end, report:
 
 - files created;
 - files modified;
+- the harness(es) installed for and their directories;
 - hooks enabled or left disabled;
 - MCPs configured or left unconfigured;
 - project-specific commands detected;
@@ -433,6 +475,6 @@ If the developer provides a functional document, product brief, ticket, PRD, use
 6. `templates/specs/open-questions.md.template`
 7. `templates/specs/acceptance-tests.md.template`
 
-Claude Code must treat the functional document as source material, not as an approved implementation spec.
+The agent must treat the functional document as source material, not as an approved implementation spec.
 
-Claude Code must generate or update the SDD spec before implementation.
+The agent must generate or update the SDD spec before implementation.

@@ -28,7 +28,7 @@ history.md
 - easy to diff;
 - no credentials required;
 - portable between machines;
-- easy for Claude Code to read.
+- easy for the agent to read.
 
 ## Limitations
 

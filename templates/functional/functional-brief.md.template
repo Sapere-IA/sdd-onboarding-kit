@@ -5,7 +5,7 @@ feature_slug: {{FEATURE_SLUG}}
 created: {{CREATED_DATE}}
 ---
 
-<!-- Product-side description of intended functionality. NOT an implementation spec: Claude Code converts it into an SDD spec before writing code (procedure: intake-from-functional-doc.md; output goes to specs/<feature-slug>/). Optional sections keep "None." when they do not apply. -->
+<!-- Product-side description of intended functionality. NOT an implementation spec: the agent converts it into an SDD spec before writing code (procedure: intake-from-functional-doc.md; output goes to specs/<feature-slug>/). Optional sections keep "None." when they do not apply. -->
 
 ## Summary
 
@@ -53,7 +53,7 @@ TODO: what the user should experience, in natural language — no implementation
 
 ## Non-goals
 
-<!-- Claude Code must not infer extra functionality. -->
+<!-- The agent must not infer extra functionality. -->
 
 - TODO
 
@@ -63,7 +63,7 @@ TODO: what the user should experience, in natural language — no implementation
 
 ## Requirement format
 
-TODO: EARS / user stories / Given-When-Then / plain / let Claude Code recommend.
+TODO: EARS / user stories / Given-When-Then / plain / let the agent recommend.
 
 ## Technical hints
 
@@ -87,7 +87,7 @@ None.
 
 ## Open questions
 
-<!-- Claude Code asks the developer about these before finalizing the spec, unless explicitly instructed to make assumptions. -->
+<!-- The agent asks the developer about these before finalizing the spec, unless explicitly instructed to make assumptions. -->
 
 | Question | Why it matters |
 | --- | --- |
@@ -95,7 +95,7 @@ None.
 
 ## Assumptions allowed
 
-<!-- Only if the brief is incomplete: assumptions Claude Code may use for a draft spec. They land in assumptions.md, explicit and reviewable. -->
+<!-- Only if the brief is incomplete: assumptions the agent may use for a draft spec. They land in assumptions.md, explicit and reviewable. -->
 
 | Assumption | Impact if wrong |
 | --- | --- |

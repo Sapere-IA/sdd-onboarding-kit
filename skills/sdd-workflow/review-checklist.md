@@ -40,7 +40,7 @@ For every functional requirement:
 - [ ] Tests assert behavior, not implementation details, unless appropriate.
 - [ ] Tests fail for the right reason before implementation if using TDD.
 - [ ] All configured tests pass, or failures are documented and accepted.
-- [ ] If the project has a `run-and-verify` skill (`.claude/skills/run-and-verify/SKILL.md`), applicable checks were run through it and the evidence (commands run, results, unverified items) is recorded.
+- [ ] If the project has a `run-and-verify` skill (in the harness's skills directory), applicable checks were run through it and the evidence (commands run, results, unverified items) is recorded.
 
 ## 5. Code quality
 

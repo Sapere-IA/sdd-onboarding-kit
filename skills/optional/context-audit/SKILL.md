@@ -1,6 +1,6 @@
 ---
 name: context-audit
-description: Inspect and reduce Claude Code context-window usage. Use when a session has grown long, behavior degrades, or before starting a new unrelated task in the same session.
+description: Inspect and reduce the context-window usage of the current session. Use when a session has grown long, behavior degrades, or before starting a new unrelated task in the same session.
 ---
 
 # Context audit
@@ -31,11 +31,15 @@ linked during onboarding).
 
 ## Procedure
 
-1. Run `/context` and identify the dominant consumers.
+1. Inspect context usage with the harness's command (`/context` in Claude
+   Code, `/status` in Codex, the session view elsewhere — see the table in
+   `reference/context-economy.md`) and identify the dominant consumers.
 2. Decide: continue, compact, or restart.
-3. If compacting, use `/compact` **with focus instructions** to preserve:
-   decisions made, current task state, architecture constraints, and
-   unresolved questions.
+3. If compacting, use the harness's compaction command (`/compact` in
+   Claude Code, Codex and OpenCode) **with focus instructions** where it
+   accepts them, to preserve: decisions made, current task state,
+   architecture constraints, and unresolved questions. Where it does not,
+   write those to their artifacts first.
 4. Before compacting, write anything durable to its artifact (`tasks.json`,
    spec files, decision log, `history.md`) — artifacts, not chat, are the
    source of truth.

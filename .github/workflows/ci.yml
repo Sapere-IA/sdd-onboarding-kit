@@ -66,7 +66,7 @@ jobs:
         run: |
           # {{PLACEHOLDER}} tokens belong in templates/ and scripts/*.template.
           # A few docs legitimately mention the convention itself.
-          allowlist='^\./(templates/|scripts/[^/]+\.template$|README\.md$|README\.html$|instructions\.md$|skills/sdd-workflow/spec-format\.md$|skills/sdd-update/SKILL\.md$|scripts/validate-sdd-structure\.sh$|\.github/)'
+          allowlist='^\./(templates/|scripts/[^/]+\.template$|README\.md$|README\.html$|instructions\.md$|CHANGELOG\.md$|skills/sdd-workflow/spec-format\.md$|skills/sdd-update/SKILL\.md$|scripts/validate-sdd-structure\.sh$|\.github/)'
           offenders=$(grep -rl "{{[A-Z0-9_][A-Z0-9_]*}}" . --include='*.md' --include='*.sh' --include='*.html' --include='*.json' --include='*.template' --include='*.css' --include='*.js' | grep -Ev "$allowlist" || true)
           if [ -n "$offenders" ]; then
             echo "::error::Unexpected {{PLACEHOLDER}} tokens in:"
@@ -74,6 +74,41 @@ jobs:
             exit 1
           fi
           echo "OK: placeholder tokens only in expected locations."
+
+      - name: Installable content stays harness-neutral
+        run: |
+          # Agents, skills and templates are installed into any harness (Claude Code,
+          # Codex, Cursor, OpenCode, Antigravity). They must not hard-code one harness:
+          # no "Claude Code must/should/…" phrasing, no `.claude/` paths, no `CLAUDE.md`
+          # as the project instruction file. Lines that are per-harness examples
+          # (mentioning at least two harnesses) are allowed.
+          offenders=$(grep -rn -E 'Claude (Code )?(must|may|should|can|cannot|never|asks|drafts)|\.claude/|CLAUDE\.md' \
+              agents skills/sdd-workflow skills/optional templates/specs templates/functional \
+              templates/AGENTS.md.template templates/project-map.md.template \
+              templates/architecture.md.template templates/conventions.md.template \
+            | grep -v -E 'Codex|Cursor|OpenCode|Antigravity|harness-primitives|claude-note' || true)
+          if [ -n "$offenders" ]; then
+            echo "::error::Harness-specific wording in installable content:"
+            echo "$offenders"
+            exit 1
+          fi
+          echo "OK: installable content is harness-neutral."
+
+      - name: Hook adapter block is identical in every hook
+        run: |
+          # The SDD hook adapter (hooks/hooks-policy.md, "Hook contract") must be
+          # byte-identical across the example hooks apart from the default event name.
+          extract() { sed -n '/^# ---- SDD hook adapter/,/^# ---- end SDD hook adapter ----/p' "$1" | sed -E 's/sdd_event:-[A-Za-z]+/sdd_event:-EVENT/'; }
+          ref=$(extract hooks/examples/block-implementation-before-approval.sh)
+          [ -n "$ref" ] || { echo "::error::adapter block not found in the reference hook"; exit 1; }
+          for f in $(find hooks/examples -name '*.sh'); do
+            if [ "$(extract "$f")" != "$ref" ]; then
+              echo "::error::adapter block in $f differs from block-implementation-before-approval.sh"
+              diff <(echo "$ref") <(extract "$f") || true
+              exit 1
+            fi
+          done
+          echo "OK: adapter block identical in $(find hooks/examples -name '*.sh' | wc -l | tr -d ' ') hooks."
 
       - name: manifest.md is up to date
         run: |

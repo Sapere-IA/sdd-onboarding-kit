@@ -8,7 +8,7 @@ description: Generate or refresh the project map artifact. Use after significant
 ## Purpose
 
 Create or update the project map — the concise orientation artifact
-(default `.claude/context/project-map.md`) that tells Claude where things
+(default `<harness-dir>/context/project-map.md`) that tells the agent where things
 live without loading many files. See DOCUMENTATION.html §16 in the kit.
 
 ## When to use
@@ -30,7 +30,7 @@ live without loading many files. See DOCUMENTATION.html §16 in the kit.
   existing generated map).
 - Repository inspection: directory tree (depth 2–3), package manifests,
   scripts, CI config, docs.
-- The project `CLAUDE.md` protected-areas section.
+- The project `AGENTS.md` protected-areas section.
 
 ## Procedure
 
@@ -40,16 +40,16 @@ live without loading many files. See DOCUMENTATION.html §16 in the kit.
    locations, generated/do-not-edit files.
 3. Keep it one to two screens; annotate, do not enumerate.
 4. Record unknown commands as `TODO: ask the developer` — never invent.
-5. Verify `CLAUDE.md` links the map at its configured location.
+5. Verify `AGENTS.md` links the map at its configured location.
 
 ## Output artifact
 
 The project map file at its configured location (default
-`.claude/context/project-map.md`).
+`<harness-dir>/context/project-map.md`).
 
 ## Safety constraints
 
 - Never record secrets, credentials, or tokens.
-- Do not change `CLAUDE.md` beyond the map link without approval.
+- Do not change `AGENTS.md` beyond the map link without approval.
 - If the map's configured location is unclear, ask instead of creating a
   second map.

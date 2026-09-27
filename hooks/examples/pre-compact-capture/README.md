@@ -17,8 +17,10 @@ kit hook.
 ## Why two scripts
 
 `PreCompact` hooks cannot inject context into the compaction — they can
-only warn or block (verified against the hooks docs, 2026-06). So the
-example splits the job:
+only warn or block (verified against the Claude Code hooks docs, 2026-06).
+So the example splits the job (event names are the Claude Code/Codex ones;
+Cursor uses `preCompact`/`sessionStart`, OpenCode `session.compacted`;
+Antigravity has no compaction event):
 
 | Script | Event / matcher | What it does |
 |---|---|---|
@@ -30,8 +32,7 @@ can wedge a session whose context is already full.
 
 ## Installation (after explicit developer approval)
 
-Copy both scripts into the target project (e.g. `.claude/hooks/`), make
-them executable, and add to `.claude/settings.json`:
+Copy both scripts into the target project's hook directory (`<harness-dir>/hooks/`), make them executable, and wire them with the matching snippet in `hooks/settings-snippets.md`. Claude Code / Codex example:
 
 ```json
 {
@@ -68,7 +69,7 @@ default at the top of the script.
 ## Version note
 
 Event names, matchers (`manual`, `auto`, `compact`), and output shapes can
-evolve between Claude Code versions. Verify against the installed
+evolve between harness versions. Verify against the installed
 version's hook documentation before enabling — the kit-wide rule in
 `hooks/settings-snippets.md` applies.
 

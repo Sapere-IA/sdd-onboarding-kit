@@ -1,0 +1,191 @@
+# {{PROJECT_NAME}} — project instructions for coding agents
+
+This project uses **Spec Driven Development (SDD)** for non-trivial implementation work. These instructions apply to every coding agent working in this repository (Claude Code, Codex, Cursor, OpenCode, Antigravity or another harness).
+
+## Project summary
+
+{{PROJECT_SUMMARY}}
+
+## Project map
+
+Repository structure, entrypoints, commands, important docs, and protected
+areas are described in the project map:
+
+```text
+{{PROJECT_MAP_PATH}}
+```
+
+Read it when you need orientation; do not duplicate its directory tree into
+this file. Update it when the structure changes significantly (new
+top-level directories, moved entrypoints, changed commands, new protected
+areas).
+
+## Commands
+
+Use these project commands:
+
+```bash
+# Install or validate environment
+{{INIT_COMMAND}}
+
+# Run all tests
+{{TEST_COMMAND}}
+
+# Run lint
+{{LINT_COMMAND}}
+
+# Run typecheck
+{{TYPECHECK_COMMAND}}
+
+# Format code
+{{FORMAT_COMMAND}}
+```
+
+If any command is unknown, ask the developer before inventing one.
+
+## SDD policy
+
+{{SDD_POLICY}}
+
+Default state machine:
+
+```text
+pending → spec_draft → spec_ready → human_approved → in_progress → review → done
+```
+
+Do not implement an SDD task unless it is in `human_approved` or `in_progress`.
+
+If a task is marked `spec_ready`, stop and ask for human approval.
+
+## Task storage
+
+Task state is stored in:
+
+```text
+{{TASK_STORAGE}}
+```
+
+## Spec storage
+
+Specs are stored in:
+
+```text
+specs/<feature-slug>/
+├── requirements.md
+├── design.md
+├── tasks.md
+└── review.md
+```
+
+Spec files are markdown — the source of truth (format: `{{HARNESS_DIR}}/skills/sdd-workflow/spec-format.md`).
+Render them to styled HTML for human review with `{{RENDER_COMMAND}}` (e.g. `node scripts/render-spec.mjs specs/<feature-slug>/`); the rendered `.html` files are gitignored artifacts — never hand-edit them.
+Structured state (task status, approval) lives in `tasks.json`, not in spec files.
+
+## Required SDD workflow
+
+For each SDD task:
+
+1. Read the task.
+2. Create or update the spec.
+3. Stop for human approval.
+4. Implement only after approval.
+5. Run tests and validation.
+6. Run the reviewer role.
+7. If the reviewer requires documentation updates, run the documenter role, then the reviewer re-checks the docs.
+8. Mark done only if requirements, implementation, tests and required docs are aligned.
+9. Append a summary to `history.md`.
+
+## SDD skill
+
+The full procedure is the `sdd-workflow` skill:
+
+```text
+{{HARNESS_DIR}}/skills/sdd-workflow/SKILL.md
+```
+
+Invoke it by name (`sdd-workflow`) with the task ID or feature description, using this harness's skill invocation ({{SKILL_INVOCATION}}), or read `SKILL.md` and follow it when the harness does not load skills automatically.
+
+## Optional skills installed
+
+{{OPTIONAL_SKILLS_LIST}}
+
+Invoke them by name when their trigger applies. Their full instructions live in `{{HARNESS_DIR}}/skills/<name>/SKILL.md` and load only when used — do not duplicate them here.
+
+## Roles (subagents)
+
+The SDD roles are defined in `{{HARNESS_DIR}}/agents/`. Use them as subagents where the harness supports them; otherwise read the role file and act as that role in the main conversation, one role at a time. Roles never call each other: the main conversation orchestrates.
+
+- `leader`: inspects task state and recommends which role to run next.
+- `spec-author`: creates requirements, design and implementation tasks.
+- `implementer`: writes code from approved specs.
+- `reviewer`: validates implementation against specs; decides whether documentation updates are required.
+- `documenter`: updates affected documentation after review approval, before a task is marked done.
+
+{{HARNESS_NOTES}}
+
+## Human approval policy
+
+{{HUMAN_APPROVAL_POLICY}}
+
+## Hooks policy
+
+{{HOOKS_POLICY}}
+
+## MCP policy
+
+{{MCP_POLICY}}
+
+## Git policy
+
+{{GIT_POLICY}}
+
+## Protected areas
+
+{{PROTECTED_AREAS}}
+
+## When SDD may be skipped
+
+{{SDD_SKIP_POLICY}}
+
+## Context economy
+
+The context window is a scarce resource. Rules:
+
+- Keep this file short; link to deeper docs instead of duplicating them.
+- Long procedures belong in skills, not here.
+- Inspect context usage and compact between unrelated tasks with the harness's context commands ({{CONTEXT_COMMANDS}}), with focus instructions to preserve decisions, task status, architecture constraints, and unresolved questions.
+- Delegate noisy, many-file exploration to subagents where available; keep only conclusions in the main conversation.
+- Durable truth lives in artifacts (`tasks.json`, `specs/`, decision logs, `history.md`), not in chat history.
+
+## Session recovery
+
+If unsure after resuming a session, a rewind, or a compaction: inspect the durable artifacts before continuing — `tasks.json` for task state, the active spec for what is approved, the latest review for open findings, `git status` for actual changes. When conversation memory and an artifact disagree, the artifact wins.
+
+## Final rule
+
+Prefer a clear spec over a clever implementation. If the spec is ambiguous, ask or revise the spec before coding.
+
+## Functional documents
+
+Functional documents, PRDs, tickets, user stories, or informal feature descriptions are source material.
+
+They are not approved implementation specs.
+
+When a functional document is provided, the agent must first generate an SDD spec under:
+
+specs/<feature-slug>/
+
+Required files:
+
+- requirements.md
+- design.md
+- tasks.md
+- assumptions.md
+- open-questions.md
+- acceptance-tests.md
+
+The agent must stop after generating the spec and wait for human approval before implementation.
+
+## Harness updates
+
+The SDD harness was installed from the sdd-onboarding-kit (version, harness layout and file inventory: `{{HARNESS_DIR}}/sdd-kit-manifest.json`). To update it when the kit publishes a new version, invoke the `sdd-update` skill.

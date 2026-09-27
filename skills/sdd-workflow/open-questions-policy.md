@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This policy defines how Claude Code should identify, record, prioritize, and resolve open questions during Spec Driven Development.
+This policy defines how the agent should identify, record, prioritize, and resolve open questions during Spec Driven Development.
 
 Open questions prevent hidden ambiguity from becoming incorrect code.
 
@@ -10,7 +10,7 @@ Open questions prevent hidden ambiguity from becoming incorrect code.
 
 ## Core rule
 
-If a missing decision could materially change the product behavior, architecture, tests, security model, data model, or developer workflow, Claude Code must record it as an open question.
+If a missing decision could materially change the product behavior, architecture, tests, security model, data model, or developer workflow, the agent must record it as an open question.
 
 Do not bury important questions in chat.
 
@@ -130,7 +130,7 @@ Git workflow
 
 ## When to stop and ask immediately
 
-Claude Code must stop and ask the developer immediately if a blocking question prevents writing a meaningful spec.
+The agent must stop and ask the developer immediately if a blocking question prevents writing a meaningful spec.
 
 Examples:
 
@@ -147,7 +147,7 @@ Examples:
 
 ## When to continue with a draft
 
-Claude Code may continue with a draft spec if:
+The agent may continue with a draft spec if:
 
 - the ambiguity is low or medium risk;
 - the assumption is explicit;
@@ -163,7 +163,7 @@ In that case, record the question and any default assumption.
 
 Use an open question when developer input is needed.
 
-Use an assumption when Claude Code can safely proceed with a draft.
+Use an assumption when the agent can safely proceed with a draft.
 
 Some entries may appear in both files:
 
@@ -207,7 +207,7 @@ Task status should be:
 spec_draft
 ```
 
-Claude Code must not implement.
+The agent must not implement.
 
 ### If only non-blocking questions exist
 
@@ -241,7 +241,7 @@ Before moving a task to:
 human_approved
 ```
 
-Claude Code must verify:
+The agent must verify:
 
 - no blocking questions remain pending;
 - assumptions have been accepted, corrected, or removed;

@@ -1,6 +1,6 @@
 # Autonomy policy
 
-Claude Code ships features that let it keep working without a human in
+Coding-agent harnesses ship features that let them keep working without a human in
 the loop: timed loops, condition-based goals, scheduled routines,
 background agents, headless runs. They are useful for monitoring and
 repeated verification — and dangerous when they mutate code, deploy,
@@ -9,11 +9,11 @@ autonomy as **controlled execution, not blanket permission**: every
 autonomous workflow is opt-in, scoped, bounded by an explicit stop
 condition, and unable to advance SDD state on its own.
 
-## Feature landscape
+## Feature landscape (Claude Code; other harnesses have subsets)
 
-Capability-level summary of what exists (names verified against the
+Capability-level summary of what exists in Claude Code (names verified against the
 official docs on 2026-06-12 — these features move fast, so re-verify
-with the `/help` output or the docs before relying on exact syntax):
+with the `/help` output or the docs before relying on exact syntax). Codex CLI, Cursor, OpenCode and Antigravity offer subsets (background subagents, headless/CI runs, scheduled cloud agents); the policy below applies to all of them by capability, not by name:
 
 - **`/loop`** — repeats a prompt on a fixed or self-paced interval,
   locally, inside an open session.
@@ -27,7 +27,7 @@ with the `/help` output or the docs before relying on exact syntax):
   (`claude --bg`), supervised, with logs/attach/stop controls.
 - **Headless mode** — `claude -p` for scripts and CI, with caps for
   turns and budget and a configurable permission mode.
-- **`Stop` / `SubagentStop` hooks** — can block Claude from finishing a
+- **`Stop` / `SubagentStop` hooks** — can block the agent from finishing a
   turn, i.e. force continuation; all hook types also fire in headless
   runs.
 - **GitHub Action** — `anthropics/claude-code-action` runs Claude Code
@@ -65,7 +65,7 @@ Never autonomous, regardless of stop conditions or permission mode:
 - Payment, authentication, or security-relevant changes.
 - Merging PRs.
 - Pushing to protected branches.
-- Editing protected files (the project's `CLAUDE.md` protected list).
+- Editing protected files (the project's `AGENTS.md` protected list).
 - **Marking a task `done`** — or any SDD status advance — without the
   reviewer and the documentation phase having run with a human
   checkpoint.

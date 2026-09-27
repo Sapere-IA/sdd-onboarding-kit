@@ -1,16 +1,16 @@
 # Project hooks
 
-This directory documents project-specific Claude Code hooks for the SDD harness.
+This directory documents the project-specific hooks of the SDD harness for {{HARNESS_NAME}}.
 
-Hooks are enabled from `.claude/settings.json`, not by placing scripts here automatically.
+Hooks are enabled from the harness's wiring file ({{HOOK_WIRING_FILE}}), not by placing scripts here automatically. The scripts are harness-neutral (see the adapter block at the top of each one); only the wiring is harness-specific.
 
 ## Enabled hooks
 
-TODO: List enabled hooks, event names, matchers and commands.
+TODO: List enabled hooks, event names, matchers, commands and `SDD_HOOK_OUTPUT` / mode variables.
 
 ## Available hook scripts
 
-TODO: List scripts copied into `scripts/` or `.claude/hooks/`.
+TODO: List scripts copied into `scripts/` or this directory.
 
 ## Policy
 
@@ -18,3 +18,4 @@ TODO: List scripts copied into `scripts/` or `.claude/hooks/`.
 - Prefer warning mode before blocking mode unless the developer approved strict enforcement.
 - Keep hook scripts small and deterministic.
 - Document every hook's purpose and failure mode.
+- Keep the adapter block identical across scripts; put project logic below it.

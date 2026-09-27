@@ -1,9 +1,11 @@
 # Session recovery
 
 Sessions get interrupted, go stale, or go wrong: days pass between
-working sessions, compaction summarizes away details, or Claude heads
-in a wrong direction for several turns. Claude Code ships features for
-all of these — and one rule keeps them safe in an SDD project:
+working sessions, compaction summarizes away details, or the agent heads
+in a wrong direction for several turns. Every harness ships some
+features for these (the landscape below is Claude Code's; the
+equivalents elsewhere are listed after it) — and one rule keeps them
+safe in an SDD project:
 
 > **Durable artifacts are the source of truth, never chat history.**
 > `tasks.json` holds task state, `specs/` holds requirements and
@@ -13,7 +15,7 @@ all of these — and one rule keeps them safe in an SDD project:
 > reorienting — anything it claims is verified against the artifacts
 > before acting on it.
 
-## Feature landscape
+## Feature landscape (Claude Code)
 
 Capability-level summary (names verified against the official docs on
 2026-06-12 — re-verify before relying on exact syntax):
@@ -23,7 +25,7 @@ Capability-level summary (names verified against the official docs on
 - **Rewind / checkpoints** — `/rewind` (double-Esc with empty input)
   restores the conversation, the code, or both to an earlier point;
   checkpoints persist across sessions. **Limitations that matter:** it
-  tracks only Claude's direct file edits — not bash side effects
+  tracks only the agent's direct file edits — not bash side effects
   (`rm`, `mv`, migrations, API calls), not manual edits, not
   concurrent sessions. It is local undo, not version control; git
   remains the authoritative history.
@@ -37,12 +39,21 @@ Capability-level summary (names verified against the official docs on
 - **Compaction** — `/compact [focus instructions]` replaces history
   with a summary; details not covered by the focus instructions are
   gone from context (the transcript file on disk keeps them).
-  `CLAUDE.md` and memory files reload from disk and survive.
+  `AGENTS.md`/`CLAUDE.md` and memory files reload from disk and survive.
 - **Stopping** — Esc stops the current turn immediately; work done so
   far is kept.
 - **Transcripts** — full session logs live on disk under
   `~/.claude/projects/` (default 30-day retention); `/export` saves a
   session as text.
+
+### Equivalents in other harnesses (verified 2026-09-27; re-verify)
+
+- **Codex CLI** — `codex resume` reopens a session; `/compact` summarizes; no rewind of file edits (use git).
+- **Cursor** — checkpoints restore files from the chat history; summarize/new chat for compaction.
+- **OpenCode** — `/undo` / `/redo` revert the last message and its file changes; `/sessions` (alias `/resume`) lists sessions; `/compact` summarizes; `/export` saves the conversation.
+- **Antigravity** — conversation history and a new conversation; no documented compaction or rewind — rely on git.
+
+The four practices below apply unchanged: whatever the harness offers, the artifacts win.
 
 ## The four practices
 
@@ -55,7 +66,7 @@ actual status, the active spec for what is approved, the latest
 completed. The recap tells you where to look; the artifacts tell you
 what is true. If recap and artifacts disagree, the artifacts win.
 
-### 2. Rewind when Claude went in the wrong direction
+### 2. Rewind when the agent went in the wrong direction
 
 When several turns went down a wrong path, rewinding to the fork beats
 arguing the session back on course — restored context is cleaner than

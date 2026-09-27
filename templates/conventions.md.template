@@ -3,7 +3,7 @@ doc: conventions
 title: Conventions — {{PROJECT_NAME}}
 ---
 
-<!-- Claude Code follows these when writing specs, code, tests and reviews. One line per rule; no narrative. -->
+<!-- The agent follows these when writing specs, code, tests and reviews. One line per rule; no narrative. -->
 
 ## Language and style
 
@@ -29,7 +29,7 @@ TODO: logging / metrics / tracing conventions.
 
 ## Security
 
-<!-- Use PROT-n rows for protected files or areas Claude Code must not modify without explicit approval. -->
+<!-- Use PROT-n rows for protected files or areas the agent must not modify without explicit approval. -->
 
 PROT-1: TODO — never modify without explicit approval.
 

@@ -1,12 +1,12 @@
 ---
 name: sdd-workflow
-description: Run the Spec Driven Development workflow for Claude Code. Use when starting, specifying, implementing or reviewing a feature through requirements, design, tasks, human approval, implementation and review.
+description: Run the Spec Driven Development workflow (any coding-agent harness). Use when starting, specifying, implementing or reviewing a feature through requirements, design, tasks, human approval, implementation and review.
 argument-hint: "[task-id-or-feature-description]"
 ---
 
 # SDD Workflow Skill
 
-Use this skill when the developer asks to work through Spec Driven Development or when the project `CLAUDE.md` says that a task requires SDD.
+Use this skill when the developer asks to work through Spec Driven Development or when the project instruction file (`AGENTS.md`) says that a task requires SDD.
 
 ## Required supporting files
 

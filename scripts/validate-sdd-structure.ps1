@@ -5,12 +5,22 @@
 # validation always runs (there is no jq to be missing), so the harness is
 # not quietly weakened on Windows.
 #
-# Run from the project root, or set CLAUDE_PROJECT_DIR. Exit code 0 = passed,
+# Run from the project root, or set SDD_PROJECT_DIR (CLAUDE_PROJECT_DIR and
+# CURSOR_PROJECT_DIR are honored too). Harness-neutral: SDD_HARNESS_DIR is the
+# primary harness directory (default .claude; e.g. .cursor, .opencode, .agents,
+# .codex), SDD_SKILLS_DIR the skills directory when it differs from
+# $SDD_HARNESS_DIR/skills (Codex: .agents/skills). Exit code 0 = passed,
 # 1 = failed. Works on Windows PowerShell 5.1 and PowerShell 7+.
 
-if ($env:CLAUDE_PROJECT_DIR) { $projectDir = $env:CLAUDE_PROJECT_DIR }
+if ($env:SDD_PROJECT_DIR) { $projectDir = $env:SDD_PROJECT_DIR }
+elseif ($env:CLAUDE_PROJECT_DIR) { $projectDir = $env:CLAUDE_PROJECT_DIR }
+elseif ($env:CURSOR_PROJECT_DIR) { $projectDir = $env:CURSOR_PROJECT_DIR }
 else { $projectDir = (Get-Location).Path }
 Set-Location -LiteralPath $projectDir
+
+if ($env:SDD_HARNESS_DIR) { $harnessDir = $env:SDD_HARNESS_DIR.TrimEnd('/', '\') } else { $harnessDir = '.claude' }
+if ($env:SDD_SKILLS_DIR) { $skillsDir = $env:SDD_SKILLS_DIR.TrimEnd('/', '\') } else { $skillsDir = "$harnessDir/skills" }
+$agentsDir = "$harnessDir/agents"
 
 $missing = $false
 function Test-RequiredFile([string]$path) {
@@ -24,34 +34,52 @@ function Test-RequiredDir([string]$path) {
   }
 }
 
+# Instruction file: AGENTS.md is canonical; a legacy CLAUDE.md-only install is accepted.
+$hasAgents = Test-Path -LiteralPath 'AGENTS.md' -PathType Leaf
+$hasClaude = Test-Path -LiteralPath 'CLAUDE.md' -PathType Leaf
+if (-not $hasAgents -and -not $hasClaude) {
+  [Console]::Error.WriteLine('Missing file: AGENTS.md (or a legacy CLAUDE.md)'); $missing = $true
+}
+if ($hasAgents -and $hasClaude) {
+  $firstLine = Get-Content -LiteralPath 'CLAUDE.md' -TotalCount 1
+  if (-not ($firstLine -match '^@AGENTS\.md')) {
+    [Console]::Error.WriteLine("CLAUDE.md exists alongside AGENTS.md but does not start with '@AGENTS.md' (expected the import stub).")
+    $missing = $true
+  }
+}
+# Agent files: markdown in most harnesses, .toml in Codex.
+function Test-RequiredAgent([string]$name) {
+  if (-not (Test-Path -LiteralPath "$agentsDir/$name.md" -PathType Leaf) -and
+      -not (Test-Path -LiteralPath "$agentsDir/$name.toml" -PathType Leaf) -and
+      -not (Test-Path -LiteralPath "$agentsDir/$name/agent.md" -PathType Leaf)) {
+    [Console]::Error.WriteLine("Missing agent: $agentsDir/$name.md (or .toml)"); $script:missing = $true
+  }
+}
+foreach ($a in @('leader', 'spec-author', 'implementer', 'reviewer')) { Test-RequiredAgent $a }
+
 $requiredFiles = @(
-  'CLAUDE.md',
   'decisions/answers.md',
-  '.claude/agents/leader.md',
-  '.claude/agents/spec-author.md',
-  '.claude/agents/implementer.md',
-  '.claude/agents/reviewer.md',
-  '.claude/skills/sdd-workflow/SKILL.md',
-  '.claude/skills/sdd-workflow/workflow.md',
-  '.claude/skills/sdd-workflow/spec-format.md',
-  '.claude/skills/sdd-workflow/task-state-machine.md',
-  '.claude/skills/sdd-workflow/review-checklist.md',
-  '.claude/skills/sdd-workflow/templates/spec.css',
-  '.claude/skills/sdd-workflow/templates/spec.js',
-  '.claude/skills/sdd-workflow/templates/spec-shell.html.template',
-  '.claude/skills/sdd-workflow/templates/requirements.md.template',
-  '.claude/skills/sdd-workflow/templates/design.md.template',
-  '.claude/skills/sdd-workflow/templates/tasks.md.template',
-  '.claude/skills/sdd-workflow/templates/review.md.template',
+  "$skillsDir/sdd-workflow/SKILL.md",
+  "$skillsDir/sdd-workflow/workflow.md",
+  "$skillsDir/sdd-workflow/spec-format.md",
+  "$skillsDir/sdd-workflow/task-state-machine.md",
+  "$skillsDir/sdd-workflow/review-checklist.md",
+  "$skillsDir/sdd-workflow/templates/spec.css",
+  "$skillsDir/sdd-workflow/templates/spec.js",
+  "$skillsDir/sdd-workflow/templates/spec-shell.html.template",
+  "$skillsDir/sdd-workflow/templates/requirements.md.template",
+  "$skillsDir/sdd-workflow/templates/design.md.template",
+  "$skillsDir/sdd-workflow/templates/tasks.md.template",
+  "$skillsDir/sdd-workflow/templates/review.md.template",
   'tasks.json',
   'history.md',
   'scripts/run-tests.sh',
   'scripts/run-lint.sh'
 )
 $requiredDirs = @(
-  '.claude/agents',
-  '.claude/skills/sdd-workflow',
-  '.claude/skills/sdd-workflow/templates',
+  $agentsDir,
+  "$skillsDir/sdd-workflow",
+  "$skillsDir/sdd-workflow/templates",
   'specs',
   'scripts'
 )
@@ -69,19 +97,22 @@ if ($missing) {
   [Console]::Error.WriteLine('SDD structure validation failed.'); exit 1
 }
 
-# Check for unresolved {{PLACEHOLDER}} tokens in CLAUDE.md and .claude/.
-# Any per-instance template file (*.template under a templates/ directory) is
-# exempt, as is the literal {{PLACEHOLDER}} token used in skill docs.
+# Check for unresolved {{PLACEHOLDER}} tokens in the instruction files and the
+# harness directories. Any per-instance template file (*.template under a
+# templates/ directory) is exempt, as is the literal {{PLACEHOLDER}} token used
+# in skill docs.
 $placeholder = '\{\{[A-Z0-9_]*\}\}'
-$targets = @('CLAUDE.md')
-if (Test-Path -LiteralPath '.claude' -PathType Container) {
-  $targets += (Get-ChildItem -LiteralPath '.claude' -Recurse -File | ForEach-Object { $_.FullName })
+$targets = @('AGENTS.md', 'CLAUDE.md')
+foreach ($dir in @($harnessDir, $skillsDir) | Select-Object -Unique) {
+  if (Test-Path -LiteralPath $dir -PathType Container) {
+    $targets += (Get-ChildItem -LiteralPath $dir -Recurse -File | ForEach-Object { $_.FullName })
+  }
 }
 $unresolved = @()
 foreach ($file in $targets) {
   if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { continue }
   $norm = ($file -replace '\\', '/')
-  if ($norm -match '/\.claude/skills/sdd-workflow/templates/') { continue }
+  if ($norm -match '/sdd-workflow/templates/') { continue }
   if ($norm -match '/templates/[^/]+\.template$') { continue }
   $hits = Select-String -LiteralPath $file -Pattern $placeholder -AllMatches
   foreach ($h in $hits) {
@@ -91,7 +122,7 @@ foreach ($file in $targets) {
 }
 if ($unresolved.Count -gt 0) {
   $unresolved | ForEach-Object { [Console]::Error.WriteLine($_) }
-  [Console]::Error.WriteLine('Unresolved template placeholders found in CLAUDE.md or .claude/.')
+  [Console]::Error.WriteLine("Unresolved template placeholders found in the instruction files or the harness directory ($harnessDir).")
   exit 1
 }
 

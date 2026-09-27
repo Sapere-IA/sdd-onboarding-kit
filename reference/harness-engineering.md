@@ -6,7 +6,7 @@ SDD is the workflow. The harness is the infrastructure that enforces or facilita
 
 ## Goal of the harness
 
-The goal is not for Claude Code to "remember" a preference. The goal is for the repository to contain artifacts that guide the work persistently:
+The goal is not for the agent to "remember" a preference. The goal is for the repository to contain artifacts that guide the work persistently:
 
 - project instructions;
 - specialized subagents;
@@ -21,7 +21,7 @@ The goal is not for Claude Code to "remember" a preference. The goal is for the 
 
 ### 1. Persistent instructions
 
-The project must have a `CLAUDE.md` with short, specific rules.
+The project must have an `AGENTS.md` (the instruction file every harness reads) with short, specific rules.
 
 ### 2. Subagents
 
@@ -44,7 +44,7 @@ Important context is stored outside the chat:
 
 ### 4. SDD skill
 
-The skill contains the long procedure. This avoids bloating `CLAUDE.md` with instructions that are only needed during SDD tasks.
+The skill contains the long procedure. This avoids bloating `AGENTS.md` with instructions that are only needed during SDD tasks.
 
 ### 5. Hooks
 
@@ -54,7 +54,7 @@ Hooks must be enabled only after developer approval.
 
 ### 6. MCPs
 
-MCPs connect Claude Code to external tools: GitHub, Linear, Jira, documentation, memory, databases or internal systems.
+MCPs connect the agent to external tools: GitHub, Linear, Jira, documentation, memory, databases or internal systems.
 
 They should be configured only if the project actually needs them.
 

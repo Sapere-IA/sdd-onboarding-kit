@@ -50,12 +50,12 @@
 - `output-project-structure.md`
 - `questions.md`
 - `reference/autonomy-policy.md`
-- `reference/claude-code-primitives.md`
 - `reference/cli-vs-mcp-policy.md`
 - `reference/context-economy.md`
 - `reference/deep-review-policy.md`
 - `reference/dependency-freshness-policy.md`
 - `reference/harness-engineering.md`
+- `reference/harness-primitives.md`
 - `reference/memory-policy.md`
 - `reference/sdd-theory.md`
 - `reference/session-recovery.md`
@@ -105,7 +105,7 @@
 - `templates/.claude/hooks/README.md.template`
 - `templates/.claude/settings.json.template`
 - `templates/.mcp.json.template`
-- `templates/CLAUDE.md.template`
+- `templates/AGENTS.md.template`
 - `templates/architecture.md.template`
 - `templates/conventions.md.template`
 - `templates/functional/functional-brief.md.template`

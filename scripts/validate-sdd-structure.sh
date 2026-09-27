@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+# Harness-neutral structure validator.
+#   SDD_HARNESS_DIR  primary harness directory (default .claude; e.g. .cursor,
+#                    .opencode, .agents, or .codex for Codex).
+#   SDD_SKILLS_DIR   skills directory when it differs from $SDD_HARNESS_DIR/skills
+#                    (Codex: .agents/skills).
+#   SDD_PROJECT_DIR  project root (falls back to CLAUDE_PROJECT_DIR,
+#                    CURSOR_PROJECT_DIR, then the current directory).
+PROJECT_DIR="${SDD_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-${CURSOR_PROJECT_DIR:-$(pwd)}}}"
 cd "$PROJECT_DIR"
+
+HARNESS_DIR="${SDD_HARNESS_DIR:-.claude}"
+HARNESS_DIR="${HARNESS_DIR%/}"
+SKILLS_DIR="${SDD_SKILLS_DIR:-$HARNESS_DIR/skills}"
+SKILLS_DIR="${SKILLS_DIR%/}"
+AGENTS_DIR="$HARNESS_DIR/agents"
 
 missing=0
 
@@ -22,27 +35,44 @@ check_dir() {
   fi
 }
 
-check_file "CLAUDE.md"
+# Instruction file: AGENTS.md is canonical; a legacy CLAUDE.md-only install is accepted.
+if [[ ! -f "AGENTS.md" && ! -f "CLAUDE.md" ]]; then
+  echo "Missing file: AGENTS.md (or a legacy CLAUDE.md)" >&2
+  missing=1
+fi
+# When both exist, CLAUDE.md must be the import stub.
+if [[ -f "AGENTS.md" && -f "CLAUDE.md" ]] && ! head -n 1 "CLAUDE.md" | grep -q '^@AGENTS.md'; then
+  echo "CLAUDE.md exists alongside AGENTS.md but does not start with '@AGENTS.md' (expected the import stub)." >&2
+  missing=1
+fi
 check_file "decisions/answers.md"
-check_dir ".claude/agents"
-check_file ".claude/agents/leader.md"
-check_file ".claude/agents/spec-author.md"
-check_file ".claude/agents/implementer.md"
-check_file ".claude/agents/reviewer.md"
-check_dir ".claude/skills/sdd-workflow"
-check_file ".claude/skills/sdd-workflow/SKILL.md"
-check_file ".claude/skills/sdd-workflow/workflow.md"
-check_file ".claude/skills/sdd-workflow/spec-format.md"
-check_file ".claude/skills/sdd-workflow/task-state-machine.md"
-check_file ".claude/skills/sdd-workflow/review-checklist.md"
-check_dir ".claude/skills/sdd-workflow/templates"
-check_file ".claude/skills/sdd-workflow/templates/spec.css"
-check_file ".claude/skills/sdd-workflow/templates/spec.js"
-check_file ".claude/skills/sdd-workflow/templates/spec-shell.html.template"
-check_file ".claude/skills/sdd-workflow/templates/requirements.md.template"
-check_file ".claude/skills/sdd-workflow/templates/design.md.template"
-check_file ".claude/skills/sdd-workflow/templates/tasks.md.template"
-check_file ".claude/skills/sdd-workflow/templates/review.md.template"
+check_dir "$AGENTS_DIR"
+# Agent files: markdown in most harnesses, .toml in Codex.
+check_agent() {
+  local name="$1"
+  if [[ ! -f "$AGENTS_DIR/$name.md" && ! -f "$AGENTS_DIR/$name.toml" && ! -f "$AGENTS_DIR/$name/agent.md" ]]; then
+    echo "Missing agent: $AGENTS_DIR/$name.md (or .toml)" >&2
+    missing=1
+  fi
+}
+check_agent "leader"
+check_agent "spec-author"
+check_agent "implementer"
+check_agent "reviewer"
+check_dir "$SKILLS_DIR/sdd-workflow"
+check_file "$SKILLS_DIR/sdd-workflow/SKILL.md"
+check_file "$SKILLS_DIR/sdd-workflow/workflow.md"
+check_file "$SKILLS_DIR/sdd-workflow/spec-format.md"
+check_file "$SKILLS_DIR/sdd-workflow/task-state-machine.md"
+check_file "$SKILLS_DIR/sdd-workflow/review-checklist.md"
+check_dir "$SKILLS_DIR/sdd-workflow/templates"
+check_file "$SKILLS_DIR/sdd-workflow/templates/spec.css"
+check_file "$SKILLS_DIR/sdd-workflow/templates/spec.js"
+check_file "$SKILLS_DIR/sdd-workflow/templates/spec-shell.html.template"
+check_file "$SKILLS_DIR/sdd-workflow/templates/requirements.md.template"
+check_file "$SKILLS_DIR/sdd-workflow/templates/design.md.template"
+check_file "$SKILLS_DIR/sdd-workflow/templates/tasks.md.template"
+check_file "$SKILLS_DIR/sdd-workflow/templates/review.md.template"
 check_dir "specs"
 check_file "tasks.json"
 check_file "history.md"
@@ -61,20 +91,24 @@ if [[ "$missing" -ne 0 ]]; then
   exit 1
 fi
 
-# Check for unresolved {{PLACEHOLDER}} tokens in CLAUDE.md and .claude/.
-# Any per-instance template file (*.template under a templates/ directory) is
-# exempt: its placeholders are instantiated per feature/commit/PR, not during
-# onboarding. This covers the sdd-workflow spec templates AND pack templates
-# such as .claude/skills/git-discipline/templates/*.template.
+# Check for unresolved {{PLACEHOLDER}} tokens in the instruction files and the
+# harness directories. Any per-instance template file (*.template under a
+# templates/ directory) is exempt: its placeholders are instantiated per
+# feature/commit/PR, not during onboarding. This covers the sdd-workflow spec
+# templates AND pack templates such as <skills>/git-discipline/templates/*.template.
 # The literal {{PLACEHOLDER}} token is also exempt: skill docs use it as the
 # generic name for the placeholder convention, not as a real placeholder.
-unresolved=$(grep -Rn "{{[A-Z0-9_]*}}" CLAUDE.md .claude 2>/dev/null \
-  | grep -v "^.claude/skills/sdd-workflow/templates/" \
+scan_targets=()
+for t in AGENTS.md CLAUDE.md "$HARNESS_DIR" "$SKILLS_DIR"; do
+  [[ -e "$t" ]] && scan_targets+=("$t")
+done
+unresolved=$(grep -Rn "{{[A-Z0-9_]*}}" "${scan_targets[@]}" 2>/dev/null \
+  | grep -v "/sdd-workflow/templates/" \
   | grep -vE "/templates/[^/]+\.template:" \
   | grep -v "{{PLACEHOLDER}}" || true)
 if [[ -n "$unresolved" ]]; then
   echo "$unresolved" >&2
-  echo "Unresolved template placeholders found in CLAUDE.md or .claude/." >&2
+  echo "Unresolved template placeholders found in the instruction files or the harness directory ($HARNESS_DIR)." >&2
   exit 1
 fi
 

@@ -13,7 +13,7 @@ specs/<feature-slug>/
 └── open-questions.md      # when questions are unresolved
 ```
 
-When creating a new spec, instantiate each file from the corresponding `.md.template` in `.claude/skills/sdd-workflow/templates/` and replace every `{{PLACEHOLDER}}` token. Do not copy `spec.css`/`spec.js` into the feature folder — the renderer inlines them.
+When creating a new spec, instantiate each file from the corresponding `.md.template` in this skill's `templates/` folder and replace every `{{PLACEHOLDER}}` token. Do not copy `spec.css`/`spec.js` into the feature folder — the renderer inlines them.
 
 ## Rendering
 
@@ -22,7 +22,7 @@ node scripts/render-spec.mjs specs/<feature-slug>/     # Node projects
 python scripts/render_spec.py specs/<feature-slug>/    # Python projects
 ```
 
-(Only one renderer is installed per project.) Each `<name>.md` becomes a self-contained `<name>.html` next to it, styled from the assets in `.claude/skills/sdd-workflow/templates/`. Render before asking the developer to review; never hand-edit the HTML output.
+(Only one renderer is installed per project.) Each `<name>.md` becomes a self-contained `<name>.html` next to it, styled from the assets in this skill's `templates/` folder. Render before asking the developer to review; never hand-edit the HTML output.
 
 ## Ownership and no-duplication rule
 

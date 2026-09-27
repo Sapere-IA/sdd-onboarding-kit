@@ -8,12 +8,12 @@ onboarding (see `questions.md` §14) or asks for them later.
 ## Installation rule
 
 For each selected pack, copy `skills/optional/<name>/` to
-`.claude/skills/<name>/` in the target project and adapt placeholders and
+`<harness-dir>/skills/<name>/` in the target project (the harness's skills directory) and adapt placeholders and
 project-specific details. Record the selection (installed and declined) in
 `decisions/answers.md`.
 
 Do not install unselected packs "just in case", and do not paste skill
-bodies into `CLAUDE.md` — list installed skills there by name with a
+bodies into `AGENTS.md` — list installed skills there by name with a
 one-line purpose at most. Skill bodies load only when invoked, which is
 what keeps them cheap (see `reference/context-economy.md`).
 

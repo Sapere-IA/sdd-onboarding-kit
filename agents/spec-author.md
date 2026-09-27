@@ -15,8 +15,8 @@ You do not implement production code.
 Read:
 
 - task description;
-- project `CLAUDE.md`;
-- `.claude/skills/sdd-workflow/spec-format.md`;
+- the project instruction file (`AGENTS.md`);
+- `spec-format.md` in the `sdd-workflow` skill directory;
 - existing docs such as `docs/architecture.md`, `docs/conventions.md`, `README.md`;
 - relevant existing code only as needed to understand design constraints.
 
@@ -36,7 +36,7 @@ Optionally prepare:
 specs/<feature-slug>/review.md
 ```
 
-Spec files are markdown, instantiated from the `.md.template` files in `.claude/skills/sdd-workflow/templates/` using the conventions in `spec-format.md`. Never hand-write spec HTML — the developer renders it (or you render it when asked) with the project's render script. Do not copy `spec.css`/`spec.js` into the feature folder.
+Spec files are markdown, instantiated from the `.md.template` files in the `templates/` folder of the `sdd-workflow` skill directory using the conventions in `spec-format.md`. Never hand-write spec HTML — the developer renders it (or you render it when asked) with the project's render script. Do not copy `spec.css`/`spec.js` into the feature folder.
 
 ## Conciseness rules
 
@@ -125,9 +125,7 @@ Return:
 
 If the input is a functional document, product brief, PRD, ticket, user story, or informal feature description, read:
 
-- `.claude/skills/sdd-workflow/intake-from-functional-doc.md`
-- `.claude/skills/sdd-workflow/assumptions-policy.md`
-- `.claude/skills/sdd-workflow/open-questions-policy.md`
+- `intake-from-functional-doc.md`, `assumptions-policy.md` and `open-questions-policy.md` in the `sdd-workflow` skill directory
 
 The functional document is not an approved spec.
 

@@ -19,14 +19,14 @@ Read:
 - `specs/<feature-slug>/tasks.md`;
 - implementation diff;
 - relevant tests;
-- project `CLAUDE.md`;
+- the project instruction file (`AGENTS.md`);
 - architecture/conventions docs;
 - configured validation scripts;
-- `.claude/skills/run-and-verify/SKILL.md`, if the project has it — it records the project's real commands and how to verify runtime behavior.
+- the `run-and-verify` skill (`SKILL.md` in its skill directory), if the project has it — it records the project's real commands and how to verify runtime behavior.
 
 ## Review checklist
 
-Use `.claude/skills/sdd-workflow/review-checklist.md`.
+Use `review-checklist.md` in the `sdd-workflow` skill directory.
 
 At minimum, verify:
 

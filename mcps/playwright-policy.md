@@ -1,6 +1,6 @@
 # Playwright MCP policy
 
-Playwright gives Claude a real browser: navigation, screenshots, form
+Playwright gives the agent a real browser: navigation, screenshots, form
 interaction, visual verification. It is powerful for UI work and
 irrelevant — or risky — everywhere else. This policy defines how the kit
 uses it.
@@ -44,8 +44,8 @@ Why not global:
 
 1. **No browser UI** — nothing installed (default for non-UI projects).
 2. **Browser-tester subagent** — copy and adapt
-   `agents/optional/browser-tester.md` to
-   `.claude/agents/browser-tester.md`. The `ui-qa` skill pack
+   `agents/optional/browser-tester.md` into the harness's agents
+   directory (`<harness-dir>/agents/`). The `ui-qa` skill pack
    (`questions.md` §14) routes UI verification through it.
 3. **Document setup only** — record the setup below in the project's
    docs without configuring anything.
@@ -56,7 +56,12 @@ Why not global:
 - Package: Microsoft's `@playwright/mcp`; launch command
   `npx -y @playwright/mcp@latest` (the `--browser <name>` flag selects a
   browser other than the default Chromium).
-- Scoped (recommended): the inline `mcpServers` frontmatter shown above.
+- Scoped (recommended where the harness supports per-agent MCPs — Claude
+  Code `mcpServers` frontmatter, Codex `[mcp_servers.playwright]` in the agent
+  TOML): the inline declaration shown above. Cursor, OpenCode and Antigravity
+  have no per-agent MCPs: declare the server in the harness MCP config
+  (`.cursor/mcp.json`, `opencode.json` `mcp` block, `.agents/mcp_config.json`)
+  and keep the agent's usage rules.
 - Project-wide alternative (only for option 3 documentation, or if a
   project explicitly wants the tools in the main conversation):
 
@@ -78,8 +83,10 @@ Why not global:
   }
   ```
 
-- Verify this syntax against the installed Claude Code version during
-  onboarding — MCP config and agent frontmatter evolve.
+- The `claude mcp add` command and `.mcp.json` are Claude Code's; the other
+  harnesses take the same `command`/`args` in their own file
+  (`reference/harness-primitives.md`). Verify the syntax against the installed
+  harness version during onboarding — MCP config and agent frontmatter evolve.
 
 ## Safety
 
