@@ -13,7 +13,7 @@ SKILLS_DIR="${SDD_SKILLS_DIR:-$HARNESS_DIR/skills}"
 echo "SDD init check"
 echo "Project: $PROJECT_DIR"
 
-required=("$HARNESS_DIR/agents" "$SKILLS_DIR/sdd-workflow" "specs" "tasks.json" "history.md")
+required=("$HARNESS_DIR/agents" "$SKILLS_DIR/sdd-workflow" "$SKILLS_DIR/bro" "$SKILLS_DIR/closing" "specs" "tasks.json" "history.md" "scripts/render-spec.sh")
 
 missing=0
 if [[ ! -e "AGENTS.md" && ! -e "CLAUDE.md" ]]; then

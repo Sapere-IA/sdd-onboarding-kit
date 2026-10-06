@@ -13,7 +13,7 @@ The reviewer must validate the implementation against the approved spec.
 ## 1b. Conciseness and duplication
 
 - [ ] No content is duplicated within a spec file or across the spec's files — shared content is referenced by ID (`REQ-001`, a section anchor), not restated. Duplication is a finding.
-- [ ] Spec files are concise: no filler narrative, no padded boilerplate sections; non-applicable sections are collapsed to a single `None.` / `Not applicable.` line.
+- [ ] Spec files respect the `spec-format.md` § Conciseness budgets (Summary ≤ 3 sentences, one sentence per requirement/edge/error/criterion, design sections on one screen, ≤ ~8 tasks); no filler narrative; optional sections that do not apply are deleted. Overruns are non-blocking findings.
 
 ## 2. Requirement traceability
 

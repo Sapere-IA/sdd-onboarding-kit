@@ -78,7 +78,8 @@ specs/<feature-slug>/
 ```
 
 Spec files are markdown — the source of truth (format: `{{HARNESS_DIR}}/skills/sdd-workflow/spec-format.md`).
-Render them to styled HTML for human review with `{{RENDER_COMMAND}}` (e.g. `node scripts/render-spec.mjs specs/<feature-slug>/`); the rendered `.html` files are gitignored artifacts — never hand-edit them.
+Render a spec for human review with `{{RENDER_COMMAND}} specs/<feature-slug>/` (Windows without `sh`: `scripts/render-spec.ps1`): it writes one page, `specs/<feature-slug>/spec.html`, a gitignored artifact — never hand-edit it.
+The developer reviews items on that page and saves `specs/<feature-slug>/feedback.md` (or pastes it in chat); when asked to read the feedback, apply it to the markdown sources, re-render, and delete the feedback file.
 Structured state (task status, approval) lives in `tasks.json`, not in spec files.
 
 ## Required SDD workflow
@@ -104,6 +105,13 @@ The full procedure is the `sdd-workflow` skill:
 ```
 
 Invoke it by name (`sdd-workflow`) with the task ID or feature description, using this harness's skill invocation ({{SKILL_INVOCATION}}), or read `SKILL.md` and follow it when the harness does not load skills automatically.
+
+## Session skills
+
+- `bro`: re-explains the previous answer, a file, a spec item (`REQ-003`) or a term in plain language, in a few lines.
+- `closing`: before ending a session, checks every durable artifact is up to date and writes a handoff so a fresh session can resume from the files.
+
+Invoke them by name with this harness's skill invocation; their instructions live in `{{HARNESS_DIR}}/skills/<name>/SKILL.md`.
 
 ## Optional skills installed
 

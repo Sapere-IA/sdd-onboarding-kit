@@ -28,7 +28,7 @@ Do not write implementation code for an SDD task until the spec is approved acco
 2. Check the task status.
 3. Route according to `task-state-machine.md`.
 4. If the task needs a spec, create/update the spec.
-5. If the spec is ready but not approved, stop.
+5. If the spec is ready but not approved, render it and stop. If the developer left a feedback file (`specs/<feature-slug>/feedback.md`, a downloaded `<feature-slug>.feedback.md`, or pasted text), apply it first (`spec-format.md` § Feedback file).
 6. If approved, implement from the spec.
 7. Validate and review.
 8. Record completion.

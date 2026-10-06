@@ -331,13 +331,12 @@ Generate test scenarios that validate the requirements.
 
 These are not necessarily final test code.
 
-They should describe:
+Each card states (see `acceptance-tests.md.template`):
 
-- scenario;
-- preconditions;
-- action;
-- expected result;
-- related requirements.
+- related requirements;
+- Given (preconditions);
+- When (action);
+- Then (expected result, including what must not happen).
 
 Acceptance tests should help the developer approve the spec and help the implementer write real tests.
 

@@ -57,7 +57,7 @@ Recommend continuing spec work with `spec-author` until the spec is complete.
 
 ### If task status is `spec_ready`
 
-Recommend stopping and asking for human approval. No agent should implement code in this state.
+Recommend stopping and asking for human approval: the spec is rendered (`sh scripts/render-spec.sh specs/<feature-slug>/`) and the developer is pointed at `specs/<feature-slug>/spec.html`, where they can review each item and save a feedback file. If a feedback file exists, recommend `spec-author` applies it (`spec-format.md` § Feedback file). No agent should implement code in this state.
 
 ### If task status is `human_approved`
 

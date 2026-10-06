@@ -17,16 +17,12 @@ created: 2026-07-22
 #### Q1 — Should archived notes appear? [!warning Non-blocking]
 
 - **Question:** Does `notes recent` include archived notes?
-- **Why it matters:** Changes the filter applied before sorting.
-- **Default if unanswered:** Exclude archived notes, matching the default list view.
-- **Affected files / sections:** `src/commands/recent.py`; requirements REQ-001
+- **Why it matters:** It decides the filter applied before sorting.
+- **Default if unanswered:** Exclude them, like the default list view.
+- **Affected files / sections:** `src/commands/recent.py`
 - **Related requirements:** REQ-001
 :::
 
 ## Resolved
-
-None yet.
-
-## Deferred
 
 None yet.

@@ -75,6 +75,8 @@ Memory entries use the format in `templates/memory/failure-learning-entry.md`: t
 
 The optional `failure-learning` pack (`skills/optional/failure-learning/SKILL.md`) implements this policy for implementation mistakes: it drafts the entry, shows the confirmation prompt, and writes only where the developer chose. The advisory hook examples under `hooks/examples/failure-learning/` may *suggest* running the skill; they never write memory themselves.
 
+The core `closing` skill (`skills/closing/SKILL.md`) checks at the end of a session that the memory layers above reflect what happened; it follows the same confirmation rule for every memory entry it proposes.
+
 ---
 
 Claude Code memory locations and commands verified against its docs (2026-06): user memory `~/.claude/CLAUDE.md`; project `CLAUDE.md` / `CLAUDE.local.md`; auto memory directory `~/.claude/projects/<project>/memory/` with `MEMORY.md` index; `/memory` command lists and edits memory files; `@path` imports supported. Other harnesses' user-level files verified 2026-09-27 (`reference/harness-primitives.md`); re-verify before writing to any of them.

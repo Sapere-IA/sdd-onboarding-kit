@@ -5,19 +5,15 @@ feature_slug: {{FEATURE_SLUG}}
 created: {{CREATED_DATE}}
 ---
 
-<!-- Product-side description of intended functionality. NOT an implementation spec: the agent converts it into an SDD spec before writing code (procedure: intake-from-functional-doc.md; output goes to specs/<feature-slug>/). Optional sections keep "None." when they do not apply. -->
+<!-- Product-side description of intended functionality. NOT an implementation spec: the agent converts it into an SDD spec before writing code (procedure: intake-from-functional-doc.md; output goes to specs/<feature-slug>/). Delete optional content that does not apply. -->
 
 ## Summary
 
 TODO: the feature, change or problem in 2–3 sentences.
 
-## Goal
+## Goal and background
 
-TODO: the desired outcome in business, product or user terms.
-
-## Background
-
-TODO: why this is needed — context, current limitations, pain points.
+TODO: the desired outcome in product or user terms, and why it is needed now.
 
 ## Users
 
@@ -65,25 +61,16 @@ TODO: what the user should experience, in natural language — no implementation
 
 TODO: EARS / user stories / Given-When-Then / plain / let the agent recommend.
 
-## Technical hints
+## Other context
 
-None.
+<!-- Optional — delete the lines that do not apply. -->
 
-## Dependencies
-
-None.
-
-## Security, privacy and permissions
-
-None. <!-- Or name what applies: authentication, authorization, personal data, secrets, logging, external services. -->
-
-## Performance expectations
-
-None.
-
-## UX copy
-
-None.
+- Technical hints: None.
+- Dependencies: None.
+- Security, privacy and permissions: None. <!-- Or name what applies: authentication, authorization, personal data, secrets, logging, external services. -->
+- Performance expectations: None.
+- UX copy: None.
+- Source material: None.
 
 ## Open questions
 
@@ -100,7 +87,3 @@ None.
 | Assumption | Impact if wrong |
 | --- | --- |
 | TODO | TODO |
-
-## Source material
-
-None.

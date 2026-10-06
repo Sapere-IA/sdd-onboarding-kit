@@ -100,7 +100,9 @@ This is what makes the other three safe — and it cuts both ways:
   constraints are written to those artifacts *when they happen*, so
   losing a session loses nothing that matters. The pre-compact capture
   hook (`hooks/examples/pre-compact-capture/`) reminds about exactly
-  this before compaction.
+  this before compaction, and the `closing` skill audits it at the end
+  of a session and leaves a "Resume here" handoff (top of `history.md`
+  unless the project names another place).
 
 ## Resume checklist
 
@@ -115,7 +117,8 @@ After resuming a session (or after compaction), before continuing work:
 4. `git status` and the current diff — what is actually changed but
    uncommitted, including anything a rewind could not revert.
 5. Decision logs / `history.md` — decisions settled since the
-   context you remember.
+   context you remember, and the "Resume here" handoff left by the
+   `closing` skill, if any (a starting point; verify it like a recap).
 
 If conversation memory and any of these disagree, trust the artifact
 and say so explicitly before continuing.

@@ -71,10 +71,13 @@ $requiredFiles = @(
   "$skillsDir/sdd-workflow/templates/design.md.template",
   "$skillsDir/sdd-workflow/templates/tasks.md.template",
   "$skillsDir/sdd-workflow/templates/review.md.template",
+  "$skillsDir/bro/SKILL.md",
+  "$skillsDir/closing/SKILL.md",
   'tasks.json',
   'history.md',
   'scripts/run-tests.sh',
-  'scripts/run-lint.sh'
+  'scripts/run-lint.sh',
+  'scripts/render-spec.sh'
 )
 $requiredDirs = @(
   $agentsDir,
@@ -85,13 +88,6 @@ $requiredDirs = @(
 )
 foreach ($f in $requiredFiles) { Test-RequiredFile $f }
 foreach ($d in $requiredDirs) { Test-RequiredDir $d }
-
-# Exactly one spec renderer must be installed (Node or Python).
-if (-not (Test-Path -LiteralPath 'scripts/render-spec.mjs' -PathType Leaf) -and
-    -not (Test-Path -LiteralPath 'scripts/render_spec.py' -PathType Leaf)) {
-  [Console]::Error.WriteLine('Missing spec renderer: scripts/render-spec.mjs or scripts/render_spec.py')
-  $missing = $true
-}
 
 if ($missing) {
   [Console]::Error.WriteLine('SDD structure validation failed.'); exit 1

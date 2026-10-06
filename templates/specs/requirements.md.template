@@ -10,36 +10,32 @@ human_approval: pending
 
 ## Summary
 
+<!-- ≤ 3 sentences: what changes for whom, and why. Shown as "At a glance" on the spec page. -->
+
 {{FEATURE_SUMMARY}}
 
-## Functional requirements
+## Requirements
 
-<!-- Use the configured requirements format (EARS shown). One line per requirement; no surrounding prose. -->
+<!-- Configured requirements format (EARS shown). One sentence per line; NFR lines only when a measurable quality applies. -->
 
 REQ-001: When <trigger>, the system shall <expected response>.
 REQ-002: If <condition>, the system shall <expected response>.
-
-## Non-functional requirements
-
 NFR-001: TODO.
 
-## Edge cases
+## Edge cases and errors
 
 EDGE-001: TODO.
-
-## Error states
-
 ERR-001: TODO.
 
 ## Acceptance criteria
 
-AC-001: TODO.
+<!-- One observable check per line; name the requirement it proves. -->
+
+AC-001: TODO (REQ-001).
 
 ## UI acceptance criteria
 
-<!-- Only when the change affects a browser UI; otherwise keep "Not applicable." and delete the table. Screenshots/mockups are evidence, not complete requirements — ask when visual intent is ambiguous. Auth constraints name the account type only; never record credentials. -->
-
-Not applicable.
+<!-- Optional — delete if no browser UI is affected. Auth constraints name the account type only; never credentials. -->
 
 | ID | Route | Expected visual state | Interaction flow | Checks (a11y / responsive) |
 | --- | --- | --- | --- | --- |
@@ -47,34 +43,8 @@ Not applicable.
 
 ## Visual evidence
 
-<!-- Only when images are inputs for this task; otherwise keep "Not applicable." and delete the table. Testable expectations go to the UI acceptance criteria referencing the IMG IDs; unresolved visual questions go to open-questions.md. Never transcribe secrets or personal data from images. -->
-
-Not applicable.
+<!-- Optional — delete if no images are inputs. Testable expectations go to UI acceptance criteria; never transcribe secrets or personal data. -->
 
 | ID | Image | Shows | Provenance | Intent |
 | --- | --- | --- | --- | --- |
 | IMG-001 | TODO | TODO | TODO | design to build / bug evidence / before-after / acceptance criterion |
-
-## External dependencies
-
-<!-- External systems, SDKs, APIs or framework features touched — one line each, or "None." Verification evidence belongs in the design's External dependencies section. -->
-
-None.
-
-## Documentation expectations
-
-<!-- Docs this feature is expected to affect (README, API docs, changelog, …) or "None expected." The reviewer makes the final documentation decision. -->
-
-None expected.
-
-## Decision candidates
-
-<!-- Significant decisions this task will settle (architecture choice, rejected alternative, workflow rule) — or "None." Proposed at review time; never written without developer approval. -->
-
-None.
-
-## Requirement-to-test mapping
-
-| Requirement | Expected test(s) |
-| --- | --- |
-| REQ-001 | TODO |

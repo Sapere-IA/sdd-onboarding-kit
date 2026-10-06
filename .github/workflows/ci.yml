@@ -65,8 +65,9 @@ jobs:
       - name: Placeholder tokens only where expected
         run: |
           # {{PLACEHOLDER}} tokens belong in templates/ and scripts/*.template.
-          # A few docs legitimately mention the convention itself.
-          allowlist='^\./(templates/|scripts/[^/]+\.template$|README\.md$|README\.html$|instructions\.md$|CHANGELOG\.md$|skills/sdd-workflow/spec-format\.md$|skills/sdd-update/SKILL\.md$|scripts/validate-sdd-structure\.sh$|\.github/)'
+          # A few docs legitimately mention the convention itself; render-spec.sh
+          # fills the shell template's tokens.
+          allowlist='^\./(templates/|scripts/[^/]+\.template$|README\.md$|README\.html$|instructions\.md$|CHANGELOG\.md$|skills/sdd-workflow/spec-format\.md$|skills/sdd-update/SKILL\.md$|scripts/validate-sdd-structure\.sh$|scripts/render-spec\.sh$|\.github/)'
           offenders=$(grep -rl "{{[A-Z0-9_][A-Z0-9_]*}}" . --include='*.md' --include='*.sh' --include='*.html' --include='*.json' --include='*.template' --include='*.css' --include='*.js' | grep -Ev "$allowlist" || true)
           if [ -n "$offenders" ]; then
             echo "::error::Unexpected {{PLACEHOLDER}} tokens in:"
@@ -83,7 +84,7 @@ jobs:
           # as the project instruction file. Lines that are per-harness examples
           # (mentioning at least two harnesses) are allowed.
           offenders=$(grep -rn -E 'Claude (Code )?(must|may|should|can|cannot|never|asks|drafts)|\.claude/|CLAUDE\.md' \
-              agents skills/sdd-workflow skills/optional templates/specs templates/functional \
+              agents skills/sdd-workflow skills/optional skills/bro skills/closing templates/specs templates/functional \
               templates/AGENTS.md.template templates/project-map.md.template \
               templates/architecture.md.template templates/conventions.md.template \
             | grep -v -E 'Codex|Cursor|OpenCode|Antigravity|harness-primitives|claude-note' || true)

@@ -50,7 +50,6 @@ Then identify:
 - existing architecture/conventions documentation;
 - existing git branch and cleanliness status;
 - available external CLIs (`gh`, `vercel`, `supabase`, cloud CLIs): detect which exist so narrow CLI calls can be preferred over broad MCP loading (`reference/cli-vs-mcp-policy.md`) — do not require, install, or authenticate any of them, and record nothing about credentials beyond authenticated yes/no;
-- **spec renderer runtime**: whether `node` and/or `python3`/`python` is available, and which matches the project (a `package.json` project gets the Node renderer, a Python project gets the Python renderer). Exactly one of `scripts/render-spec.mjs` / `scripts/render_spec.py` is installed. If both runtimes are plausible or neither is detected, ask the developer instead of guessing.
 
 Do not overwrite existing files without first reading them.
 
@@ -162,6 +161,10 @@ After the developer answers, create or update the following in the target reposi
 │   │   │       └── spec.js
 │   │   ├── sdd-update/
 │   │   │   └── SKILL.md
+│   │   ├── bro/
+│   │   │   └── SKILL.md
+│   │   ├── closing/
+│   │   │   └── SKILL.md
 │   │   └── <optional skill packs selected during onboarding>/
 │   ├── context/
 │   │   └── project-map.md
@@ -182,7 +185,8 @@ After the developer answers, create or update the following in the target reposi
     ├── init.sh
     ├── run-tests.sh
     ├── run-lint.sh
-    ├── render-spec.mjs              # OR render_spec.py — exactly one, per the detected runtime
+    ├── render-spec.sh               # spec renderer (POSIX sh, no runtime needed)
+    ├── render-spec.ps1              # same renderer for Windows PowerShell
     ├── validate-sdd-structure.sh
     └── validate-sdd-structure.ps1   # PowerShell port — install for Windows-primary teams
 ```
@@ -210,7 +214,8 @@ If Claude Code is one of the project's harnesses (primary or additional), also c
 - how to invoke the SDD skill in this harness;
 - when not to use SDD;
 - protected files or risky areas;
-- the spec render command (`{{RENDER_COMMAND}}` → the installed renderer, e.g. `node scripts/render-spec.mjs` or `python scripts/render_spec.py`) and a pointer to the `sdd-update` skill.
+- the spec render command (`{{RENDER_COMMAND}}` → `sh scripts/render-spec.sh`; Windows teams without `sh` run `scripts/render-spec.ps1` with the same argument) and a pointer to the `sdd-update` skill;
+- the session skills `bro` and `closing`, named with the harness's skill invocation.
 
 Harness placeholders in the template:
 
@@ -276,9 +281,13 @@ The `SKILL.md` format is the same in every supported harness; copy it unchanged 
 
 This skill contains the full multi-step SDD procedure. Keep `AGENTS.md` short and use the skill for operational detail.
 
+### Session skills (always installed)
+
+Copy `skills/bro/SKILL.md` → `<harness-dir>/skills/bro/SKILL.md` and `skills/closing/SKILL.md` → `<harness-dir>/skills/closing/SKILL.md` (and into each additional harness's skills directory). `bro` is verbatim; in `closing`, rewrite the `reference/` links to the vendored copies per "Referenced policy files" below. `bro` re-explains a message, file, spec item or term in plain language; `closing` audits the durable artifacts at the end of a session and writes a handoff so a fresh session can resume from the files alone. List them in `AGENTS.md` (the template already does).
+
 ### Optional skill packs
 
-The core `sdd-workflow` skill is always installed. The packs under `skills/optional/` are installed only when the developer selects them (see `questions.md` §14).
+The core skills (`sdd-workflow`, `sdd-update`, `bro`, `closing`) are always installed. The packs under `skills/optional/` are installed only when the developer selects them (see `questions.md` §14).
 
 - For each selected pack, copy `skills/optional/<name>/` to `<harness-dir>/skills/<name>/` and adapt placeholders and project-specific details (commands, paths, doc locations). If the pack links a kit policy (`reference/*.md` or `mcps/playwright-policy.md`), vendor it and rewrite the link per "Referenced policy files" below. Exception: `run-and-verify` is generated from a template, not copied — see "Run and verify skill" below.
 - If `failure-learning` is selected, also copy `templates/memory/failure-learning-entry.md` to `<harness-dir>/skills/failure-learning/entry-template.md` (the skill references it), keeping its placeholder tokens — entries are instantiated per lesson, not during onboarding. Memory scope rules come from `reference/memory-policy.md`: project memory by default, never a global write without explicit approval.
@@ -317,22 +326,27 @@ templates/specs/spec.js                       → <harness-dir>/skills/sdd-workf
 
 Copy these verbatim, including the `{{PLACEHOLDER}}` tokens. The `.md.template` files are instantiated per feature, not during onboarding; `spec-shell.html.template`, `spec.css`, and `spec.js` are consumed by the renderer.
 
-Install exactly one renderer, matching the runtime detected in Phase 1 (ask if ambiguous):
+Install both renderer scripts verbatim — no runtime is needed, so there is nothing to detect or choose:
 
 ```text
-scripts/render-spec.mjs   → scripts/render-spec.mjs    # Node projects
-scripts/render_spec.py    → scripts/render_spec.py     # Python projects
+scripts/render-spec.sh    → scripts/render-spec.sh     # POSIX sh (macOS, Linux, Git Bash/WSL)
+scripts/render-spec.ps1   → scripts/render-spec.ps1    # Windows PowerShell
 ```
 
-Markdown is the source of truth; rendered HTML is a build artifact. Add the rendered artifacts to the target project's `.gitignore`:
+`sh scripts/render-spec.sh specs/<feature-slug>/` writes one page, `specs/<feature-slug>/spec.html`, holding every markdown doc of the spec (overview plus tabs), rendered in the browser by inline JS; `sh scripts/render-spec.sh history.md` writes `history.html` next to it. The script finds its assets under `<harness-dir>/skills/sdd-workflow/templates/` by walking up from the target and checking `.claude`, `.codex`, `.cursor`, `.opencode`, `.agents` (override with `SDD_HARNESS_DIR` or `--assets DIR`).
+
+The spec page is also the review surface: per item (`REQ-…`, `A1`, `Q1`, `T1`…) the developer can Accept / Change / Reject / Answer / Comment, give an overall verdict (approve / request changes) and a general note, then save `feedback.md` into the spec folder (or download `<feature-slug>.feedback.md`) or copy it into the chat. When told to read the feedback, the agent applies it to the markdown sources, re-renders, and deletes the feedback file.
+
+Markdown is the source of truth; rendered HTML and review feedback are local artifacts. Add them to the target project's `.gitignore`:
 
 ```gitignore
 # SDD rendered artifacts (markdown is the source of truth)
 specs/**/*.html
+specs/**/feedback.md
 history.html
 ```
 
-If architecture/conventions docs are generated at a different location (e.g. `docs/architecture.md`), gitignore their rendered `.html` siblings too. If the developer explicitly prefers committing rendered HTML, record that decision in `decisions/answers.md` and skip the gitignore entries.
+If architecture/conventions docs are generated at a different location (e.g. `docs/architecture.md`), gitignore their rendered `.html` siblings too. If the developer explicitly prefers committing rendered HTML, record that decision in `decisions/answers.md` and skip the `.html` entries — keep `specs/**/feedback.md` ignored either way.
 
 Do NOT copy the kit's `specs/example-feature/` directory into the target project. It is a rendered reference example for humans and agents, not part of the installed harness.
 
@@ -346,14 +360,15 @@ Make the harness self-contained: for each policy referenced by a component you a
 | --- | --- | --- |
 | `deep-review-policy.md` | `reference/deep-review-policy.md` | always (referenced by `reviewer.md`, `spec-author.md`, `review-checklist.md`, and the `design`/`review` spec templates) |
 | `context-economy.md` | `reference/context-economy.md` | the `context-audit` pack |
-| `memory-policy.md` | `reference/memory-policy.md` | the `decision-log` or `failure-learning` pack, or any vendored `workflow-decisions` file |
+| `memory-policy.md` | `reference/memory-policy.md` | always (referenced by the `closing` skill; also the `decision-log` and `failure-learning` packs and any vendored `workflow-decisions` file) |
+| `session-recovery.md` | `reference/session-recovery.md` | always (referenced by the `closing` skill) |
 | `dependency-freshness-policy.md` | `reference/dependency-freshness-policy.md` | the `dependency-freshness` pack |
 | `autonomy-policy.md` | `reference/autonomy-policy.md` | the `git-discipline` pack |
 | `playwright-policy.md` | `mcps/playwright-policy.md` | the `ui-qa` pack or the `browser-tester` agent |
 
 The `design`/`review` spec templates refer to the vendored `reference/deep-review-policy.md` inside the harness directory, so copying them verbatim (per "Spec templates" above) is correct — you only need to ensure `deep-review-policy.md` is vendored. For agents and skills, rewrite the link as part of the "copy and adapt" step.
 
-The onboarding-time reading material (`reference/sdd-theory.md`, `harness-engineering.md`, `harness-primitives.md`, `cli-vs-mcp-policy.md`, `session-recovery.md`) is not linked by any installed component and does not need vendoring; it is read during onboarding only.
+The onboarding-time reading material (`reference/sdd-theory.md`, `harness-engineering.md`, `harness-primitives.md`, `cli-vs-mcp-policy.md`) is not linked by any installed component and does not need vendoring; it is read during onboarding only.
 
 ### Update mechanism (always installed)
 
@@ -429,8 +444,8 @@ After writing files:
 7. Verify the project map exists at the configured location and is linked from `AGENTS.md`, or that a TODO records that generation was deferred.
 8. If the `run-and-verify` pack was selected, verify `<harness-dir>/skills/run-and-verify/SKILL.md` has no unresolved placeholders (unknown commands appear as explicit `TODO: ask the developer` entries), no invented commands, and no secret values — environment variables by name only.
 9. Verify the installed harness is self-contained: no installed file links a kit-relative policy path. Grep `AGENTS.md`, `<harness-dir>/`, and `specs/` for `reference/` or `mcps/playwright-policy.md` references that are not prefixed with `<harness-dir>/` — every such link must resolve to a file vendored under `<harness-dir>/reference/` (see "Referenced policy files"). The harness must not depend on `sdd-onboarding-kit/` remaining in the repository.
-10. Verify the renderer works: run the installed renderer against a template-instantiated sample (or the first real spec) and confirm it produces HTML without errors; confirm the rendered-artifact `.gitignore` entries exist (unless the developer chose to commit rendered HTML).
-11. Verify `<harness-dir>/sdd-kit-manifest.json` exists, parses as JSON, records the kit version and the `harness` block, and covers the installed files (including copies in additional harness directories); verify `<harness-dir>/skills/sdd-update/SKILL.md` exists with no unresolved placeholders.
+10. Verify the renderer works: run `sh scripts/render-spec.sh` against a template-instantiated sample spec folder (or the first real spec) and confirm `specs/<feature-slug>/spec.html` is produced without errors (Windows without `sh`: `scripts/render-spec.ps1`); confirm the `.gitignore` entries for rendered HTML and `specs/**/feedback.md` exist (unless the developer chose to commit rendered HTML).
+11. Verify `<harness-dir>/sdd-kit-manifest.json` exists, parses as JSON, records the kit version and the `harness` block, and covers the installed files (including copies in additional harness directories); verify `<harness-dir>/skills/sdd-update/SKILL.md` exists with no unresolved placeholders, and that `<harness-dir>/skills/bro/SKILL.md` and `<harness-dir>/skills/closing/SKILL.md` exist.
 12. Run the structure validator with the harness directory set when it is not `.claude`: `SDD_HARNESS_DIR=<harness-dir> scripts/validate-sdd-structure.sh` (the PowerShell port takes the same variable). Verify that no installed file names a harness the project does not use, and that no installed file (other than per-harness tables) assumes one harness's commands.
 
 ## Phase 6 — Final onboarding summary

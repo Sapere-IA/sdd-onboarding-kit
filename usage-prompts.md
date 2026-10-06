@@ -39,8 +39,36 @@ Use the reviewer to validate the implementation of `<feature-slug>` against requ
 ## Render a spec for reading
 
 ```text
-Render the spec for `<feature-slug>` to HTML so I can review it in the browser.
+Render the spec for `<feature-slug>` so I can review it in the browser.
 ```
+
+## Apply review feedback from the spec page
+
+After marking items on `specs/<feature-slug>/spec.html` and saving (or copying) the feedback:
+
+```text
+Read the feedback for `<feature-slug>` and apply it to the spec. Show me what you changed, re-render, and delete the feedback file.
+```
+
+## Get a plain-language explanation
+
+Invoke the `bro` skill (e.g. `/bro` where skills are slash commands), with no argument to re-explain the last answer, or with the thing you did not follow:
+
+```text
+/bro
+/bro REQ-003
+/bro specs/<feature-slug>/design.md
+```
+
+## Close a session
+
+Invoke the `closing` skill before stopping, switching tasks or compacting:
+
+```text
+/closing
+```
+
+It checks that tasks, specs, decisions and memory reflect what happened, writes a "Resume here" handoff, and asks before committing anything.
 
 ## Update the SDD harness
 

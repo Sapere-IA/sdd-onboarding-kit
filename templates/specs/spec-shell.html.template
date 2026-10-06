@@ -9,23 +9,10 @@
   </style>
 </head>
 <body>
-<div class="page-wrap">
-
-  <nav class="sidebar" aria-label="Table of contents">
-    <p class="sidebar-title">Contents</p>
-    <div id="toc-list"></div>
-  </nav>
-
-  <div class="main-content">
-    <header class="spec-header">
-      <h1>{{TITLE}}</h1>
-{{META_TABLE}}
-    </header>
-    <main>
-{{BODY}}
-    </main>
-  </div><!-- /.main-content -->
-</div><!-- /.page-wrap -->
+<noscript>This page renders its markdown sources with JavaScript. Enable JavaScript, or read the <code>.md</code> files directly.</noscript>
+<div id="app" data-mode="{{MODE}}" data-slug="{{SLUG}}"></div>
+<!-- Markdown sources (the source of truth lives in the .md files; this page is a generated artifact). -->
+{{SOURCES}}
 <script>
 {{JS}}
 </script>

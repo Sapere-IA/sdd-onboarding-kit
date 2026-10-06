@@ -73,6 +73,8 @@ check_file "$SKILLS_DIR/sdd-workflow/templates/requirements.md.template"
 check_file "$SKILLS_DIR/sdd-workflow/templates/design.md.template"
 check_file "$SKILLS_DIR/sdd-workflow/templates/tasks.md.template"
 check_file "$SKILLS_DIR/sdd-workflow/templates/review.md.template"
+check_file "$SKILLS_DIR/bro/SKILL.md"
+check_file "$SKILLS_DIR/closing/SKILL.md"
 check_dir "specs"
 check_file "tasks.json"
 check_file "history.md"
@@ -80,11 +82,8 @@ check_dir "scripts"
 check_file "scripts/run-tests.sh"
 check_file "scripts/run-lint.sh"
 
-# Exactly one spec renderer must be installed (Node or Python).
-if [[ ! -f "scripts/render-spec.mjs" && ! -f "scripts/render_spec.py" ]]; then
-  echo "Missing spec renderer: scripts/render-spec.mjs or scripts/render_spec.py" >&2
-  missing=1
-fi
+# Spec renderer (POSIX sh; the PowerShell port is optional for this check).
+check_file "scripts/render-spec.sh"
 
 if [[ "$missing" -ne 0 ]]; then
   echo "SDD structure validation failed." >&2

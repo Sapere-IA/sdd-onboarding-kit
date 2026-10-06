@@ -9,8 +9,7 @@ created: 2026-07-22
 
 ## Summary
 
-- Risk counts: low 1 · medium 0 · high 0
-- Blocking assumptions present: no
+- Risk: low 1 · medium 0 · high 0 · blocking: no
 
 ## Pending
 
@@ -18,8 +17,8 @@ created: 2026-07-22
 #### A1 — Recency means last update [!pending Pending]
 
 - **Assumption:** "Most recent" orders by `updated_at`, not `created_at`.
-- **Reason:** The brief says "latest notes" without defining recency; the existing list view sorts by `updated_at`.
-- **Risk / impact if wrong:** Low — ordering differs for edited notes only.
+- **Reason:** The brief does not define recency; the list view sorts by `updated_at`.
+- **Risk / impact if wrong:** Low — only edited notes change position.
 - **Blocks implementation:** No
 - **Related requirements:** REQ-001
 :::

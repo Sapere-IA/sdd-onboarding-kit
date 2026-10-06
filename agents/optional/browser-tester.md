@@ -38,7 +38,7 @@ Read:
 - `specs/<feature-slug>/requirements.md` — UI acceptance criteria:
   target routes, expected visual states, interaction flows,
   accessibility checks, responsive states, login/auth constraints;
-- `specs/<feature-slug>/design.md` — UI verification plan;
+- `specs/<feature-slug>/design.md` — UI verification plan (in `## Test design`);
 - screenshots/mockups referenced by the spec, if any;
 - the `run-and-verify` skill or the project map — how to
   start the app and at what URL it responds.

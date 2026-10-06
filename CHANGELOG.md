@@ -2,6 +2,29 @@
 
 Kit versions are tracked in `VERSION` and tagged in git (`v<version>`). Each entry lists **Changes** (what is different in the kit) and **Migration** (what `/sdd-update` must do to bring an existing install up to date). The `sdd-update` skill reads the entries between the installed version and the latest, and executes the migration steps with developer approval.
 
+## 3.0.0 — 2026-10-06
+
+### Changes
+
+- **One interactive page per spec.** `scripts/render-spec.sh specs/<feature-slug>/` writes a single `spec.html`. It opens on an overview: "At a glance" (the requirements summary), counts, and "Needs your decision" (open questions and pending assumptions). Each document has its own tab, `##` sections collapse, and empty `None.` sections shrink to one line. ID chips link to their definitions, and the page prints cleanly. The 2.x per-document `.html` pages are gone.
+- **Review in the page, hand back a file.** Every item with an ID (requirement rows, `Q`/`A`/`AT` cards, timeline tasks) gets Accept / Change / Reject / Answer / Comment controls. The developer approves the spec or requests changes, can add a general note, and then saves `feedback.md` (a save dialog, or a `<feature-slug>.feedback.md` download) or copies it into the chat. The agent applies it to the markdown, re-renders and deletes the file (`spec-format.md` § Feedback file). An approving feedback file with no change or reject items counts as the developer's approval. In-progress feedback is kept in the browser's localStorage.
+- **No Node or Python needed.** `render-spec.mjs` and `render_spec.py` are removed. The markdown is embedded verbatim and rendered in the browser by `spec.js`. The bundler is POSIX `sh` (`scripts/render-spec.sh`), with a PowerShell port for Windows (`scripts/render-spec.ps1`). The renderer-runtime onboarding question is gone. The markdown conventions are unchanged, so 2.x specs render as they are.
+- **New design.** The Sapere IA palette (paper / ink / lime / coral; Instrument Sans + JetBrains Mono). Light by default; it follows the OS dark mode and has a toggle. It works at phone width. `README.html` and `DOCUMENTATION.html` use the same design and are shorter.
+- **Concise specs.** `spec-format.md` sets budgets: a Summary of at most 3 sentences, one sentence per item, a design section that fits on one screen, about 8 tasks or fewer, and a whole spec readable in about 5 minutes. The spec templates went from roughly 1,000 to roughly 300 lines: sections were merged, rarely used ones are optional, and coverage matrices and checklists that duplicated other files were removed. Acceptance-test cards use Requirements / Given / When / Then. `review.md` starts with its Decision.
+- **New core skills.** `bro` re-explains your previous message, or a given text, file, spec ID or term, in plain language and in at most about 150 words. `closing` is an end-of-session audit: it checks that tasks, specs, decisions, history and memory match what happened, writes a `## Resume here` handoff in `history.md`, runs a cold-start test, and asks before committing.
+
+### Migration (from 2.x)
+
+Run with developer approval, per step (`sdd-update` § 2.x → 3.0.0 has the details).
+
+1. Remove `scripts/render-spec.mjs` / `scripts/render_spec.py`. Install `scripts/render-spec.sh` and `scripts/render-spec.ps1`.
+2. Refresh `<harness-dir>/skills/sdd-workflow/templates/` (`spec-shell.html.template`, `spec.css`, `spec.js`, and the trimmed `*.md.template` files), plus `spec-format.md`, `workflow.md`, `review-checklist.md`, `task-state-machine.md`, `SKILL.md` and the agents. Preserve project adaptations. The new renderer refuses a pre-3.0 shell template.
+3. Delete the per-document rendered `.html` files under `specs/` and re-render each spec folder into `spec.html`.
+4. Add `specs/**/feedback.md` to `.gitignore`.
+5. Install the `bro` and `closing` skills into every harness directory.
+6. Update `AGENTS.md`: the render command (`sh scripts/render-spec.sh specs/<feature-slug>/`), the feedback flow line, and the "Session skills" section.
+7. Existing specs need no rewrite. Apply the new budgets the next time a spec is revised.
+
 ## 2.1.0 — 2026-09-27
 
 ### Changes

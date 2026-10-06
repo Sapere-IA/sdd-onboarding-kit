@@ -6,95 +6,73 @@ feature_slug: {{FEATURE_SLUG}}
 status: spec_draft
 ---
 
-## Technical summary
+## Summary
 
-TODO: the chosen approach in a few sentences. Reference requirements by ID (REQ-001) — never restate them.
+TODO: the chosen approach in ≤ 3 sentences. Reference requirements by ID (REQ-001) — never restate them.
 
 ## Data flow
 
+<!-- Optional — delete when the flow is obvious from the summary. -->
+
 ::: diagram
-<svg width="560" height="140" viewBox="0 0 560 140" aria-label="Data flow diagram — replace with actual diagram">
+<svg width="560" height="120" viewBox="0 0 560 120" aria-label="Data flow diagram — replace with actual diagram">
   <defs>
     <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
       <polygon points="0 0, 8 3, 0 6" fill="#6b7280"/>
     </marker>
   </defs>
-  <rect x="20" y="50" width="120" height="40" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
-  <text x="80" y="75" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1e3a8a">Input</text>
-  <line x1="140" y1="70" x2="218" y2="70" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-  <rect x="220" y="40" width="120" height="60" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="280" y="75" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#4c1d95">Process</text>
-  <line x1="340" y1="70" x2="418" y2="70" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-  <rect x="420" y="50" width="120" height="40" rx="6" fill="#eafaf1" stroke="#27ae60" stroke-width="1.5"/>
-  <text x="480" y="75" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#14532d">Output</text>
-  <text x="280" y="128" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#9ca3af">TODO: replace with actual data flow</text>
+  <rect x="20" y="40" width="120" height="40" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="80" y="65" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1e3a8a">Input</text>
+  <line x1="140" y1="60" x2="218" y2="60" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <rect x="220" y="40" width="120" height="40" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="280" y="65" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#4c1d95">Process</text>
+  <line x1="340" y1="60" x2="418" y2="60" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <rect x="420" y="40" width="120" height="40" rx="6" fill="#eafaf1" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="480" y="65" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#14532d">Output</text>
 </svg>
 :::
 
-## Project map references
-
-TODO: map areas this change touches (modules, entrypoints, protected areas) — or "None (no project map)." If the change makes the map stale, add the map update to the closing tasks.
-
 ## Files to change
+
+<!-- Include files that must not change ("Do not change"). Name project-map areas in Reason when a map exists; if the change makes the map stale, add a closing task. -->
 
 | File | Change | Reason |
 | --- | --- | --- |
-| TODO | TODO | TODO |
+| TODO | TODO | REQ-001 |
 
-## Files not to change
+## Interfaces and data
 
-| File or directory | Reason |
-| --- | --- |
-| TODO | TODO |
-
-## Interfaces and contracts
-
-<!-- APIs, function signatures, schemas or CLI contracts. One ### subsection per contract, code fences only — no narrative. -->
+<!-- Signatures, schemas, CLI contracts and data-model changes — code fences, no narrative. "None." if nothing changes. -->
 
 ```text
 TODO: signature / schema / CLI usage
 ```
 
-## Data model changes
-
-None.
-
 ## External dependencies and freshness
 
-<!-- Verify current official docs and record the evidence when this change touches external dependencies, SDKs, APIs, framework configuration, or security-sensitive integrations; otherwise keep "None." and delete the table. Mandatory for high-risk categories: auth, payments, database migrations, cloud infrastructure, framework upgrades, security-sensitive code. -->
+<!-- "None." for internal changes. Otherwise one row per dependency: | Dependency | Docs checked (source, date) | Version constraints | Notes / deprecations avoided |. Mandatory for auth, payments, database migrations, cloud infrastructure, framework upgrades, security-sensitive code. -->
 
 None.
-
-| Dependency | Docs checked (source, date) | Version constraints | Deprecations avoided / notes |
-| --- | --- | --- | --- |
-| TODO | TODO | TODO | TODO |
 
 ## Security and permissions
 
-<!-- Trust boundaries, auth/authz, secrets handling, validation of external input, gated operations — how each is gated, or "None." High-risk categories trigger the escalation ladder in reference/deep-review-policy.md (vendored in the harness directory). -->
+<!-- Trust boundaries, auth/authz, secrets, external input — how each is gated, or "None." High-risk categories trigger reference/deep-review-policy.md (vendored in the harness directory). -->
 
 None.
 
-## Documentation targets
+## Test design
 
-<!-- Docs this design will affect when implemented — or "None expected." The reviewer confirms the final list in the review's Documentation decision. -->
+<!-- Tests to add or update, by requirement ID. Add a "UI verification plan:" line (routes, states, viewports; local instances only) only when a browser UI is affected. -->
+
+TODO.
+
+## Documentation targets
 
 None expected.
 
-## Test design
+## Risks and rollback
 
-TODO: tests to add or update, mapped to requirement IDs.
+<!-- One line per risk or rejected alternative; mark decision-log candidates "(decision candidate)". Last line: how to revert or disable. -->
 
-## UI verification plan
-
-<!-- Only when a browser UI is affected: routes, states, screenshots, viewports — via the browser-tester agent or the manual ui-qa procedure. Local/test instances only; never credentials. Otherwise keep "Not applicable." -->
-
-Not applicable.
-
-## Risks and trade-offs
-
-TODO: risks and rejected alternatives, one line each.
-
-## Rollback plan
-
-TODO: how to revert or disable the change.
+- TODO.
+- Rollback: TODO.

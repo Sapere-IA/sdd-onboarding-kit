@@ -13,7 +13,7 @@ created: {{CREATED_DATE}}
 
 ## Open
 
-<!-- One card per question; add the blocking-yes card class and [!blocking Blocking] badge when blocking. Blocking + pending ⇒ do not implement, and the task cannot reach human_approved. Never answer product, security, data, billing or architecture questions silently. -->
+<!-- One card per question (rules: open-questions-policy.md); blocking ⇒ class blocking-yes + [!blocking Blocking], else [!warning Non-blocking]. A pending blocking question keeps the task out of human_approved. -->
 
 ::: card blocking-yes
 #### Q1 — {{QUESTION_TITLE}} [!blocking Blocking]
@@ -27,12 +27,6 @@ created: {{CREATED_DATE}}
 
 ## Resolved
 
-<!-- Move cards here when answered; badge [!ok Resolved], record the decision, who resolved it and the date — then reflect the decision in the affected spec files. -->
-
-None yet.
-
-## Deferred
-
-<!-- Non-blocking questions only, moved here on an explicit developer decision; badge [!warning Deferred], record the temporary behavior. Deferred questions must not block implementation. -->
+<!-- Badge [!ok Resolved]; add **Decision:** and **Resolved by:** developer, YYYY-MM-DD; reflect the decision in the affected files. A non-blocking question deferred by the developer goes to a `## Deferred` section (badge [!warning Deferred], temporary behavior recorded). -->
 
 None yet.

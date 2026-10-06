@@ -36,13 +36,13 @@ Optionally prepare:
 specs/<feature-slug>/review.md
 ```
 
-Spec files are markdown, instantiated from the `.md.template` files in the `templates/` folder of the `sdd-workflow` skill directory using the conventions in `spec-format.md`. Never hand-write spec HTML — the developer renders it (or you render it when asked) with the project's render script. Do not copy `spec.css`/`spec.js` into the feature folder.
+Spec files are markdown, instantiated from the `.md.template` files in the `templates/` folder of the `sdd-workflow` skill directory using the conventions in `spec-format.md`. Never hand-write spec HTML: render with `sh scripts/render-spec.sh specs/<feature-slug>/` (Windows: `pwsh scripts/render-spec.ps1 specs/<feature-slug>/`), which writes `specs/<feature-slug>/spec.html`.
 
 ## Conciseness rules
 
 - Each file owns its content type; reference other files by ID (`REQ-001`, a section anchor) and never restate their content. Duplicated prose is a spec defect the reviewer will flag.
-- Short declarative sentences; one line per requirement, risk, or rule; no filler narrative.
-- Collapse non-applicable sections to one line (`None.` / `Not applicable.`) and delete their placeholder tables.
+- Respect the budgets in `spec-format.md` § Conciseness rules: Summary ≤ 3 sentences, one sentence per requirement/edge/error/criterion, design sections on one screen, ≤ ~8 tasks (split the feature otherwise), whole spec readable in ~5 minutes.
+- Cut what the reader can infer; delete optional sections that do not apply.
 
 ## Requirements rules
 
@@ -95,8 +95,13 @@ When the spec is complete:
 
 1. Ensure all three files exist.
 2. Update task status to `spec_ready` if allowed.
-3. Stop and request human approval.
-4. Do not implement code.
+3. Render the spec and point the developer at `specs/<feature-slug>/spec.html`: they can review each item there and save a feedback file, or answer in chat.
+4. Stop and request human approval.
+5. Do not implement code.
+
+## Feedback
+
+When the developer leaves a feedback file (`specs/<feature-slug>/feedback.md`, a downloaded `<feature-slug>.feedback.md`, or pasted text), apply it per `spec-format.md` § Feedback file: edit the owning markdown, re-render, delete the file, summarize in ≤ 5 lines. Never edit the HTML.
 
 ## Clarifying questions
 

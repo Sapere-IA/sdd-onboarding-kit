@@ -7,6 +7,10 @@ reviewer: reviewer
 review_status: pending
 ---
 
+## Decision
+
+Decision: [!pending TODO] — not reviewed yet; implementation has not started.
+
 ## Traceability
 
 | Requirement | Implemented? | Tested? | Evidence |
@@ -23,29 +27,16 @@ TODO
 
 ## Findings
 
-### Blocking
-
 None.
 
-### Non-blocking
+## Scope and high-risk review
 
-None.
-
-## Visual verification
-
-Not applicable.
-
-## Spec drift check
-
-None.
-
-## High-risk and deep review
-
-None.
+- Drift: None.
+- High-risk: None.
 
 ## Documentation decision
 
-Decision: [!pending TODO] — `required` (targets below; `documentation_status: pending` until the documenter reports) or `not_required`.
+Decision: [!pending TODO]
 
 | Documentation target | Updated / justified unaffected |
 | --- | --- |
@@ -55,11 +46,3 @@ Decision: [!pending TODO] — `required` (targets below; `documentation_status: 
 
 - **Decision-log entries:** None.
 - **Failure-learning entry:** None.
-
-## Decision
-
-Decision: [!pending TODO] — one of `approved`, `needs_changes`, `spec_revision_required`, `blocked` (meanings and transitions: task-state-machine.md).
-
-## Notes
-
-None.

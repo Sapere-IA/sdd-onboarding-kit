@@ -7,9 +7,15 @@ reviewer: reviewer
 review_status: pending
 ---
 
+## Decision
+
+<!-- One of approved, needs_changes, spec_revision_required, blocked (task-state-machine.md), plus ≤ 2 sentences on what matters. -->
+
+Decision: [!pending TODO] — TODO.
+
 ## Traceability
 
-<!-- One row per requirement. Cell verdict markers: "!ok Yes", "!warning <concern>", "!blocking <issue>", "!pending TODO". -->
+<!-- One row per requirement. Cell verdicts: "!ok Yes", "!warning <concern>", "!blocking <issue>", "!pending TODO". -->
 
 | Requirement | Implemented? | Tested? | Evidence |
 | --- | --- | --- | --- |
@@ -23,43 +29,30 @@ TODO
 
 ## Findings
 
-<!-- One line per finding: "BLK-1: …" for blocking, "NBK-1: …" for non-blocking. "None." when empty. Duplicated content within or across this spec's files is a finding. -->
-
-### Blocking
+<!-- One line each: "BLK-n: …" blocking, "NBK-n: …" non-blocking; "None." when empty. Duplicated or padded spec content is a finding. -->
 
 None.
 
-### Non-blocking
+## Scope and high-risk review
 
-None.
+<!-- Drift: files changed outside the design's Files to change (or the task's scope globs), each justified — unjustified ones are BLK findings. High-risk: categories touched, escalation rungs run and outputs, or the reason a high-risk change got only the standard review (reference/deep-review-policy.md). -->
+
+- Drift: None.
+- High-risk: None.
 
 ## Visual verification
 
-<!-- Fill when the spec has UI acceptance criteria or visual evidence; otherwise keep "Not applicable." and delete the table. Compare the implemented UI against the referenced images (ui-qa skill / browser-tester agent when installed, manually otherwise). -->
-
-Not applicable.
+<!-- Optional — delete if the spec has no UI criteria or visual evidence. -->
 
 | Criterion / image | Evidence (what was compared, how) | Result |
 | --- | --- | --- |
 | UI-001 / IMG-001 | TODO | !pending TODO |
 
-## Spec drift check
-
-<!-- Files changed outside the design's "Files to change" (or the task's scope globs): list each with its justification. Unjustified out-of-scope changes are a blocking finding. -->
-
-None.
-
-## High-risk and deep review
-
-<!-- High-risk categories touched, escalation rungs run, and their outputs — or "None." A high-risk change reviewed only at the standard level needs the reason recorded here (reference/deep-review-policy.md, vendored in the harness directory). -->
-
-None.
-
 ## Documentation decision
 
-<!-- A task is not done while required documentation is pending. -->
+<!-- `required` (targets listed; documentation_status: pending until the documenter reports) or `not_required`. A task is not done while required documentation is pending. -->
 
-Decision: [!pending TODO] — `required` (targets below; `documentation_status: pending` until the documenter reports) or `not_required` (`documentation_status: not_required`; delete the table).
+Decision: [!pending TODO]
 
 | Documentation target | Updated / justified unaffected |
 | --- | --- |
@@ -67,15 +60,7 @@ Decision: [!pending TODO] — `required` (targets below; `documentation_status: 
 
 ## Proposals
 
-<!-- Propose-only: nothing below is written anywhere without explicit developer approval of the exact text. -->
+<!-- Propose-only: nothing here is written anywhere without the developer's approval of the exact text. -->
 
 - **Decision-log entries:** None.
 - **Failure-learning entry:** None.
-
-## Decision
-
-Decision: [!pending TODO] — one of `approved`, `needs_changes`, `spec_revision_required`, `blocked` (meanings and transitions: task-state-machine.md).
-
-## Notes
-
-None.

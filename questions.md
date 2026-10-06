@@ -77,10 +77,9 @@ Additional questions:
 
 ## 4b. Spec rendering
 
-Ask only when Phase 1 could not decide (both Node and Python plausible, or neither detected):
+The renderer needs no runtime (`scripts/render-spec.sh` plus `scripts/render-spec.ps1` for Windows), so there is nothing to choose. One question only:
 
-1. Which renderer should be installed — `scripts/render-spec.mjs` (Node) or `scripts/render_spec.py` (Python)?
-2. Rendered HTML is gitignored by default (markdown is the source of truth). Should rendered HTML be committed instead? (Only on explicit preference; record it in `decisions/answers.md`.)
+1. Rendered HTML (`specs/<feature-slug>/spec.html`, `history.html`) is gitignored by default (markdown is the source of truth), as is review feedback (`specs/**/feedback.md`). Should rendered HTML be committed instead? (Only on explicit preference; record it in `decisions/answers.md`.)
 
 ## 5. Task format and storage
 
@@ -223,7 +222,8 @@ Questions:
 
 ## 14. Optional skill packs
 
-The core `sdd-workflow` skill is always installed. The packs under
+The core skills (`sdd-workflow`, `sdd-update`, and the session skills
+`bro` and `closing`) are always installed. The packs under
 `skills/optional/` are installed only when selected (see
 `skills/optional/README.md` for the full table):
 

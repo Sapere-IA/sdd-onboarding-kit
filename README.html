@@ -3,524 +3,299 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SDD Onboarding Kit — Spec Driven Development for coding agents</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800&display=swap" rel="stylesheet">
+<title>SDD Onboarding Kit</title>
+<meta name="description" content="Install a spec-before-code harness for your coding agent in any repository.">
+<script>(function(){try{var t=localStorage.getItem('sdd-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <style>
-  :root {
-    --bg:           #0c111c;
-    --bg-soft:      #111827;
-    --card:         #131a28;
-    --card-border:  rgba(255,255,255,0.08);
-    --text:         #e8eaef;
-    --text-muted:   #9aa3b2;
-    --orange:       #f29a55;
-    --orange-soft:  rgba(242,154,85,0.12);
-    --green:        #2ee07e;
-    --green-soft:   rgba(46,224,126,0.10);
-    --radius:       16px;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root {
+  --bg: #f8f6ee; --surface: #ffffff; --surface-2: #f2efe0; --line: #d9d3c0;
+  --text: #171a1b; --text-2: #454a4c; --muted: #5f6466;
+  --accent: #eefb87; --accent-ink: #171a1b; --ok: #b9e15b; --info: #93bdf0; --bad: #e0764c; --warn: #f3c969;
+  --font: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --radius: 14px; --radius-lg: 22px; color-scheme: light;
+}
+:root[data-theme="dark"] { --bg:#141617; --surface:#1d2021; --surface-2:#24282a; --line:#34383a; --text:#f2efe0; --text-2:#c9c5b4; --muted:#9a9e9f; --accent:#eefb87; --accent-ink:#171a1b; --ok:#b9e15b; --info:#93bdf0; --bad:#f08a62; --warn:#f3c969; color-scheme: dark; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141617; --surface:#1d2021; --surface-2:#24282a; --line:#34383a; --text:#f2efe0; --text-2:#c9c5b4; --muted:#9a9e9f; --accent:#eefb87; --accent-ink:#171a1b; --ok:#b9e15b; --info:#93bdf0; --bad:#f08a62; --warn:#f3c969; color-scheme: dark; } }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-wrap: break-word; }
+h1, h2, h3 { font-weight: 600; font-stretch: 80%; letter-spacing: -.015em; line-height: 1.1; text-wrap: balance; margin: 0; }
+p, ul, ol { margin: 0 0 14px; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+strong { font-weight: 600; }
+a { color: inherit; text-decoration: underline; text-decoration-color: var(--muted); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { background: var(--accent); color: var(--accent-ink); text-decoration-color: var(--accent-ink); }
+em.hl { font-style: normal; background: linear-gradient(transparent 58%, var(--accent) 58%); padding: 0 .06em; }
+:root[data-theme="dark"] em.hl { background: none; color: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) em.hl { background: none; color: var(--accent); } }
+code { font-family: var(--mono); font-size: .84em; background: var(--surface-2); border-radius: 6px; padding: .08em .35em; overflow-wrap: anywhere; }
+pre { font-family: var(--mono); font-size: 14px; line-height: 1.55; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; overflow-x: auto; margin: 0 0 16px; color: var(--text-2); }
+pre code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Montserrat', sans-serif;
-    line-height: 1.65;
-    font-size: 16px;
-  }
+/* top bar */
+.bar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 1180px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 14px; }
+.brand { font-weight: 600; font-stretch: 80%; font-size: 19px; text-decoration: none; white-space: nowrap; }
+.brand b { background: var(--accent); color: var(--accent-ink); border-radius: 6px; padding: 0 6px; margin-right: 4px; font-weight: 600; }
+.bar nav { display: flex; gap: 4px; margin-left: auto; }
+@media (max-width: 560px) { .bar nav a.opt { display: none; } .brand { font-size: 17px; } }
+.bar nav a { font-size: 15px; text-decoration: none; padding: 4px 10px; border-radius: 999px; color: var(--text-2); }
+.bar nav a:hover { background: var(--surface-2); color: var(--text); }
+.theme { font: inherit; font-size: 14px; cursor: pointer; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+.theme:hover { border-color: var(--text); }
 
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
-  section { padding: 72px 0; }
-
-  /* Eyebrow */
-  .eyebrow {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 18px;
-  }
-  .eyebrow.green { color: var(--green); }
-
-  /* Section headings */
-  h2 {
-    font-size: clamp(26px, 4vw, 38px);
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 24px;
-    letter-spacing: -0.01em;
-  }
-  h2 em { font-style: italic; color: var(--orange); }
-  h2 em.green { color: var(--green); }
-
-  h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-
-  p.lead { color: var(--text-muted); max-width: 760px; }
-
-  /* Hero */
-  .hero {
-    min-height: 88vh;
-    display: flex;
-    align-items: center;
-    background:
-      radial-gradient(900px 500px at 85% -10%, rgba(242,154,85,0.10), transparent 60%),
-      radial-gradient(700px 450px at -10% 110%, rgba(46,224,126,0.07), transparent 60%),
-      var(--bg);
-    border-bottom: 1px solid var(--card-border);
-  }
-  .hero .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid rgba(46,224,126,0.4);
-    color: var(--green);
-    border-radius: 999px;
-    padding: 7px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-  }
-  .hero .badge::before { content: "✳"; font-size: 12px; }
-  .hero h1 {
-    font-size: clamp(36px, 6vw, 64px);
-    font-weight: 900;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    max-width: 900px;
-  }
-  .hero h1 .accent { color: var(--orange); font-style: italic; }
-  .hero .sub {
-    margin-top: 24px;
-    color: var(--text-muted);
-    font-size: 18px;
-    max-width: 680px;
-    line-height: 1.6;
-  }
-
-  /* Fact grid */
-  .factgrid {
-    margin-top: 48px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-  }
-  .fact {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-  }
-  .fact .k {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 6px;
-  }
-  .fact .v { font-weight: 600; font-size: 15px; }
-  .fact .v small { display: block; font-weight: 400; color: var(--text-muted); font-size: 13px; margin-top: 2px; }
-
-  /* Cards */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
-  }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    padding: 26px;
-  }
-  .card .icon {
-    width: 42px; height: 42px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 10px;
-    background: var(--orange-soft);
-    font-size: 20px;
-    margin-bottom: 16px;
-  }
-  .card.green .icon { background: var(--green-soft); }
-  .card p { color: var(--text-muted); font-size: 14.5px; }
-
-  /* Checklist */
-  ul.checklist { list-style: none; }
-  ul.checklist li {
-    position: relative;
-    padding: 8px 0 8px 32px;
-    color: var(--text-muted);
-  }
-  ul.checklist li::before {
-    content: "→";
-    position: absolute;
-    left: 0;
-    color: var(--orange);
-    font-weight: 700;
-  }
-  ul.checklist.green li::before { content: "✓"; color: var(--green); }
-  ul.checklist li strong { color: var(--text); }
-
-  /* Note box */
-  .note {
-    margin-top: 28px;
-    background: var(--green-soft);
-    border: 1px solid rgba(46,224,126,0.25);
-    border-radius: var(--radius);
-    padding: 22px 26px;
-    color: var(--text-muted);
-    font-size: 14.5px;
-  }
-  .note strong { color: var(--green); }
-  .note.orange {
-    background: var(--orange-soft);
-    border-color: rgba(242,154,85,0.25);
-  }
-  .note.orange strong { color: var(--orange); }
-
-  /* Tables */
-  .tablewrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--card-border); }
-  table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 14.5px; }
-  th, td { text-align: left; padding: 16px 20px; vertical-align: top; }
-  th {
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--orange);
-    border-bottom: 1px solid var(--card-border);
-    white-space: nowrap;
-  }
-  td { border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); }
-  td:first-child { color: var(--text); font-weight: 600; }
-  td code {
-    font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 0.875em;
-    background: rgba(255,255,255,0.06);
-    color: var(--orange);
-    padding: 0.1em 0.4em;
-    border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-  tr:last-child td { border-bottom: none; }
-
-  /* Steps (numbered) */
-  ol.steps { list-style: none; counter-reset: step; display: grid; gap: 12px; }
-  ol.steps li {
-    counter-increment: step;
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    padding: 16px 20px 16px 64px;
-    position: relative;
-    color: var(--text-muted);
-    font-size: 15px;
-    transition: border-color 0.15s;
-  }
-  ol.steps li:hover { border-color: rgba(242,154,85,0.3); }
-  ol.steps li::before {
-    content: counter(step, decimal-leading-zero);
-    position: absolute;
-    left: 20px; top: 50%;
-    transform: translateY(-50%);
-    font-weight: 900;
-    color: var(--orange);
-    font-size: 17px;
-  }
-  ol.steps li strong { color: var(--text); }
-
-  /* Code block */
-  .prompt-box {
-    background: var(--bg);
-    border: 1px solid var(--card-border);
-    border-left: 3px solid var(--green);
-    border-radius: var(--radius);
-    padding: 20px 26px;
-    font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 14px;
-    color: #c8d8e8;
-    margin: 28px 0;
-    line-height: 1.6;
-  }
-
-  code {
-    font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 0.875em;
-    background: rgba(255,255,255,0.06);
-    color: var(--orange);
-    padding: 0.1em 0.4em;
-    border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-
-  /* Section separator */
-  .alt {
-    background: var(--bg-soft);
-    border-top: 1px solid var(--card-border);
-    border-bottom: 1px solid var(--card-border);
-  }
-
-  /* Stats */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 18px;
-    margin-top: 40px;
-  }
-  .stat { text-align: center; }
-  .stat .num { font-size: 48px; font-weight: 900; color: var(--orange); line-height: 1; }
-  .stat.green .num { color: var(--green); }
-  .stat .lbl { margin-top: 10px; color: var(--text-muted); font-size: 14px; }
-
-  /* Links */
-  a { color: var(--orange); text-decoration: none; }
-  a:hover { color: var(--green); text-decoration: underline; }
-
-  footer {
-    padding: 48px 0;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 13px;
-    border-top: 1px solid var(--card-border);
-  }
-  footer .names { color: var(--text); font-weight: 700; margin-top: 6px; }
-
-  @media (max-width: 640px) {
-    section { padding: 52px 0; }
-    .hero { min-height: auto; padding: 64px 0; }
-    .wrap { padding: 0 20px; }
-  }
-
-  @media print {
-    body { background: #fff; color: #111; }
-  }
+/* tags, notes, tables, cards */
+.tag { display: inline-block; background: var(--tone, var(--accent)); color: var(--accent-ink); font-size: 14px; font-weight: 600; line-height: 1.5; border-radius: 999px; padding: 2px 12px; white-space: nowrap; }
+.tag.ok { --tone: var(--ok); } .tag.info { --tone: var(--info); } .tag.bad { --tone: var(--bad); } .tag.warn { --tone: var(--warn); }
+.tag.line { background: none; border: 1px solid var(--line); color: var(--text-2); font-weight: 400; }
+.note { background: color-mix(in srgb, var(--tone, var(--ok)) 16%, var(--surface)); border: 1px solid var(--line); border-left: 4px solid var(--tone, var(--ok)); border-radius: var(--radius); padding: 14px 18px; margin: 0 0 18px; color: var(--text); }
+.note.info { --tone: var(--info); } .note.warn { --tone: var(--warn); } .note.bad { --tone: var(--bad); }
+.note > :last-child { margin-bottom: 0; }
+.tw { overflow-x: auto; margin: 0 0 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 16px; line-height: 1.5; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; }
+td code { white-space: nowrap; overflow-wrap: normal; }
+.tw.wrapcode td code { white-space: normal; overflow-wrap: anywhere; }
+.cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin: 0 0 18px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px 22px; }
+.card h3 { font-size: 21px; margin-bottom: 6px; }
+.card p { margin: 0; color: var(--text-2); font-size: 16px; }
+.prompt { position: relative; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: var(--radius); padding: 14px 18px; font-family: var(--mono); font-size: 14.5px; line-height: 1.55; margin: 0 0 16px; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin: 0 0 14px; }
+details > summary { cursor: pointer; list-style: none; padding: 11px 16px; font-weight: 600; display: flex; gap: 10px; align-items: baseline; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "+"; font-family: var(--mono); color: var(--muted); }
+details[open] > summary::before { content: "\2212"; }
+details > .in { padding: 0 16px 6px; }
+details .tw, details pre { margin-bottom: 12px; }
+@media print { .bar, .theme { display: none; } body { background: #fff; color: #000; } details > .in { display: block; } }
+/* README page */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+section { padding: 56px 0; border-top: 1px solid var(--line); }
+section h2 { font-size: clamp(30px, 5vw, 46px); margin-bottom: 14px; }
+.lead { font-size: 19px; color: var(--text-2); max-width: 720px; margin-bottom: 26px; }
+.prose { max-width: 760px; }
+.hero { padding-top: 64px; padding-bottom: 52px; }
+.hero h1 { font-size: clamp(44px, 9vw, 92px); font-stretch: 76%; letter-spacing: -.03em; line-height: .98; margin: 18px 0 20px; }
+.hero .lead { font-size: clamp(19px, 2.4vw, 23px); max-width: 680px; }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
+.btn { display: inline-block; text-decoration: none; font-weight: 600; font-size: 16px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn:hover { border-color: var(--text); }
+.facts { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+.facts div { background: var(--surface); padding: 14px 18px; }
+.facts b { display: block; font-size: 18px; font-weight: 600; }
+.facts span { font-size: 15px; color: var(--muted); }
+.flow { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; counter-reset: s; max-width: 820px; }
+.flow li { counter-increment: s; margin: 0; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: baseline; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
+.flow li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-weight: 600; color: var(--muted); font-size: 15px; }
+.flow li.gate { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.flow li.gate::before { color: var(--accent-ink); }
+.split { display: grid; gap: 28px; grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 880px) { .split { grid-template-columns: 1.1fr 1fr; } }
+.mock { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 18px; font-size: 15px; }
+.mock .row { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px; background: var(--bg); }
+.mock .row p { margin: 0 0 8px; }
+.mock .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.mock .acts span { font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; background: var(--surface); }
+.mock .acts span.on { background: var(--ok); color: var(--accent-ink); border-color: var(--ok); }
+.mock .bar2 { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.steps { padding-left: 22px; }
+.steps li { margin: 6px 0; }
+.checks { list-style: none; padding: 0; max-width: 820px; }
+.checks li { position: relative; padding: 8px 0 8px 32px; border-bottom: 1px solid var(--line); margin: 0; }
+.checks li::before { content: "\2713"; position: absolute; left: 4px; top: 8px; font-weight: 700; width: 20px; height: 20px; line-height: 20px; text-align: center; border-radius: 50%; background: var(--ok); color: var(--accent-ink); font-size: 12px; }
+.prompt .copy { position: absolute; top: 8px; right: 8px; font: inherit; font-family: var(--font); font-size: 13px; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 999px; padding: 2px 10px; }
+.prompt { padding-right: 80px; }
+.cards.c3 { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 15px; }
+footer .wrap { display: flex; gap: 12px 24px; flex-wrap: wrap; justify-content: space-between; }
+@media (max-width: 560px) { section { padding: 44px 0; } .hero { padding-top: 40px; padding-bottom: 40px; } }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<header class="hero">
-  <div class="wrap">
-    <span class="badge">Spec Driven Development</span>
-    <h1>Structure how your coding agent<br>builds your software, <span class="accent">every time</span></h1>
-    <p class="sub">The SDD Onboarding Kit installs a spec-before-code harness in any repository — so the agent creates an approved specification before touching production code. Works with Claude Code, Codex CLI, Cursor, OpenCode and Antigravity.</p>
+<header class="bar"><div class="bar-in">
+  <a class="brand" href="#top"><b>SDD</b>Onboarding Kit</a>
+  <nav aria-label="Page">
+    <a class="opt" href="#workflow">Workflow</a>
+    <a class="opt" href="#install">Install</a>
+    <a href="DOCUMENTATION.html">Docs</a>
+  </nav>
+  <button class="theme" id="theme" type="button">Theme</button>
+</div></header>
 
-    <div class="factgrid">
-      <div class="fact"><div class="k">Works with</div><div class="v">Any repository <small>Language and framework agnostic</small></div></div>
-      <div class="fact"><div class="k">Default mode</div><div class="v">Local-first <small>No external MCPs or CLIs required</small></div></div>
-      <div class="fact"><div class="k">Human control</div><div class="v">Approval required <small>Before any code is written</small></div></div>
-      <div class="fact"><div class="k">License</div><div class="v">MIT <small>Free to use and adapt</small></div></div>
-    </div>
+<main id="top">
+<div class="wrap hero">
+  <span class="tag">Spec Driven Development · v3.0.0</span>
+  <h1>Spec first.<br><em class="hl">Code second.</em></h1>
+  <p class="lead">Install a spec-before-code harness in any repository. Your coding agent writes a short spec, you approve it in the browser, then it builds exactly that. Works with Claude Code, Codex CLI, Cursor, OpenCode and Antigravity.</p>
+  <div class="cta">
+    <a class="btn primary" href="#install">Install in one prompt</a>
+    <a class="btn" href="specs/example-feature/spec.html">See an example spec</a>
+    <a class="btn" href="DOCUMENTATION.html">Documentation</a>
   </div>
-</header>
-
-<!-- WHAT SDD DOES -->
-<section>
-  <div class="wrap">
-    <span class="eyebrow">The workflow</span>
-    <h2>Spec first. Code <em>second. Always.</em></h2>
-    <p class="lead">When the harness is installed, the agent follows a structured loop — creating and getting approval for a specification before a single line of production code is written.</p>
-
-    <div style="margin-top:40px;">
-      <ol class="steps">
-        <li><strong>Select a task.</strong> The developer picks or describes what to build.</li>
-        <li><strong>Spec is created.</strong> The agent writes requirements, design, and implementation tasks — no code yet.</li>
-        <li><strong>You review and approve</strong> the spec before anything is implemented.</li>
-        <li><strong>The agent implements</strong> strictly against the approved spec — no scope creep.</li>
-        <li><strong>Tests and validation</strong> run automatically.</li>
-        <li><strong>Traceability review</strong> verifies requirements, design, tasks, code and tests are aligned.</li>
-        <li><strong>Documentation is updated</strong> when the change affects docs — task stays open until docs are current.</li>
-        <li><strong>Task is marked done</strong> or returned for correction.</li>
-      </ol>
-    </div>
+  <div class="facts">
+    <div><b>Any repository</b><span>Language and framework agnostic</span></div>
+    <div><b>Local-first</b><span>No MCPs, CLIs or runtimes required</span></div>
+    <div><b>You approve first</b><span>No production code before the spec is approved</span></div>
+    <div><b>MIT</b><span>Free to use and adapt</span></div>
   </div>
-</section>
+</div>
 
-<!-- HOW TO INSTALL -->
-<section class="alt">
-  <div class="wrap">
-    <span class="eyebrow">Installation</span>
-    <h2>Up and running in <em>one prompt</em></h2>
-    <p class="lead">Copy this kit into your project folder, then open your harness — Claude Code, Codex, Cursor, OpenCode or Antigravity — and run:</p>
+<section id="workflow"><div class="wrap">
+  <h2>How it works</h2>
+  <p class="lead">One loop, every task. State lives in files (<code>tasks.json</code>, <code>specs/</code>, <code>history.md</code>), not in chat.</p>
+  <ol class="flow">
+    <li><span>You pick or describe a task.</span></li>
+    <li><span>The agent writes a concise spec: requirements, design, tasks. No code yet.</span></li>
+    <li class="gate"><span><strong>You review and approve the spec</strong> in one interactive page.</span></li>
+    <li><span>The agent implements only what was approved.</span></li>
+    <li><span>Tests and validation run.</span></li>
+    <li><span>A reviewer checks that requirements, design, code and tests line up.</span></li>
+    <li><span>Affected docs are updated. A task with stale docs is not done.</span></li>
+    <li><span>The task is marked done, or sent back for correction.</span></li>
+  </ol>
+</div></section>
 
-    <div class="prompt-box">Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development with this harness. Ask me all necessary questions before making project-specific decisions.</div>
-
-    <p class="lead">The agent will confirm which harness(es) you use, inspect the repository, ask you the configuration questions from <code>questions.md</code>, and generate a complete project-specific SDD harness in your harness's own layout — adapted to your commands, stack, and preferences.</p>
-
-    <div class="note orange" style="margin-top:32px;">
-      <strong>Recommended defaults available.</strong> Accept the default profile to skip twenty configuration questions and get started immediately. You can always customise later.
-    </div>
+<section id="spec-review"><div class="wrap split">
+  <div class="prose">
+    <h2>Review specs in the browser</h2>
+    <p class="lead">One page per feature. No Node or Python needed.</p>
+    <ol class="steps">
+      <li>Render it: <code>sh scripts/render-spec.sh specs/&lt;feature-slug&gt;/</code> (Windows: <code>scripts/render-spec.ps1</code>). It writes <code>specs/&lt;feature-slug&gt;/spec.html</code>.</li>
+      <li>Open it. The overview shows <strong>at a glance</strong> and <strong>needs your decision</strong>; each document has its own tab. Light and dark themes.</li>
+      <li>Per item: <strong>Accept, Change, Reject, Answer or Comment</strong>. Then approve or request changes.</li>
+      <li>Save <code>feedback.md</code> (or copy it) and tell the agent <em class="hl">“read the feedback”</em>. It updates the markdown, which stays the source of truth, and re-renders the page.</li>
+    </ol>
+    <p><a href="specs/example-feature/spec.html">Open the example spec</a></p>
   </div>
-</section>
-
-<!-- WHAT GETS INSTALLED -->
-<section>
-  <div class="wrap">
-    <span class="eyebrow">What you get</span>
-    <h2>A complete harness, <em>not generic rules</em></h2>
-
-    <div class="cards" style="margin-top:36px;">
-      <div class="card">
-        <div class="icon">📋</div>
-        <h3>Project AGENTS.md</h3>
-        <p>A short, project-specific file read by every harness (Claude Code imports it from a two-line <code>CLAUDE.md</code>) — links out, never duplicates skill bodies.</p>
-      </div>
-      <div class="card">
-        <div class="icon">🤖</div>
-        <h3>Five subagents</h3>
-        <p>Leader, spec-author, implementer, reviewer, and documenter — installed into your harness's agents directory, in its format.</p>
-      </div>
-      <div class="card">
-        <div class="icon">⚙️</div>
-        <h3>SDD workflow skill</h3>
-        <p>The core skill with full workflow, state machine, review checklist, and spec templates in your harness's skills directory (same <code>SKILL.md</code> format everywhere).</p>
-      </div>
-      <div class="card">
-        <div class="icon">📁</div>
-        <h3>Spec artifacts</h3>
-        <p><code>specs/</code>, <code>tasks.json</code>, <code>history.md</code>, <code>decisions/answers.md</code>, and a project map.</p>
-      </div>
-      <div class="card">
-        <div class="icon">🔬</div>
-        <h3>Validation scripts</h3>
-        <p>Scripts adapted to your project for validating structure, environment, and tests — including a PowerShell port that needs no bash or <code>jq</code>, so Windows teams get the full check.</p>
-      </div>
-      <div class="card green">
-        <div class="icon">🔌</div>
-        <h3>10 optional skill packs</h3>
-        <p>None installed by default. Choose what you need: context audit, git discipline, UI QA, failure learning, and more.</p>
-      </div>
-    </div>
-
-    <div class="note" style="margin-top:32px;">
-      <strong>Nothing phones home.</strong> The default install is fully local — no credentials stored, no external access enabled by default.
-    </div>
+  <div class="mock" aria-hidden="true">
+    <div class="row"><p><code>REQ-002</code> Users can export the report as CSV.</p><div class="acts"><span class="on">Accept</span><span>Change</span><span>Reject</span><span>Comment</span></div></div>
+    <div class="row"><p><code>Q1</code> Should the export include archived rows?</p><div class="acts"><span class="on">Answer</span><span>Comment</span></div></div>
+    <div class="bar2"><span class="tag ok">Approve</span><span class="tag line">Request changes</span><span class="tag line">Save feedback.md</span></div>
   </div>
-</section>
+</div></section>
 
-<!-- KEY FILES -->
-<section class="alt">
-  <div class="wrap">
-    <span class="eyebrow">Kit structure</span>
-    <h2>Key files at a <em>glance</em></h2>
+<section id="install"><div class="wrap"><div class="prose">
+  <h2>Install in one prompt</h2>
+  <ol class="steps">
+    <li>Copy this kit folder into your project root: <code>my-project/sdd-onboarding-kit/</code>.</li>
+    <li>Open your harness in <code>my-project/</code> and run:</li>
+  </ol>
+  <div class="prompt" id="install-prompt">Read `sdd-onboarding-kit/instructions.md` and configure this repository to use Spec Driven Development with this harness. Ask me all necessary questions before making project-specific decisions.<button class="copy" type="button" data-copy="install-prompt">Copy</button></div>
+  <p>The agent confirms your harness, inspects the repository, asks the questions in <code>questions.md</code> and generates a project-specific harness in that harness's own layout.</p>
+  <div class="note"><strong>Short on time?</strong> Accept the recommended defaults in one answer. Only the project-specific questions remain: commands, protected files, SDD scope.</div>
+</div></div></section>
 
-    <div class="tablewrap" style="margin-top:36px;">
-      <table>
-        <thead>
-          <tr><th>File / folder</th><th>Purpose</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><code>instructions.md</code></td><td>Step-by-step procedure the onboarding agent follows to install the harness (any harness)</td></tr>
-          <tr><td><code>questions.md</code></td><td>Project-specific decisions the agent must ask before writing files</td></tr>
-          <tr><td><code>agents/</code></td><td>Subagent templates: leader, spec-author, implementer, reviewer, documenter</td></tr>
-          <tr><td><code>skills/sdd-workflow/</code></td><td>Full SDD workflow skill — copied to the harness's skills directory</td></tr>
-          <tr><td><code>skills/optional/</code></td><td>Optional skill packs — installed only when selected</td></tr>
-          <tr><td><code>hooks/</code></td><td>Hook policies, settings snippets and example hook scripts</td></tr>
-          <tr><td><code>mcps/</code></td><td>Criteria for deciding which MCPs to configure</td></tr>
-          <tr><td><code>templates/</code></td><td>File templates the agent adapts to the target project</td></tr>
-          <tr><td><code>scripts/</code></td><td>Base validation scripts for structure, environment, and tests (bash, plus a <code>jq</code>-free PowerShell port for Windows)</td></tr>
-          <tr><td><code>reference/</code></td><td>SDD theory, harness engineering, the harness primitives mapping (Claude Code, Codex, Cursor, OpenCode, Antigravity)</td></tr>
-          <tr><td><code>DOCUMENTATION.html</code></td><td>Full documentation: installation, daily workflow, features</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="installed"><div class="wrap">
+  <h2>What you get</h2>
+  <p class="lead">Installed by default, adapted to your project.</p>
+  <div class="cards c3">
+    <div class="card"><h3>AGENTS.md</h3><p>Short project instructions read by every harness. Claude Code gets a two-line <code>CLAUDE.md</code> import stub.</p></div>
+    <div class="card"><h3>Five roles</h3><p>Leader, spec-author, implementer, reviewer, documenter, in your harness's agent format.</p></div>
+    <div class="card"><h3>SDD workflow skill</h3><p>Workflow, state machine, review checklist, concise spec templates with word budgets.</p></div>
+    <div class="card"><h3>/bro and /closing</h3><p><code>/bro</code> re-explains the last answer, or any text or ID, in plain words. <code>/closing</code> checks that a fresh session could resume from the files.</p></div>
+    <div class="card"><h3>Spec page renderer</h3><p><code>render-spec.sh</code> and <code>.ps1</code>: one interactive review page per feature, nothing to install.</p></div>
+    <div class="card"><h3>Files, not chat</h3><p><code>specs/</code>, <code>tasks.json</code>, <code>history.md</code>, <code>decisions/answers.md</code>, a project map, validation scripts and the <code>sdd-update</code> self-update skill.</p></div>
   </div>
-</section>
+</div></section>
 
-<!-- OPTIONAL SKILLS -->
-<section>
-  <div class="wrap">
-    <span class="eyebrow green">Optional packs</span>
-    <h2>Ten skills. <em class="green">None required.</em></h2>
-    <p class="lead">Every optional pack is advisory or permission-gated. Onboarding asks which packs the project needs — nothing is installed without your selection.</p>
+<section id="harnesses"><div class="wrap">
+  <h2>Works with every harness</h2>
+  <p class="lead">Same workflow and artifacts everywhere; only the packaging changes. Missing features fall back gracefully: roles instead of subagents, skills read on demand, rules instead of hooks.</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Claude Code</th><th>Codex CLI</th><th>Cursor</th><th>OpenCode</th><th>Antigravity</th></tr></thead>
+    <tbody>
+      <tr><td>Skills</td><td><code>.claude/skills/</code></td><td><code>.agents/skills/</code></td><td><code>.cursor/skills/</code></td><td><code>.opencode/skills/</code></td><td><code>.agents/skills/</code></td></tr>
+      <tr><td>Subagents</td><td><code>.claude/agents/</code></td><td><code>.codex/agents/*.toml</code></td><td><code>.cursor/agents/</code></td><td><code>.opencode/agents/</code></td><td><code>.agents/agents/</code></td></tr>
+      <tr><td>Hooks</td><td><code>.claude/settings.json</code></td><td><code>.codex/hooks.json</code></td><td><code>.cursor/hooks.json</code></td><td>JS plugin</td><td><code>.agents/hooks.json</code></td></tr>
+      <tr><td>MCP config</td><td><code>.mcp.json</code></td><td><code>.codex/config.toml</code></td><td><code>.cursor/mcp.json</code></td><td><code>opencode.json</code></td><td><code>.agents/mcp_config.json</code></td></tr>
+    </tbody>
+  </table></div>
+</div></section>
 
-    <div class="cards" style="margin-top:36px;">
-      <div class="card">
-        <div class="icon">🗺️</div>
-        <h3>context-audit + project-map</h3>
-        <p>Keep the agent's context window lean. Audit what's loaded and maintain an accurate project map.</p>
-      </div>
-      <div class="card">
-        <div class="icon">🚀</div>
-        <h3>run-and-verify</h3>
-        <p>Generates a project-specific recipe with your real dev-server, test, lint, and build commands — never invented.</p>
-      </div>
-      <div class="card">
-        <div class="icon">🔄</div>
-        <h3>dependency-freshness</h3>
-        <p>Verifies external API and SDK changes against current docs before implementation. Evidence recorded in the spec.</p>
-      </div>
-      <div class="card">
-        <div class="icon">🌿</div>
-        <h3>git-discipline</h3>
-        <p>Commit messages, PR descriptions, and release notes tied to SDD tasks. Every mutating git action gated.</p>
-      </div>
-      <div class="card">
-        <div class="icon">📝</div>
-        <h3>decision-log + documentation-update</h3>
-        <p>Durable decisions in versioned files. Documentation phase ensures docs are never stale at task close.</p>
-      </div>
-      <div class="card green">
-        <div class="icon">🧠</div>
-        <h3>failure-learning + ui-qa + spec-from-screenshot</h3>
-        <p>Turn mistakes into lessons, validate browser UIs with Playwright, and convert screenshots into structured specs.</p>
-      </div>
-    </div>
+<section id="optional"><div class="wrap">
+  <h2>Optional, never default</h2>
+  <p class="lead">Ten skill packs, example hooks and MCPs. Nothing is installed or enabled without your selection.</p>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td><code>context-audit</code> · <code>project-map</code></td><td>Keep the context window lean; refresh the project map.</td></tr>
+      <tr><td><code>run-and-verify</code></td><td>Your real dev, test, lint and build commands. Never invented.</td></tr>
+      <tr><td><code>dependency-freshness</code></td><td>Check current docs before changing external APIs or SDKs.</td></tr>
+      <tr><td><code>git-discipline</code></td><td>Commit, PR and release text tied to tasks. Every git mutation asks first.</td></tr>
+      <tr><td><code>decision-log</code> · <code>documentation-update</code></td><td>Durable decisions in versioned files; docs current at task close.</td></tr>
+      <tr><td><code>failure-learning</code></td><td>Turn real mistakes into lessons, proposed and never written silently.</td></tr>
+      <tr><td><code>ui-qa</code> · <code>spec-from-screenshot</code></td><td>Verify UIs in a browser (Playwright scoped to one agent); turn screenshots into spec material.</td></tr>
+      <tr><td>Hooks · MCPs</td><td>Harness-neutral example hooks and MCP notes, all off until you approve them.</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="safety"><div class="wrap">
+  <h2>Human-gated by design</h2>
+  <ul class="checks">
+    <li><strong>Spec approval comes first.</strong> No production code before it.</li>
+    <li><strong>Hooks and MCPs are off by default.</strong> Each one needs your approval.</li>
+    <li><strong>Autonomy is read-only.</strong> Monitoring CI is fine; deploying, merging or marking tasks done never runs unattended.</li>
+    <li><strong>Git mutations ask first.</strong> No commit, push or force-push without an explicit request.</li>
+    <li><strong>No secrets in memory.</strong> Lessons and decisions are proposed; nothing is written without approval.</li>
+    <li><strong>Nothing phones home.</strong> The default install is fully local, with no stored credentials.</li>
+  </ul>
+</div></section>
+
+<section id="files"><div class="wrap">
+  <h2>Key files</h2>
+  <div class="tw"><table>
+    <tbody>
+      <tr><td><code>instructions.md</code></td><td>The procedure the onboarding agent follows</td></tr>
+      <tr><td><code>questions.md</code></td><td>Decisions the agent asks before writing files</td></tr>
+      <tr><td><code>agents/</code> · <code>skills/</code></td><td>Role templates, the core skills (<code>sdd-workflow</code>, <code>sdd-update</code>, <code>bro</code>, <code>closing</code>) and optional packs</td></tr>
+      <tr><td><code>templates/</code></td><td>Files the agent adapts to the target project, including the spec page assets</td></tr>
+      <tr><td><code>scripts/</code></td><td>Spec renderer (<code>sh</code> and PowerShell) and structure validators</td></tr>
+      <tr><td><code>hooks/</code> · <code>mcps/</code></td><td>Hook policy, wiring snippets, example scripts; MCP criteria</td></tr>
+      <tr><td><code>reference/</code></td><td>SDD theory, harness primitives mapping, policies</td></tr>
+      <tr><td><code>specs/example-feature/</code></td><td>Complete example spec: markdown sources plus <a href="specs/example-feature/spec.html"><code>spec.html</code></a></td></tr>
+      <tr><td><code>CHANGELOG.md</code> · <code>VERSION</code></td><td>Release notes with migration steps, read by <code>sdd-update</code></td></tr>
+      <tr><td><code>DOCUMENTATION.html</code></td><td><a href="DOCUMENTATION.html">Full reference</a></td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="contributing"><div class="wrap">
+  <h2>Stay current, contribute</h2>
+  <div class="cards">
+    <div class="card"><h3>Updates</h3><p>Watch the repository's releases on GitHub. In an installed project, invoke the <code>sdd-update</code> skill: it refreshes the kit files, merges your adaptations with approval and runs the migration notes from <code>CHANGELOG.md</code>.</p></div>
+    <div class="card"><h3>Contributing</h3><p>Fork, branch from <code>main</code>, one concern per PR. Keep files in English, templates on <code>&#123;&#123;PLACEHOLDER&#125;&#125;</code> syntax, hook scripts POSIX and <code>jq</code>-optional, installable files harness-neutral.</p></div>
   </div>
-</section>
+</div></section>
+</main>
 
-<!-- SAFETY -->
-<section class="alt">
-  <div class="wrap">
-    <span class="eyebrow green">Safety model</span>
-    <h2>Human-gated by <em class="green">design</em></h2>
-    <ul class="checklist green" style="margin-top:24px;">
-      <li><strong>Spec approval is required</strong> before any implementation begins — no exceptions.</li>
-      <li><strong>Hooks are optional and disabled by default</strong> — examples only until you explicitly enable them.</li>
-      <li><strong>Autonomy is opt-in:</strong> monitoring CI is fine; deploying, merging, or marking tasks done is never autonomous.</li>
-      <li><strong>Git mutations are permission-gated:</strong> no commit, push, or force-push without explicit instruction.</li>
-      <li><strong>No secrets are stored</strong> in any memory layer — the failure-learning pack proposes entries, never writes them.</li>
-      <li><strong>MCPs are off by default</strong> — none configured without your explicit approval.</li>
-      <li><strong>Playwright is scoped to its agent</strong> — browser tools never load into the main conversation.</li>
-    </ul>
-  </div>
-</section>
+<footer><div class="wrap">
+  <span>SDD Onboarding Kit · spec before code, every time</span>
+  <span><a href="DOCUMENTATION.html">Documentation</a> · <a href="CHANGELOG.md">Changelog</a> · <a href="LICENSE">MIT License</a></span>
+</div></footer>
 
-<!-- CONTRIBUTING -->
-<section>
-  <div class="wrap">
-    <span class="eyebrow">Open source</span>
-    <h2>Contributions <em>welcome</em></h2>
-    <p class="lead">Fork, improve, and send a PR. Keep changes focused — one concern per pull request.</p>
-
-    <ul class="checklist" style="margin-top:24px;">
-      <li><strong>Keep all files in English.</strong></li>
-      <li><strong>Template files</strong> under <code>templates/</code> use <code>{{PLACEHOLDER}}</code> syntax.</li>
-      <li><strong>Hook scripts</strong> must be POSIX-compatible bash and degrade gracefully without <code>jq</code>.</li>
-      <li><strong>Agent files</strong> must follow the frontmatter format (<code>name</code>, <code>description</code>, <code>tools</code>).</li>
-    </ul>
-
-    <div class="stats">
-      <div class="stat"><div class="num">5</div><div class="lbl">Core subagents</div></div>
-      <div class="stat green"><div class="num">10</div><div class="lbl">Optional skill packs</div></div>
-      <div class="stat"><div class="num">MIT</div><div class="lbl">License</div></div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <p>SDD Onboarding Kit for Claude Code, Codex, Cursor, OpenCode and Antigravity · <a href="DOCUMENTATION.html">Full documentation</a> · <a href="LICENSE">MIT License</a></p>
-    <p class="names">Spec Driven Development — spec before code, every time</p>
-  </div>
-</footer>
-
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  function cur(){return r.getAttribute('data-theme')||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  function lab(){var d=cur()==='dark';b.textContent=d?'☀ Light':'☾ Dark';b.setAttribute('aria-label','Switch to '+(d?'light':'dark')+' theme');}
+  if(b){b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('sdd-theme',n);}catch(e){}lab();});lab();}
+  document.querySelectorAll('[data-copy]').forEach(function(btn){btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.getAttribute('data-copy'));var txt=el.firstChild.textContent.trim();
+    try{navigator.clipboard.writeText(txt).then(function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy';},1500);});}catch(e){}
+  });});
+})();
+</script>
 </body>
 </html>

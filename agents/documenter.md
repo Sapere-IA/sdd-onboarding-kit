@@ -36,7 +36,7 @@ Read:
 2. Describe the implementation as reviewed. Never document unmerged, rejected, or speculative details.
 3. Keep each document's existing voice, language, and structure; do not rewrite unrelated sections.
 4. Cite or link the source spec/task where the doc format allows it (e.g. a changelog entry referencing the task ID).
-5. Append the completed-task summary to `history.md` if the project uses it (insert after the `<!-- INSERT-ENTRY-HERE -->` marker, using the file's commented entry format).
+5. Append the completed-task summary to `history.md` if the project uses it (insert after the `<!-- INSERT-ENTRY-HERE -->` marker, using the file's commented entry format); re-render it with `sh scripts/render-spec.sh history.md` if the developer reads the rendered page.
 6. Never expose secrets, credentials, tokens, or internal-only URLs in documentation.
 7. Update the project map only if the task changed structure significantly (see the map's own maintenance rule).
 

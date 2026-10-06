@@ -72,7 +72,8 @@ The agent will confirm which harness(es) you use, inspect the repository, ask yo
 - `<harness-dir>/agents/`: leader, spec-author, implementer, reviewer, documenter — in the harness's agent format.
 - `<harness-dir>/skills/sdd-workflow/`: the core SDD skill with workflow, state machine, review checklist, and markdown spec templates.
 - `<harness-dir>/skills/sdd-update/` plus `<harness-dir>/sdd-kit-manifest.json`: the self-update mechanism — invoke the `sdd-update` skill in an installed project to pull in new kit versions (see `CHANGELOG.md`).
-- A spec renderer (`scripts/render-spec.mjs` for Node projects or `scripts/render_spec.py` for Python projects, zero dependencies): specs are written in markdown (the source of truth, cheap for the model to read and write) and rendered on demand to styled, self-contained HTML for human review; rendered HTML is gitignored.
+- `<harness-dir>/skills/bro/` and `<harness-dir>/skills/closing/`: session skills — `bro` re-explains the last answer, a file, a spec item or a term in plain language; `closing` checks that tasks, specs, decisions and memory reflect the session and writes a handoff so a fresh session can resume from the files alone.
+- A spec renderer that needs no runtime (`scripts/render-spec.sh`, plus `scripts/render-spec.ps1` for Windows): specs are written in markdown (the source of truth, cheap for the model to read and write) and rendered on demand into one interactive page per spec, `specs/<feature-slug>/spec.html`. On that page you accept, change, reject, answer or comment on each item and give an overall verdict, then save or copy `feedback.md`; tell the agent to read the feedback and it applies it to the markdown and re-renders. Rendered HTML and feedback files are gitignored.
 - `specs/`, `tasks.json`, `history.md`, `decisions/answers.md`, and the project map.
 - Validation scripts adapted to the project, including a `jq`-free PowerShell port of the structure validator for Windows-primary teams.
 
@@ -97,12 +98,13 @@ To get notified of new kit versions, watch this repository's releases (**Watch �
 | `questions.md` | Project-specific decisions the agent must ask before writing files (§0: harness) |
 | `agents/` | Subagent templates: leader, spec-author, implementer, reviewer, documenter |
 | `skills/sdd-workflow/` | Full SDD workflow skill (copied to the harness's skills directory) |
+| `skills/bro/`, `skills/closing/` | Session skills: plain-language re-explanation; end-of-session audit and handoff |
 | `skills/optional/` | Optional skill packs, installed only when selected during onboarding |
 | `hooks/` | Hook policy and contract, per-harness wiring snippets, and harness-neutral example hook scripts |
 | `mcps/` | Criteria for deciding which MCPs to configure |
 | `templates/` | File templates the agent adapts to the target project |
 | `specs/example-feature/` | Complete example spec: markdown sources plus rendered HTML (open the HTML in a browser) |
-| `scripts/` | Base scripts: spec renderers (Node and Python), structure/environment/test validation (bash, plus a `jq`-free PowerShell validator port for Windows) |
+| `scripts/` | Base scripts: spec renderer (POSIX sh and PowerShell, no runtime needed), structure/environment/test validation (bash, plus a `jq`-free PowerShell validator port for Windows) |
 | `CHANGELOG.md` / `VERSION` | Kit version history with per-release migration notes, consumed by `/sdd-update` |
 | `reference/` | SDD theory, harness engineering, the harness primitives mapping and policies |
 | `output-project-structure.md` | Expected structure of the target project after onboarding |
@@ -111,7 +113,7 @@ To get notified of new kit versions, watch this repository's releases (**Watch �
 
 ## Optional skills
 
-Beyond the core `sdd-workflow` skill, the kit ships ten optional skill packs under [`skills/optional/`](skills/optional/README.md): `context-audit`, `project-map`, `run-and-verify`, `dependency-freshness`, `git-discipline`, `decision-log`, `documentation-update`, `failure-learning`, `ui-qa`, and `spec-from-screenshot`. None is installed by default — onboarding asks which packs the project needs, and installed skills are listed in `AGENTS.md` by name only (their instructions load when invoked). All packs are advisory or permission-gated. See the `Skill packs` section in `DOCUMENTATION.html`.
+Beyond the core skills (`sdd-workflow`, `sdd-update`, `bro`, `closing`), the kit ships ten optional skill packs under [`skills/optional/`](skills/optional/README.md): `context-audit`, `project-map`, `run-and-verify`, `dependency-freshness`, `git-discipline`, `decision-log`, `documentation-update`, `failure-learning`, `ui-qa`, and `spec-from-screenshot`. None is installed by default — onboarding asks which packs the project needs, and installed skills are listed in `AGENTS.md` by name only (their instructions load when invoked). All packs are advisory or permission-gated. See the `Skill packs` section in `DOCUMENTATION.html`.
 
 The `run-and-verify` pack is special: onboarding **generates a project-specific run/verify recipe** — the project's real dev-server/test/lint/typecheck/build commands, required services, environment variable names (never secret values), and how to verify UI or API behavior. Unknown commands are recorded as TODOs, never invented, and the reviewer validates implementations through this recipe. See the `Run and verify skill` section in `DOCUMENTATION.html`.
 
@@ -155,7 +157,7 @@ Autonomous workflows (loops, goals, scheduled routines, background or headless r
 
 ## Resumable work
 
-Work survives interruptions because state lives in artifacts, not in chat: `tasks.json`, specs, reviews, decision logs, and `history.md` are the source of truth. Each harness's recap, rewind, resume and compaction features are conveniences for reorienting — after any resume, rewind, or compaction, the kit's rule is to inspect the durable artifacts before continuing, and when conversation memory disagrees with an artifact, the artifact wins. See [`reference/session-recovery.md`](reference/session-recovery.md) and the `Session recovery` section in `DOCUMENTATION.html`.
+Work survives interruptions because state lives in artifacts, not in chat: `tasks.json`, specs, reviews, decision logs, and `history.md` are the source of truth. Each harness's recap, rewind, resume and compaction features are conveniences for reorienting — after any resume, rewind, or compaction, the kit's rule is to inspect the durable artifacts before continuing, and when conversation memory disagrees with an artifact, the artifact wins. Before stopping, the `closing` skill brings the artifacts up to date and leaves a "Resume here" handoff. See [`reference/session-recovery.md`](reference/session-recovery.md) and the `Session recovery` section in `DOCUMENTATION.html`.
 
 ## Templates carry the policies
 

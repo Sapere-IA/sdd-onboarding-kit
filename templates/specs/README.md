@@ -10,7 +10,7 @@ Each SDD feature spec is a folder of markdown documents (the source of truth):
 - `acceptance-tests.md` — acceptance-level test scenarios.
 - `review.md` — written by the reviewer after implementation.
 
-Styled HTML is rendered on demand from these files (`scripts/render-spec.mjs` or `scripts/render_spec.py`) and is a gitignored artifact. The rendering assets live in this directory:
+`sh scripts/render-spec.sh specs/<feature-slug>/` (or `scripts/render-spec.ps1` on Windows) renders them on demand into one interactive review page, `spec.html`, a gitignored artifact; review feedback saved from that page (`feedback.md`) is gitignored too. The rendering assets live in this directory:
 
 - `spec-shell.html.template` — HTML page shell filled by the renderer.
 - `spec.css` — stylesheet, inlined into the rendered page.

@@ -42,6 +42,10 @@ After the onboarding is complete, the target repository should contain a project
 │   │   │       └── spec.js
 │   │   ├── sdd-update/
 │   │   │   └── SKILL.md
+│   │   ├── bro/                       # session skill: re-explain in plain language
+│   │   │   └── SKILL.md
+│   │   ├── closing/                   # session skill: audit artifacts and write the handoff
+│   │   │   └── SKILL.md
 │   │   └── <optional skill packs selected during onboarding>/
 │   │       └── SKILL.md
 │   ├── context/
@@ -60,8 +64,9 @@ After the onboarding is complete, the target repository should contain a project
 │       ├── assumptions.md
 │       ├── open-questions.md
 │       ├── acceptance-tests.md
-│       └── review.md
-│       (rendered *.html siblings are gitignored artifacts)
+│       ├── review.md
+│       ├── spec.html                  (rendered review page — gitignored artifact)
+│       └── feedback.md                (saved from spec.html for the agent to apply — gitignored, deleted once applied)
 ├── decisions/
 │   ├── answers.md
 │   ├── architecture-decisions.md   (decision-log pack; or docs/adr/ instead)
@@ -73,7 +78,8 @@ After the onboarding is complete, the target repository should contain a project
     ├── init.sh
     ├── run-tests.sh
     ├── run-lint.sh
-    ├── render-spec.mjs            (OR render_spec.py — exactly one, per the detected runtime)
+    ├── render-spec.sh             (spec renderer, POSIX sh — no runtime needed)
+    ├── render-spec.ps1            (same renderer for Windows PowerShell)
     └── validate-sdd-structure.sh
 ```
 
@@ -96,8 +102,8 @@ Local files should still exist unless the developer explicitly chooses a fully e
 The onboarding is complete when:
 
 1. `AGENTS.md` exists and reflects this specific project, names the harness's skill invocation, and — when Claude Code is one of the harnesses — `CLAUDE.md` is the two-line import stub whose first line is `@AGENTS.md`.
-2. The SDD skill exists under `<harness-dir>/skills/sdd-workflow/` (and under each additional harness's skills directory).
-3. The markdown spec templates (plus `spec-shell.html.template`, `spec.css`, and `spec.js`) exist under `<harness-dir>/skills/sdd-workflow/templates/`, and exactly one renderer (`scripts/render-spec.mjs` or `scripts/render_spec.py`) is installed.
+2. The SDD skill exists under `<harness-dir>/skills/sdd-workflow/`, and the session skills under `<harness-dir>/skills/bro/` and `<harness-dir>/skills/closing/` (and under each additional harness's skills directory).
+3. The markdown spec templates (plus `spec-shell.html.template`, `spec.css`, and `spec.js`) exist under `<harness-dir>/skills/sdd-workflow/templates/`, and both renderer scripts (`scripts/render-spec.sh`, `scripts/render-spec.ps1`) are installed; `sh scripts/render-spec.sh specs/<feature-slug>/` produces `specs/<feature-slug>/spec.html`.
 4. The five roles (leader, spec-author, implementer, reviewer, documenter) exist under `<harness-dir>/agents/` in the harness's agent format, or — for a harness without subagents — as role files with the fallback line recorded in `AGENTS.md`.
 5. There is a task storage mechanism.
 6. There is a spec storage mechanism.
@@ -112,5 +118,5 @@ The onboarding is complete when:
 15. If the `decision-log` pack was selected, the decision files chosen during onboarding exist (`decisions/architecture-decisions.md`, `decisions/rejected-options.md`, `decisions/workflow-decisions.md` — or `docs/adr/` for architecture decisions), the installed skill references the chosen locations, and they are recorded in `decisions/answers.md`.
 16. Browser testing matches the `questions.md` §18 answer: no Playwright anywhere (option 1), `<harness-dir>/agents/browser-tester` with the MCP scoped to the agent where the harness allows it and otherwise in the harness MCP config (option 2), or setup documented without configuration (option 3). No credentials appear in any generated file.
 17. `<harness-dir>/skills/sdd-update/SKILL.md` is installed with the kit URL filled, and `<harness-dir>/sdd-kit-manifest.json` records the kit version, the `harness` block, and every installed file (in every harness directory) with hashes and adapted flags.
-18. Rendered spec artifacts (`specs/**/*.html`, `history.html`, rendered architecture/conventions siblings) are gitignored, unless the developer explicitly chose to commit them (recorded in `decisions/answers.md`).
+18. Review feedback (`specs/**/feedback.md`) is gitignored, and so are rendered spec artifacts (`specs/**/*.html`, `history.html`, rendered architecture/conventions siblings) unless the developer explicitly chose to commit them (recorded in `decisions/answers.md`).
 19. No installed file assumes a harness the project does not use: harness-specific commands and paths appear only in `AGENTS.md`'s harness placeholders, the hook wiring, and the MCP config.

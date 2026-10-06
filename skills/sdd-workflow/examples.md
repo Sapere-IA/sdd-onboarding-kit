@@ -1,8 +1,8 @@
 # SDD examples
 
 A complete example spec lives in the kit under `specs/example-feature/` — markdown
-sources filled in end-to-end through review, plus their rendered HTML (open the
-HTML in a browser to see the target output). The fragments below are quick
+sources filled in end-to-end through review, plus the rendered page `spec.html`
+(open it in a browser to see the target output and the feedback controls). The fragments below are quick
 references; the full markdown conventions are in `spec-format.md`.
 
 ## Example task entry

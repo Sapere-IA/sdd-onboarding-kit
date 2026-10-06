@@ -35,33 +35,30 @@ specs/<feature-slug>/design.md
 specs/<feature-slug>/tasks.md
 ```
 
-Use `spec-format.md` (markdown is the source of truth; do not hand-write spec HTML). Keep each file concise: reference other spec files by ID, never restate their content.
+Use `spec-format.md` (markdown is the source of truth; do not hand-write spec HTML). Respect its conciseness budgets: reference other spec files by ID, never restate their content, delete optional sections that do not apply.
 
-Recommended order:
-
-1. Requirements.
-2. Design.
-3. Tasks.
-4. Requirement-to-test mapping.
+Recommended order: requirements, design, tasks.
 
 ## 4. Stop for approval
 
 When the spec is complete:
 
 1. Set status to `spec_ready`.
-2. Render the spec for the developer: `node scripts/render-spec.mjs specs/<feature-slug>/` (or the Python renderer — see `spec-format.md` § Rendering). The HTML output is a gitignored artifact.
-3. Summarize the spec and point the developer at the rendered files.
+2. Render the spec: `sh scripts/render-spec.sh specs/<feature-slug>/` (Windows: `pwsh scripts/render-spec.ps1 specs/<feature-slug>/`).
+3. Summarize the spec in a few lines and point the developer at `specs/<feature-slug>/spec.html`: they can review each item there and save a feedback file, or answer in chat.
 4. Ask the developer to approve or request changes.
 5. Do not implement.
 
-## 5. Revise spec if requested
+## 5. Apply feedback or revise the spec
 
-If the developer asks for changes:
+If the developer saved a feedback file (or pasted its text), apply it per `spec-format.md` § Feedback file: edit the owning markdown files, re-render, delete the feedback file, summarize the changes in ≤ 5 lines. A `verdict: approve` with no `change`/`reject` items is approval of the spec; if the feedback changed the spec, ask again for approval of the revised spec.
+
+If the developer asks for changes in chat:
 
 1. Update spec files.
 2. Record changed assumptions.
 3. Keep status as `spec_draft` or `spec_ready` according to project policy.
-4. Ask again for approval.
+4. Re-render and ask again for approval.
 
 ## 6. Implement approved spec
 
@@ -90,9 +87,9 @@ The reviewer also flags significant decisions settled by the spec,
 implementation, or review (architectural choices, rejected alternatives,
 workflow rules) for the decision log — see §9.
 
-The reviewer also checks conciseness: content duplicated within a spec file or across the spec's files is a finding.
+The reviewer also checks conciseness: content duplicated within a spec file or across the spec's files, or spec content over the `spec-format.md` budgets, is a finding.
 
-Write `review.md`, then re-render the spec directory so the developer reads current HTML.
+Write `review.md`, then re-render the spec (`sh scripts/render-spec.sh specs/<feature-slug>/`) so the developer reads the current page.
 
 ## 8. Documentation phase
 

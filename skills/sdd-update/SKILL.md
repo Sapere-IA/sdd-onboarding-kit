@@ -62,6 +62,18 @@ For each `adapted: true` file whose kit source changed:
 
 Execute the changelog **Migration** steps for each version being crossed, in order, each with approval. Never run a destructive step (deleting files, `git rm`) without showing exactly what it removes.
 
+#### 2.x → 3.0.0
+
+The `CHANGELOG.md` entry stays authoritative; these are the steps it implies. Each step needs approval; apply every harness-directory step to each directory in the manifest's `harness` block.
+
+1. **Renderer swap.** Show and remove `scripts/render-spec.mjs` and/or `scripts/render_spec.py` (and their manifest records). Install `scripts/render-spec.sh` and `scripts/render-spec.ps1` verbatim. Drop any renderer-runtime answer from `decisions/answers.md` (note it as superseded rather than deleting history).
+2. **Spec assets and workflow.** Refresh `<harness-dir>/skills/sdd-workflow/templates/` (`spec-shell.html.template`, `spec.css`, `spec.js` and the trimmed `*.md.template` files), the `sdd-workflow` skill files and the agents from the kit (step 4 rules apply if they were edited locally). Existing specs keep rendering unchanged; they are not rewritten to the new templates.
+3. **Stale rendered pages.** List the per-document `.html` files under `specs/` (one per markdown doc, from the 2.x renderer), delete them after approval, then re-render each spec folder with `sh scripts/render-spec.sh specs/<feature-slug>/` so each spec has a single `spec.html`. If the project commits rendered HTML (`decisions/answers.md`), tell the developer the deletions and new pages need committing; do not commit them yourself.
+4. **Gitignore.** Add `specs/**/feedback.md` next to the existing SDD rendered-artifact entries in `.gitignore`.
+5. **Session skills.** Install `skills/bro/SKILL.md` → `<harness-dir>/skills/bro/SKILL.md` and `skills/closing/SKILL.md` → `<harness-dir>/skills/closing/SKILL.md` (new verbatim records in the manifest).
+6. **`AGENTS.md`.** In the spec-storage section, replace the old render command with `sh scripts/render-spec.sh specs/<feature-slug>/` (one page `specs/<feature-slug>/spec.html`) and add the one-line `feedback.md` flow; add the "Session skills" section (`bro`, `closing`) from the kit template. Merge as an adapted file (step 5 rules).
+7. **Validate.** In step 7 below, the structure validator now also requires `scripts/render-spec.sh` and the `bro` and `closing` skills.
+
 ### 7. Rewrite the manifest and report
 
 - Rewrite `<harness-dir>/sdd-kit-manifest.json`: new `kit_version`, `updated_at`, the `harness` block, fresh hashes for every touched file; add records for newly installed files.

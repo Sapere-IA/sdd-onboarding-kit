@@ -44,7 +44,7 @@ For each task in `tasks.md`:
 1. Read the related requirement(s).
 2. Make the smallest coherent code change.
 3. Add or update tests when required.
-4. Mark the task item complete only if actually completed: change its status marker in `tasks.md` to `[x]` (use `[>]` in progress or `[!]` blocked for partial states).
+4. Mark the task item complete only if actually completed: change its status marker in `tasks.md` to `[x]` (use `[>]` in progress or `[!]` blocked for partial states). Re-render the spec (`sh scripts/render-spec.sh specs/<feature-slug>/`) when you stop, so the page shows current progress.
 5. Run targeted validation if configured.
 6. Continue to the next task.
 

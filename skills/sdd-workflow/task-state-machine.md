@@ -120,5 +120,5 @@ Allowed next states:
 - Never transition to `done` without reviewer approval.
 - Never transition to `done` while `documentation_required` is `true` and `documentation_status` is `pending`.
 - Never transition to `done` with failing tests unless the developer explicitly accepts this exception.
-- Record human approval metadata when moving to `human_approved`.
+- Record human approval metadata when moving to `human_approved`. A feedback file with `verdict: approve` and no `change`/`reject` items counts as approval (record its `generated` timestamp); if applying it changed the spec, ask again (`spec-format.md` § Feedback file).
 - Record reviewer decision when moving to `done`, `rejected` or `in_progress` after review.
