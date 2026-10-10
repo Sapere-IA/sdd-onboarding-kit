@@ -37,15 +37,18 @@ want the extra they describe; the others are net-new.
 | `failure-learning` | Propose a reusable lesson after a meaningful mistake. | Proposing lessons is already on by default in the profile; this adds a **structured skill + entry template** for capturing the lesson as a memory entry. |
 | `ui-qa` | Verify UI changes against spec acceptance criteria. | Net-new. |
 | `spec-from-screenshot` | Turn screenshots, mockups, and visual evidence into structured spec material. | Net-new. |
+| `goblin-mode` | Run one SDD task unattended, invocation = approval, through review, docs, done, feature branch, push and PR, then close the session. | Net-new. **Relaxes the autonomy policy** for that skill only (recorded exception in `reference/autonomy-policy.md`); install only on an explicit request. |
 
 Every pack documents: purpose, when to use, when not to use, required
 inputs, output artifact, and safety constraints. All packs are advisory or
 permission-gated: none mutates git state, external systems, or memory
-without explicit developer approval.
+without explicit developer approval. The one exception is `goblin-mode`,
+where the developer gives that approval up front by invoking it; it still
+never merges, force-pushes, writes memory or touches protected branches.
 
 ## Suggested themed bundles
 
-There are ten packs, so they do not fit a single structured chooser capped
+There are eleven packs, so they do not fit a single structured chooser capped
 at four options. Group them into these four themed bundles when presenting
 the choice; selecting a bundle means *proposing* its packs — each is still
 installed individually on confirmation, never silently as a set.
@@ -53,6 +56,6 @@ installed individually on confirmation, never silently as a set.
 | Bundle | Packs |
 |---|---|
 | Verification | `run-and-verify`, `ui-qa`, `dependency-freshness` |
-| Git & decisions | `git-discipline`, `decision-log` |
+| Git, decisions & autonomy | `git-discipline`, `decision-log`, `goblin-mode` |
 | Docs & knowledge | `documentation-update`, `project-map`, `failure-learning` |
 | Context & visual intake | `context-audit`, `spec-from-screenshot` |

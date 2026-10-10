@@ -2,6 +2,21 @@
 
 Kit versions are tracked in `VERSION` and tagged in git (`v<version>`). Each entry lists **Changes** (what is different in the kit) and **Migration** (what `/sdd-update` must do to bring an existing install up to date). The `sdd-update` skill reads the entries between the installed version and the latest, and executes the migration steps with developer approval.
 
+## 3.1.0 — 2026-10-10
+
+### Changes
+
+- **New optional pack: `goblin-mode`.** Runs one SDD task unattended, start to pushed: the invocation is recorded in `tasks.json` as the developer's in-advance approval (with a note that the spec was not human-reviewed), then spec, implementation, reviewer, documenter, `done`, `history.md`, the `closing` handoff, commits on a feature branch, push and one pull request — with no question to the developer until the final report. It declares a goal condition the harness's persistence feature can check (`/goal` on Claude Code; single pass elsewhere), bounds (3 consecutive fix attempts per failure, immediate stop on hook or permission denial), and a "deciding alone" rule: how-to-build open questions and assumptions are resolved conservatively and recorded as auto-decided; questions about protected areas, data loss, public contracts, security or money stop the run. Never merges, force-pushes, touches the default or protected branches, writes memory or decision logs (propose-only), or disables a hook. An early stop leaves WIP committed on the branch and a `## Resume here` handoff.
+- **Autonomy policy: recorded exception.** `reference/autonomy-policy.md` gains a "Recorded exception: goblin-mode" section scoping the only sanctioned way to reach `done` and a pushed branch without a human checkpoint. Installing the pack is the recorded decision the policy requires.
+- **Onboarding.** `questions.md` §14 lists eleven packs; the agent never suggests `goblin-mode` (install only when asked by name) and, if selected, confirms what it relaxes and records it in `decisions/answers.md`. The "Git & decisions" bundle is now "Git, decisions & autonomy". `skills/optional/README.md`, `README.md` and `DOCUMENTATION.html` updated.
+
+### Migration (from 3.0.0)
+
+Nothing is required. Optional steps, each with approval:
+
+1. If `autonomy-policy.md` was vendored under `<harness-dir>/reference/`, refresh it from the kit.
+2. If the developer asks for `goblin-mode`, copy `skills/optional/goblin-mode/SKILL.md` to `<harness-dir>/skills/goblin-mode/SKILL.md` in every harness directory, add it by name to the installed-skills list in `AGENTS.md`, make sure the git policy names the branch convention, default branch and PR tooling, and record the selection and the three relaxed items in `decisions/answers.md` (and `decisions/workflow-decisions.md` if the `decision-log` pack is installed).
+
 ## 3.0.0 — 2026-10-06
 
 ### Changes

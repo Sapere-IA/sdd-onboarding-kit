@@ -229,12 +229,12 @@ The core skills (`sdd-workflow`, `sdd-update`, and the session skills
 
 `context-audit`, `project-map`, `run-and-verify`, `dependency-freshness`,
 `git-discipline`, `decision-log`, `documentation-update`,
-`failure-learning`, `ui-qa`, `spec-from-screenshot`.
+`failure-learning`, `ui-qa`, `spec-from-screenshot`, `goblin-mode`.
 
-These ten packs do not fit a single structured chooser capped at four
+These eleven packs do not fit a single structured chooser capped at four
 options. Present them as the four themed bundles in `skills/optional/README.md`
-("Suggested themed bundles") — Verification, Git & decisions, Docs &
-knowledge, Context & visual intake — then install individual packs on
+("Suggested themed bundles") — Verification, Git, decisions & autonomy,
+Docs & knowledge, Context & visual intake — then install individual packs on
 confirmation. Three packs overlap the always-on baseline (`documenter`
 agent, generated project map, failure-learning proposals); name what each
 adds before installing it (see the README's "Adds over the always-on
@@ -247,8 +247,13 @@ Questions:
    `ui-qa`, frequent dependency changes for `dependency-freshness`),
    should the agent suggest those packs? (Suggest yes; install only on
    confirmation.)
-3. Should declined packs be recorded in `decisions/answers.md` so they are
-   not re-proposed every session? (Default: yes.)
+4. `goblin-mode` is never suggested by the agent; install it only if the
+   developer asks for it by name. If selected, confirm the three things it
+   relaxes and record them in `decisions/answers.md`: invocation counts as
+   spec approval, the agent pushes a feature branch and opens a PR without
+   asking, and it marks the task `done` after its own review. Also confirm
+   the bounds (3 fix attempts, no time cap) and that `AGENTS.md` names the
+   branch convention and PR tooling.
 
 ## 15. Run and verify generation
 

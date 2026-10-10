@@ -171,7 +171,7 @@ details .tw, details pre { margin-bottom: 12px; }
 
 <main class="doc">
 <header>
-  <span class="tag">Documentation · v3.0.0</span>
+  <span class="tag">Documentation · v3.1.0</span>
   <h1>SDD Onboarding Kit</h1>
   <p class="lead">Reference for installing and running Spec Driven Development with Claude Code, Codex CLI, Cursor, OpenCode or Antigravity. Quick start: <a href="README.html">overview page</a>. Deep policy: <code>reference/</code>.</p>
 </header>
@@ -473,7 +473,7 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/</code></pr
 
 <section id="skill-packs">
   <h2><span class="n">17</span>Skill packs</h2>
-  <p>Core skills are always installed (§35). Ten <strong>optional packs</strong> under <code>skills/optional/</code> are installed only when selected (<code>questions.md</code> §14) or requested later. All are advisory or permission-gated.</p>
+  <p>Core skills are always installed (§35). Eleven <strong>optional packs</strong> under <code>skills/optional/</code> are installed only when selected (<code>questions.md</code> §14) or requested later. All are advisory or permission-gated.</p>
   <div class="tw"><table>
     <thead><tr><th>Pack</th><th>Purpose</th><th>Safety</th></tr></thead>
     <tbody>
@@ -487,9 +487,10 @@ tasks.json · specs/&lt;feature-slug&gt;/ · history.md · decisions/</code></pr
       <tr><td><code>failure-learning</code></td><td>Lessons from real mistakes (§21)</td><td>No memory write without approval</td></tr>
       <tr><td><code>ui-qa</code></td><td>Verify UI against acceptance criteria (§24)</td><td>No stored credentials</td></tr>
       <tr><td><code>spec-from-screenshot</code></td><td>Images → spec material (§28)</td><td>Evidence, not requirements</td></tr>
+      <tr><td><code>goblin-mode</code></td><td>One task unattended: invocation = approval, review, docs, done, branch + PR (§26)</td><td>Recorded autonomy exception; never merge, never protected branches</td></tr>
     </tbody>
   </table></div>
-  <p><strong>Bundles at onboarding</strong> (each pack still confirmed individually): Verification (<code>run-and-verify</code>, <code>ui-qa</code>, <code>dependency-freshness</code>) · Git &amp; decisions (<code>git-discipline</code>, <code>decision-log</code>) · Docs &amp; knowledge (<code>documentation-update</code>, <code>project-map</code>, <code>failure-learning</code>) · Context &amp; visual intake (<code>context-audit</code>, <code>spec-from-screenshot</code>).</p>
+  <p><strong>Bundles at onboarding</strong> (each pack still confirmed individually): Verification (<code>run-and-verify</code>, <code>ui-qa</code>, <code>dependency-freshness</code>) · Git, decisions &amp; autonomy (<code>git-discipline</code>, <code>decision-log</code>, <code>goblin-mode</code>) · Docs &amp; knowledge (<code>documentation-update</code>, <code>project-map</code>, <code>failure-learning</code>) · Context &amp; visual intake (<code>context-audit</code>, <code>spec-from-screenshot</code>).</p>
   <p>Selected packs are copied to <code>&lt;harness-dir&gt;/skills/&lt;name&gt;/</code> and adapted (<code>run-and-verify</code> is generated from a template instead). Installed and declined packs go in <code>decisions/answers.md</code>; <code>AGENTS.md</code> lists installed ones by name only. Three packs extend always-on features: <code>project-map</code> (refresh), <code>documentation-update</code> (invocable documenter procedure), <code>failure-learning</code> (structured entries).</p>
 </section>
 
@@ -613,6 +614,7 @@ Do you want me to add this to memory?
 <section id="autonomy-policy">
   <h2><span class="n">26</span>Autonomy policy</h2>
   <p><strong>Autonomy is controlled execution, not blanket permission.</strong> Loops, goals, scheduled routines, background and headless runs are opt-in, scoped, bounded and unable to advance SDD state. Harness features differ; the policy applies by capability (<code>reference/autonomy-policy.md</code>).</p>
+  <p>The one recorded exception is the opt-in <code>goblin-mode</code> pack (§17): a single explicitly invoked task runs to <code>done</code> and a pushed feature branch with a PR, with the invocation recorded as the approval. It never merges, force-pushes, touches protected branches or files, writes memory, or disables a hook.</p>
   <div class="tw"><table>
     <thead><tr><th>Allowed (read-only, bounded)</th><th>Never autonomous</th></tr></thead>
     <tbody><tr>

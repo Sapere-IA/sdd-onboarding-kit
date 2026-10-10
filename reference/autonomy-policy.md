@@ -107,6 +107,30 @@ Autonomous workflows cannot bypass SDD states:
   status, prepared diffs on a branch at most) — never a merged,
   deployed, or completed state.
 
+## Recorded exception: goblin-mode
+
+The optional `goblin-mode` skill pack (`skills/optional/goblin-mode/`) is
+the one sanctioned way to run an SDD task to `done` and to a pushed branch
+without a human checkpoint. Installing it is the recorded decision this
+policy requires, and the exception is narrow:
+
+- It applies only when the developer invokes the skill explicitly, to the
+  one task named, in that session. Nothing in it extends to loops,
+  routines, Stop hooks or headless runs started for other reasons.
+- The invocation **is** the human approval: it is written to `tasks.json`
+  with a note that the spec was not human-reviewed, so the gate hooks still
+  see an approved task and are never bypassed.
+- The reviewer and documenter roles still run; the skill records their
+  decisions, it does not skip them.
+- Git: feature branch, commits, push and one PR. Never a merge, a force-push,
+  the default or a protected branch, or a disabled hook.
+- Still never autonomous, even inside goblin-mode: production deploys,
+  database migrations, payment / authentication / security-relevant changes,
+  protected files, memory or decision-log writes (propose-only), and any
+  open question about data loss or protected areas — the run stops instead.
+- Bounds are declared in the skill: 3 consecutive fix attempts per failure,
+  immediate stop on hook or permission denial.
+
 ## Permission posture
 
 - Never run autonomous workflows with permissions fully bypassed

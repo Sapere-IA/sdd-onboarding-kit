@@ -77,6 +77,7 @@
 - `skills/optional/documentation-update/SKILL.md`
 - `skills/optional/failure-learning/SKILL.md`
 - `skills/optional/git-discipline/SKILL.md`
+- `skills/optional/goblin-mode/SKILL.md`
 - `skills/optional/project-map/SKILL.md`
 - `skills/optional/run-and-verify/SKILL.md`
 - `skills/optional/spec-from-screenshot/SKILL.md`

@@ -74,6 +74,10 @@ The `CHANGELOG.md` entry stays authoritative; these are the steps it implies. Ea
 6. **`AGENTS.md`.** In the spec-storage section, replace the old render command with `sh scripts/render-spec.sh specs/<feature-slug>/` (one page `specs/<feature-slug>/spec.html`) and add the one-line `feedback.md` flow; add the "Session skills" section (`bro`, `closing`) from the kit template. Merge as an adapted file (step 5 rules).
 7. **Validate.** In step 7 below, the structure validator now also requires `scripts/render-spec.sh` and the `bro` and `closing` skills.
 
+#### 3.0.0 → 3.1.0
+
+No mandatory step. If `autonomy-policy.md` is vendored under `<harness-dir>/reference/`, refresh it. Install the `goblin-mode` pack only if the developer asks for it (`CHANGELOG.md` 3.1.0 Migration step 2).
+
 ### 7. Rewrite the manifest and report
 
 - Rewrite `<harness-dir>/sdd-kit-manifest.json`: new `kit_version`, `updated_at`, the `harness` block, fresh hashes for every touched file; add records for newly installed files.

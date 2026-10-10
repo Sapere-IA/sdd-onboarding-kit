@@ -113,7 +113,7 @@ To get notified of new kit versions, watch this repository's releases (**Watch �
 
 ## Optional skills
 
-Beyond the core skills (`sdd-workflow`, `sdd-update`, `bro`, `closing`), the kit ships ten optional skill packs under [`skills/optional/`](skills/optional/README.md): `context-audit`, `project-map`, `run-and-verify`, `dependency-freshness`, `git-discipline`, `decision-log`, `documentation-update`, `failure-learning`, `ui-qa`, and `spec-from-screenshot`. None is installed by default — onboarding asks which packs the project needs, and installed skills are listed in `AGENTS.md` by name only (their instructions load when invoked). All packs are advisory or permission-gated. See the `Skill packs` section in `DOCUMENTATION.html`.
+Beyond the core skills (`sdd-workflow`, `sdd-update`, `bro`, `closing`), the kit ships eleven optional skill packs under [`skills/optional/`](skills/optional/README.md): `context-audit`, `project-map`, `run-and-verify`, `dependency-freshness`, `git-discipline`, `decision-log`, `documentation-update`, `failure-learning`, `ui-qa`, `spec-from-screenshot`, and `goblin-mode`. None is installed by default — onboarding asks which packs the project needs, and installed skills are listed in `AGENTS.md` by name only (their instructions load when invoked). All packs are advisory or permission-gated, except `goblin-mode`, which runs one task unattended (invocation = approval, feature branch + PR, never a merge) and is installed only when asked for by name. See the `Skill packs` section in `DOCUMENTATION.html`.
 
 The `run-and-verify` pack is special: onboarding **generates a project-specific run/verify recipe** — the project's real dev-server/test/lint/typecheck/build commands, required services, environment variable names (never secret values), and how to verify UI or API behavior. Unknown commands are recorded as TODOs, never invented, and the reviewer validates implementations through this recipe. See the `Run and verify skill` section in `DOCUMENTATION.html`.
 
@@ -153,7 +153,7 @@ Every mutating git action is permission-gated. The optional `git-discipline` pac
 
 ## Autonomy is opt-in
 
-Autonomous workflows (loops, goals, scheduled routines, background or headless runs) are **controlled execution, not blanket permission**. They are fine for monitoring CI, checking deployment status, and repeated read-only verification — always with explicit stop conditions — but they can never deploy, migrate, merge, push to protected branches, or mark a task `done`: SDD state transitions stay human-gated. See [`reference/autonomy-policy.md`](reference/autonomy-policy.md) and the `Autonomy policy` section in `DOCUMENTATION.html`.
+Autonomous workflows (loops, goals, scheduled routines, background or headless runs) are **controlled execution, not blanket permission**. They are fine for monitoring CI, checking deployment status, and repeated read-only verification — always with explicit stop conditions — but they can never deploy, migrate, merge, push to protected branches, or mark a task `done`: SDD state transitions stay human-gated. The one recorded exception is the opt-in `goblin-mode` pack, scoped to a single explicitly invoked task on a feature branch. See [`reference/autonomy-policy.md`](reference/autonomy-policy.md) and the `Autonomy policy` section in `DOCUMENTATION.html`.
 
 ## Resumable work
 
