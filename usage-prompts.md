@@ -68,7 +68,7 @@ Invoke the `closing` skill before stopping, switching tasks or compacting:
 /closing
 ```
 
-It checks that tasks, specs, decisions and memory reflect what happened, writes a "Resume here" handoff, and asks before committing anything.
+It checks that tasks, specs, decisions and memory reflect what happened, updates project memory, writes a "Resume here" handoff, commits and pushes following the git policy, and ends with "Safe to close the session" or the reason it is not. Add `no push` or `no commit` to stop earlier.
 
 ## Update the SDD harness
 

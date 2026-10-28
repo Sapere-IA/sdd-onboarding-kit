@@ -109,7 +109,7 @@ Invoke it by name (`sdd-workflow`) with the task ID or feature description, usin
 ## Session skills
 
 - `bro`: re-explains the previous answer, a file, a spec item (`REQ-003`) or a term in plain language, in a few lines.
-- `closing`: before ending a session, checks every durable artifact is up to date and writes a handoff so a fresh session can resume from the files.
+- `closing`: before ending a session, checks every durable artifact is up to date, updates project memory, writes a handoff so a fresh session can resume from the files, commits and pushes per the git policy, and says whether it is safe to close. Invoking it is the approval for those steps.
 
 Invoke them by name with this harness's skill invocation; their instructions live in `{{HARNESS_DIR}}/skills/<name>/SKILL.md`.
 

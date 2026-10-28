@@ -151,8 +151,8 @@ developer accepts or drops them later.
 ### 8. Close the session
 
 Run the `closing` skill procedure with these substitutions: memory and
-decision-log proposals are listed, not asked about; the commit question is
-already answered. The `## Resume here` block must name the **next candidate
+decision-log entries are listed as proposals, not written; commit and push
+follow §9 below instead of the `closing` steps 7–8. The `## Resume here` block must name the **next candidate
 task** from `tasks.json` and list every auto-decided question (§ Deciding
 alone) as a line the developer should glance at.
 

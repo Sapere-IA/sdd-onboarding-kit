@@ -75,7 +75,9 @@ Memory entries use the format in `templates/memory/failure-learning-entry.md`: t
 
 The optional `failure-learning` pack (`skills/optional/failure-learning/SKILL.md`) implements this policy for implementation mistakes: it drafts the entry, shows the confirmation prompt, and writes only where the developer chose. The advisory hook examples under `hooks/examples/failure-learning/` may *suggest* running the skill; they never write memory themselves.
 
-The core `closing` skill (`skills/closing/SKILL.md`) checks at the end of a session that the memory layers above reflect what happened; it follows the same confirmation rule for every memory entry it proposes.
+## Closing
+
+The core `closing` skill (`skills/closing/SKILL.md`) checks at the end of a session that the memory layers above reflect what happened. Invoking it is the developer's standing answer **2. Project memory only** for the entries it finds: it writes project-scoped entries (decision logs, changed `AGENTS.md` facts, the harness's project memory if the project uses one) without asking again, and lists the exact text of each in its report so the developer can revert any of them. It never writes global memory: a project-independent lesson is listed as a proposal and goes through the confirmation above. The goblin-mode pack overrides this: it proposes, never writes.
 
 ---
 

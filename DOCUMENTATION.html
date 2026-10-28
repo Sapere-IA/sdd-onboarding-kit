@@ -171,7 +171,7 @@ details .tw, details pre { margin-bottom: 12px; }
 
 <main class="doc">
 <header>
-  <span class="tag">Documentation · v3.1.0</span>
+  <span class="tag">Documentation · v3.2.0</span>
   <h1>SDD Onboarding Kit</h1>
   <p class="lead">Reference for installing and running Spec Driven Development with Claude Code, Codex CLI, Cursor, OpenCode or Antigravity. Quick start: <a href="README.html">overview page</a>. Deep policy: <code>reference/</code>.</p>
 </header>
@@ -722,7 +722,7 @@ Do you want me to add this to memory?
       <tr><td>Harness support (§2b)</td><td>Chosen at onboarding</td><td>§0</td><td>—</td></tr>
       <tr><td>Five roles (§7)</td><td>Always</td><td>—</td><td>Gated</td></tr>
       <tr><td>Spec page + feedback (§6)</td><td>Always</td><td>—</td><td>Gated (you approve)</td></tr>
-      <tr><td><code>/bro</code>, <code>/closing</code> (§35)</td><td>Always</td><td>—</td><td>Advisory · gated commits</td></tr>
+      <tr><td><code>/bro</code>, <code>/closing</code> (§35)</td><td>Always</td><td>—</td><td>Invocation approves project memory, commit and push</td></tr>
       <tr><td>Templates with policy sections (§32)</td><td>Always</td><td>—</td><td>Advisory</td></tr>
       <tr><td>Project map (§16)</td><td>Generated</td><td>§12</td><td>Advisory</td></tr>
       <tr><td>Documentation phase (§22)</td><td>On</td><td>§20</td><td>Blocking</td></tr>
@@ -769,7 +769,7 @@ Do you want me to add this to memory?
     <thead><tr><th>Skill</th><th>Use it when</th><th>What it does</th></tr></thead>
     <tbody>
       <tr><td><code>/bro</code></td><td>Too much text, or text you do not follow</td><td>Re-explains its last message, or the text, file, spec ID (<code>REQ-003</code>, <code>Q2</code>…) or term you pass, in about 150 plain words: TL;DR, explanation, what it means for you, what you need to decide. Explains only; never decides or edits.</td></tr>
-      <tr><td><code>/closing</code></td><td>Stopping, switching tasks, compacting or handing off</td><td>Audits the session against the files: is everything written down, are tasks, specs, reviews, decisions and memory current, is any <code>feedback.md</code> pending, could a fresh session resume? Fixes the docs, writes a <em>Resume here</em> handoff, asks before any memory write and before committing.</td></tr>
+      <tr><td><code>/closing</code></td><td>Stopping, switching tasks, compacting or handing off</td><td>Audits the session against the files: is everything written down, are tasks, specs, reviews, decisions and memory current, is any <code>feedback.md</code> pending, could a fresh session resume? Fixes the docs, updates project memory, writes a <em>Resume here</em> handoff, commits and pushes per the git policy, and ends with &ldquo;Safe to close the session&rdquo; or why not. Invoking it is the approval; global memory still needs a yes.</td></tr>
     </tbody>
   </table></div>
 </section>
